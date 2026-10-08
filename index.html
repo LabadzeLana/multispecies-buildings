@@ -35,7 +35,8 @@
   --sky:#1A1F1C; --slab:#2A302C;
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
+html,body{margin:0;padding:0;overflow-x:hidden}
+html{-webkit-overflow-scrolling:touch}
 body{
   background:var(--paper); color:var(--ink);
   font-family:var(--serif); font-size:16px; line-height:1.7;
@@ -281,6 +282,8 @@ body.index-page #view .rows { padding-top: 2rem; padding-bottom: 6rem; }
   position: relative;
   width: 100%;
   height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -317,6 +320,76 @@ body.view-open main,body.view-open .seasons{display:none}
 .essay h3{font-family:var(--serif);font-weight:500;font-size:1.05rem;margin:1.8rem 0 .2rem}
 .essay p{margin:.5rem 0}
 .note{font-family:var(--sans);font-size:.85rem;color:var(--muted);border-left:2px solid var(--line);padding-left:.9rem;margin:1.6rem 0}
+
+/* ---------- mobile hero & view responsiveness ---------- */
+@media (max-width:768px){
+  /* Hero: disable fixed bg attachment (broken on iOS Safari),
+     use dvh for true viewport fill */
+  .hero-container{
+    height: 100vh;
+    height: 100dvh;
+    background-attachment: scroll;
+    /* Prevent double-scrollbar on older WebKit */
+    -webkit-backface-visibility: hidden;
+  }
+
+  /* Text overlay box: full-width with safe margins,
+     gradient starts higher so text always has a readable backdrop */
+  .hero-text{
+    padding-top: 8rem;
+    padding-bottom: 1.25rem;
+    background: linear-gradient(to top, var(--paper) 25%, rgba(232,233,229,.55) 65%, transparent 100%);
+  }
+
+  .hero-text-inner{
+    padding-left: clamp(.9rem, 5vw, 1.5rem);
+    padding-right: clamp(.9rem, 5vw, 1.5rem);
+    max-width: calc(100% - 1.8rem);
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* Scale h2 down so it never overflows the container */
+  #view h2{
+    font-size: clamp(1.35rem, 6vw, 1.9rem);
+    line-height: 1.15;
+    margin-bottom: .2rem;
+  }
+
+  /* Lede body text: slightly tighter on small screens */
+  #view .lede{
+    font-size: clamp(.88rem, 3.5vw, 1rem);
+    max-width: 100%;
+    margin: 0 0 1rem;
+  }
+
+  /* Rows: collapse the 3-column grid to a 2-column layout */
+  .row{
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+  }
+  /* Move the secondary meta below the title */
+  .row .m{
+    grid-column: 1;
+    grid-row: 2;
+  }
+  /* Status pill stays right */
+  .row .st{
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: center;
+  }
+
+  /* Prevent the bar nav from wrapping into a very tall header */
+  .bar{
+    gap: .4rem;
+  }
+  .bar nav button{
+    font-size: .78rem;
+    padding: .4rem .45rem;
+  }
+}
 </style>
 </head>
 <body>
