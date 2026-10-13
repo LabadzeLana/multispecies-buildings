@@ -53,21 +53,13 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   position:fixed;inset:0;z-index:60;background:#121714;
   overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;outline:none;
 }
-.cover-track{position:relative;height:380vh}
+.cover-track{position:relative;height:320vh}
 .cover-scene{
   position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;box-sizing:border-box;
   display:flex;flex-direction:column;justify-content:flex-start;gap:.9rem;padding:5vh 6vw 5vh;
 }
-.cv-layer{position:absolute;background-repeat:no-repeat;background-size:cover;will-change:transform,opacity,filter}
+.cv-layer{position:absolute;background-repeat:no-repeat;background-size:cover;will-change:transform,opacity}
 .cv-b{left:0;top:0;width:100%;height:100%;background-position:50% 50%}
-.cv-a{
-  left:-10%;top:-10%;width:120%;height:120%;background-position:50% 66%;
-  -webkit-mask-image:radial-gradient(ellipse 110% 110% at 53% 70%,#000 28%,transparent 72%),linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%),linear-gradient(180deg,transparent 0,#000 8%,#000 92%,transparent 100%);
-  -webkit-mask-composite:source-in,source-in;
-  mask-image:radial-gradient(ellipse 110% 110% at 53% 70%,#000 28%,transparent 72%),linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%),linear-gradient(180deg,transparent 0,#000 8%,#000 92%,transparent 100%);
-  mask-composite:intersect,intersect;
-  transition:none;
-}
 .cv-scrim{position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,rgba(14,18,16,0) 0%,rgba(14,18,16,0) 42%,rgba(14,18,16,.55) 62%,rgba(14,18,16,.88) 100%)}
 .cv-scrim-top{position:absolute;left:0;right:0;top:0;height:52%;pointer-events:none;
@@ -319,6 +311,8 @@ body.view-open main,body.view-open .seasons{display:none}
 .essay{max-width:64ch}
 .essay h3{font-family:var(--serif);font-weight:500;font-size:1.05rem;margin:1.8rem 0 .2rem}
 .essay p{margin:.5rem 0}
+.essay .role{font-family:var(--sans);font-size:.78rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin:1.8rem 0 0}
+.essay .role + h3{margin-top:.2rem}
 .note{font-family:var(--sans);font-size:.85rem;color:var(--muted);border-left:2px solid var(--line);padding-left:.9rem;margin:1.6rem 0}
 
 /* ---------- mobile hero & view responsiveness ---------- */
@@ -397,7 +391,6 @@ body.view-open main,body.view-open .seasons{display:none}
 <div id="cover" tabindex="-1">
 <div class="cover-track"><div class="cover-scene">
   <div class="cv-layer cv-b" aria-hidden="true"></div>
-  <div class="cv-layer cv-a" aria-hidden="true"></div>
   <div class="cv-scrim" aria-hidden="true"></div>
   <div class="cv-scrim-top" aria-hidden="true"></div>
     <div class="cover-kicker">
@@ -436,7 +429,7 @@ body.view-open main,body.view-open .seasons{display:none}
     <button data-nav="inhabitants"><span class="ka">მობინადრეები</span><span class="en">Inhabitants</span></button>
     <button data-nav="senses"><span class="ka">გრძნობები</span><span class="en">Senses</span></button>
     <button data-nav="index"><span class="ka">ინდექსი</span><span class="en">Index</span></button>
-    <button data-nav="texts"><span class="ka">ტექსტები</span><span class="en">Texts</span></button>
+    <button data-nav="about"><span class="ka">პროექტის შესახებ</span><span class="en">About the project</span></button>
   </nav>
 </header>
 
@@ -611,19 +604,13 @@ const T = {
     autumn:{ka:"შემოდგომა — ფოთოლი ჩამოდის და ნიაღვრის მილებს კეტავს, პირველი გაჟონვები ჩნდება, ჯართი მოძრაობს.",en:"Autumn — leaves fall and block the drains, the first leaks appear, scrap starts moving."}
   },
 
-  texts:{
-    project:{ka:"პროექტის შესახებ",en:"About the project",
-      bka:["თბილისის საბჭოთა მასობრივი საცხოვრისი გადაურჩა იმ ინფრასტრუქტურულ და პოლიტიკურ სამყაროს, რომელმაც ის შექმნა. დღეს ეს შენობები იმ ცხოვრების ფორმებს იტევს, რომლებსაც არქიტექტორები ვერ განჭვრეტდნენ: ვაზი ბეტონზე ადის, ფრინველები და ვირთხები კონსტრუქციულ ღრუებში სახლდებიან, ძაღლები სადარბაზოებსა და ეზოებს იკავებენ.","პროექტი ამ შენობებს ეპყრობა როგორც სენსორულ, მრავალსახეობრივ სამყაროებს. მისი შედეგია მულტიმოდალური წიგნი და ეს ვებგვერდი, სადაც წერა, ფოტოგრაფია, მოძრავი გამოსახულება, ხმა, საარქივო მასალა და ვებდიზაინი ერთმანეთის გაგრძელებად ვითარდება."],
-      ben:["Soviet mass housing in Tbilisi has outlived the infrastructural and political world that produced it. These buildings now hold forms of life their architects could hardly have anticipated: grapevines climb concrete, birds and rats dwell in structural cavities, dogs occupy entrances and courtyards.","The project treats these buildings as sensible, multispecies worlds. It results in a multimodal book and this website, where writing, photography, moving image, sound, archival material and web design develop as extensions of one another."]},
-    method:{ka:"როგორ არის აწყობილი ეს საიტი",en:"How this site is built",
-      bka:["საიტის ერთეული არის სივრცე და არა ფაილი. ცხრა სივრცე — სახურავიდან სარდაფამდე — ქმნის ჭრილს, რომელზეც მთელი არქივი ეკიდება. ყოველი ჩანაწერი მონიშნულია ორი გადამკვეთი ღერძით: მობინადრით და შეგრძნებით. ეს ნიშნავს, რომ ერთსა და იმავე ჩანაწერს რამდენიმე გზით მიაგნებთ და არცერთი მათგანი არ არის მთავარი.","მესამე ღერძი დროა. სეზონის გადამრთველი ცვლის ჭრილს და კითხვის კონტექსტს: შენობა ზამთარსა და ზაფხულში ერთი და იგივე ობიექტი არ არის. საბოლოო ვერსიაში თითოეულ სივრცეს ექნება სეზონური ვერსიები იმავე კადრისა და იმავე ჩაწერის წერტილისა.","URL ყოველთვის ასახავს იმ ადგილს, სადაც ხართ — ანუ ჩანაწერი ციტირებადია. ეს განზრახ განსხვავდება იმ ციფრული ატლასებისგან, სადაც მარშრუტი მისამართში არ ჩანს."],
-      ben:["The unit of this site is a space, not a file. Nine spaces — from roof to basement — form the section on which the whole archive hangs. Every entry carries two crossing axes: an inhabitant and a sense. The same entry can therefore be reached by several routes, and none of them is the main one.","The third axis is time. The season switch changes both the drawing and the context of reading: the building in winter and in summer is not the same object. In the final version each space will hold seasonal versions of the same frame and the same recording point.","The URL always reflects where you are, so an entry can be cited. This is a deliberate departure from digital atlases where the route leaves no trace in the address."]},
-    ethics:{ka:"თანხმობა და ხილვადობა",en:"Consent and visibility",
-      bka:["ეს არქივი ადამიანების სახლებს აღწერს. ამიტომ პუბლიკაციის რეჟიმი დიზაინის ნაწილია და არა სამართლებრივი დანართი.","სამი წესი: შენობის ზუსტი მისამართი არ ქვეყნდება, თუ მობინადრეებმა ეს ცალკე არ დაუშვეს; ინტერიერის კადრი და ხმა ქვეყნდება მხოლოდ იმ პირის თანხმობით, ვისი სივრცეც არის; ნებისმიერი მასალა შეიძლება მოიხსნას მოთხოვნით, ახსნის გარეშე.","საიტზე ყოველ ჩანაწერს ახლავს მისი სტატუსი: საჯარო, შეზღუდული ან მხოლოდ კვლევითი. თანხმობა აქ არის მდგომარეობა და არა ერთჯერადი ხელმოწერა — ის განმეორებით მოწმდება ველზე დაბრუნებისას."],
-      ben:["This archive describes people's homes. The publication regime is therefore part of the design, not a legal appendix.","Three rules: the exact address is not published unless residents have separately agreed; interior images and recordings are published only with the consent of the person whose space it is; any material can be withdrawn on request, without explanation.","Every entry carries its status: public, restricted, or research-only. Consent here is a condition rather than a one-off signature — it is checked again on each return to the field."]},
-    status:{ka:"პროტოტიპის სტატუსი",en:"Status of this prototype",
-      bka:["ეს არის ნავიგაციისა და მონაცემთა მოდელის სამუშაო პროტოტიპი. ტექსტები საილუსტრაციოა და ველზე გადამოწმებას საჭიროებს; მედიის ადგილები ცარიელია და აჩვენებს, სად და რა ფორმატით ჩაჯდება რეალური მასალა.","შემდეგი ნაბიჯები: მასალის ერთი სრული სივრცის დონეზე შევსება, ტრანსკრიფციისა და სუბტიტრების სქემა, ორენოვანი მეტამონაცემების ველები, და არქივირების გეგმა — სტატიკური ექსპორტი და დეპოზიტი უნივერსიტეტის რეპოზიტორიუმში."],
-      ben:["This is a working prototype of the navigation and the data model. The texts are illustrative and need verification in the field; the media slots are empty and show where real material will sit and in what format.","Next steps: fill one space completely, define transcription and subtitling, set bilingual metadata fields, and plan for archiving — a static export deposited in the university repository."]}
+  about:{
+    intro:"Multispecies Buildings: Ruins of Care and Repair on the Edge of Empire explores the afterlife of Soviet mass housing in Tbilisi through more-than-human entanglements, infrastructural breakdown, and everyday practices of care and repair. Grounded in multimodal ethnography, the project approaches buildings as shared habitats and living archives, continually reshaped by provisional repairs and forms of multispecies coexistence. Accompanying an experimental book, this website brings together photographs, soundscapes, videos, and short texts to offer an embodied encounter with the sensory life of these buildings.",
+    people:[
+      {role:"Multimodal storyteller", name:"Tamta Khalvashi", bio:"Tamta Khalvashi is Professor of Anthropology and founding director of the PhD Program in Social and Cultural Anthropology at Ilia State University in Tbilisi. She holds a PhD from the University of Copenhagen. Her work explores the intersections of infrastructure, affect, and everyday life on the edges of empire. For Multispecies Buildings, she brings together long-term ethnographic research, writing, photography, sound, and video to explore the multispecies afterlife of Soviet mass housing in Georgia. Through experiments in multimodal storytelling, she traces how care, repair, and coexistence continually reshape these shared habitats."},
+      {role:"Visual Curator", name:"Mariam Menteshashvili", bio:"Mariam Menteshashvili is a Tbilisi-based researcher, documentary photographer, and artist, and a Fellow at the Memory and Anxiety Research Lab, Free University of Tbilisi. Her work on infrastructural anxiety approaches the city as a meshwork, not a fixed network of nodes and connections but something alive, unfinished, and always in motion. She holds an MA in Social Anthropology from Goldsmiths and trained in photography at Central Saint Martins. Her work has been exhibited at Copeland Gallery, Leica Centre, and Art Forward Gallery, London."},
+      {role:"Web Developer", name:"Lana Labadze", bio:"Lana Labadze is an innovative and human-centered education and technology leader with 10+ years of experience at the intersection of education, technology, and impact. As CEO of GeoLab, she leads strategic and operational management, cross-functional teams, international partnerships, and multi-year, donor-funded initiatives. Lana actively applies AI-based approaches, including vibe coding, to develop websites, mini-applications, and workflow automations. For Multispecies Buildings, Lana works on the website’s concept and development, building it through vibe coding: describing, testing, and refining the site in dialogue with AI rather than writing code by hand."}
+    ]
   }
 };
 
@@ -964,20 +951,16 @@ function openView(kind, arg){
     v.appendChild(rows);
   }
 
-  if(kind==="texts"){
-    v.appendChild(el("h2",null,L()==="ka"?"ტექსტები":"Texts"));
-    v.appendChild(el("p","lede",L()==="ka"
-      ? "მეთოდი, ეთიკა და პროტოტიპის სტატუსი — არა ცალკე გვერდად, არამედ იმავე არქივის ნაწილად."
-      : "Method, ethics and the status of the prototype — not a separate page but part of the same archive."));
-    Object.values(T.texts).forEach(t=>{
-      const e = el("div","essay");
-      e.appendChild(el("h3",null,L()==="ka"?t.ka:t.en));
-      (L()==="ka"?t.bka:t.ben).forEach(par=>e.appendChild(el("p",null,par)));
+  if(kind==="about"){
+    v.appendChild(el("h2",null,"About the project"));
+    v.appendChild(el("p","lede",T.about.intro));
+    T.about.people.forEach(p=>{
+      const e = el("div","essay person");
+      e.appendChild(el("div","role",p.role));
+      e.appendChild(el("h3",null,p.name));
+      e.appendChild(el("p",null,p.bio));
       v.appendChild(e);
     });
-    v.appendChild(el("div","note", L()==="ka"
-      ? "ვიზუალური და სტრუქტურული რეფერენსი: Feral Atlas (Stanford University Press, 2021) — ნავიგაციის ლოგიკისთვის, არა სტილისთვის."
-      : "Structural reference: Feral Atlas (Stanford University Press, 2021) — for its navigation logic, not its style."));
   }
   v.focus();
   window.scrollTo(0,0);
@@ -1010,7 +993,7 @@ function route(){
   if(a==="inhabitants"){ openView("inhabitants"); markNav("inhabitants"); return; }
   if(a==="senses"){ openView("senses"); markNav("senses"); return; }
   if(a==="index"){ openView("index"); markNav("index"); return; }
-  if(a==="texts"){ openView("texts"); markNav("texts"); return; }
+  if(a==="about"||a==="texts"){ openView("about"); markNav("about"); return; }
   document.body.classList.remove("panel-open","view-open");
   markNav("building");
   paintHotspots(null);
@@ -1021,69 +1004,34 @@ document.querySelectorAll(".bar nav button").forEach(btn=>{
   btn.onclick = ()=>{ const n = btn.dataset.nav; location.hash = n==="building" ? "#/" : "#/"+n; };
 });
 
-/* ---- cover: scroll-driven pull-back (doorway -> wider view -> wide view) ---- */
+/* ---- cover: scroll-driven pull-back (close view of the doorway -> whole building) ---- */
+/* path to the wide photo, relative to index.html */
+const PULLBACK_SRC = "2022-07-06 13.29.46-1.jpg";
 (function coverScene(){
   const cover = document.getElementById("cover");
-  const A = cover.querySelector(".cv-a"), B = cover.querySelector(".cv-b"), scrim = cover.querySelector(".cv-scrim-top"), hint = document.getElementById("coverHint");
-  A.style.backgroundImage = "url(" + IMG.cover + ")";
-  B.style.backgroundImage = "url(" + IMG.pullback + ")";
-  const IA = {w:1200, h:1600, dx:.53, dy:.70};      /* doorway photo: door centre */
-  const IB = {w:2200, h:1650, dx:.5475, dy:.839};   /* wide photo: door centre */
-  const SB0 = 2.2, SA_END = .55, OVER = 1.2;
+  const B = cover.querySelector(".cv-b"), scrim = cover.querySelector(".cv-scrim-top"), hint = document.getElementById("coverHint");
+  B.style.backgroundImage = 'url("' + PULLBACK_SRC + '")';
+  const IB = {w:2576, h:1932, dx:.5475, dy:.839};   /* doorway centre in the photo */
+  const SB0 = 2.6, START_Y = .62;
   let g = null;
   const sm = x => { x = Math.max(0, Math.min(1, x)); return x*x*(3-2*x); };
   function measure(){
-    const W = cover.clientWidth, H = cover.clientHeight;
-    const Wb = OVER*W, Hb = OVER*H, cA = Math.max(Wb/IA.w, Hb/IA.h);
-    const qa = {x:(Wb-IA.w*cA)*.5 + IA.dx*IA.w*cA, y:(Hb-IA.h*cA)*.66 + IA.dy*IA.h*cA};
-    const C = {x:Wb/2, y:Hb/2}, L = {x:-(OVER-1)/2*W, y:-(OVER-1)/2*H};
-    const cB = Math.max(W/IB.w, H/IB.h);
+    const W = cover.clientWidth, H = cover.clientHeight, cB = Math.max(W/IB.w, H/IB.h);
     const Dp = {x:(W-IB.w*cB)*.5 + IB.dx*IB.w*cB, y:(H-IB.h*cB)*.5 + IB.dy*IB.h*cB};
-    const s0 = 1/OVER;
-    const Ds = {x:L.x + C.x + s0*(qa.x-C.x), y:L.y + C.y + s0*(qa.y-C.y)};
-    g = {qa, C, L, Dp, Ds, s0};
-    A.style.transformOrigin = C.x + "px " + C.y + "px";
+    g = {W, H, Dp, Tp:{x:W*.5, y:H*START_Y}};
     B.style.transformOrigin = Dp.x + "px " + Dp.y + "px";
   }
   function render(){
     if(!g) measure();
     const max = cover.scrollHeight - cover.clientHeight;
     const p = max > 0 ? Math.min(1, Math.max(0, cover.scrollTop/max)) : 0;
-
-    /* ---- Phase 1: A pans/zooms toward door alignment (p 0→0.5) ---- */
-    const u = Math.min(1, p/.5);
-    const s = g.s0*(1 + (SA_END-1)*u);
-    const tx = g.Ds.x + u*(g.Dp.x-g.Ds.x) - g.L.x - g.C.x - s*(g.qa.x-g.C.x);
-    const ty = g.Ds.y + u*(g.Dp.y-g.Ds.y) - g.L.y - g.C.y - s*(g.qa.y-g.C.y);
-
-    /* ---- Crossfade: A fades over a wider window with blur assist ---- */
-    /* fade starts at p=0.18, ends at p=0.56 — longer overlap zone */
-    const fadeT = Math.max(0, Math.min(1, (p - 0.18) / 0.38));
-    const o = 1 - sm(fadeT);   /* smooth-step fade */
-    A.style.transform = "translate3d(" + tx.toFixed(1) + "px," + ty.toFixed(1) + "px,0) scale(" + s.toFixed(4) + ")";
-    A.style.opacity = o.toFixed(3);
-    A.style.visibility = o <= 0.002 ? "hidden" : "visible";
-    /* radial mask: inner radius shrinks so center (door) dissolves last */
-    const mInner = (28 + 42*(1-o)).toFixed(1);   /* 28% → 70% as A fades */
-    const mOuter = (72 - 14*sm(fadeT)).toFixed(1); /* 72% → 58% (edge first) */
-    const radMask = "radial-gradient(ellipse 110% 110% at 53% 70%,#000 " + mInner + "%,transparent " + mOuter + "%),";
-    const sideMasks = "linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%),linear-gradient(180deg,transparent 0,#000 8%,#000 92%,transparent 100%)";
-    A.style.maskImage = radMask + sideMasks;
-    A.style.webkitMaskImage = radMask + sideMasks;
-    /* gentle blur during mid-crossfade (peaks at 50% fade) */
-    const blurPeak = 1 - Math.abs(o - 0.5)*2;  /* 0→1→0 as o goes 1→0.5→0 */
-    const blurPx = (Math.max(0, blurPeak) * 3.5).toFixed(2);
-    A.style.filter = blurPx > 0.05 ? "blur(" + blurPx + "px)" : "";
-
-    /* ---- Phase 2: B zooms out — smoother easing with cubic ease-out ---- */
-    /* ease-out cubic: slow start, fast middle, gentle settle */
-    const e = Math.min(1, p / 0.9);
-    const eCubic = 1 - Math.pow(1 - e, 2.4);  /* gentler than pure power */
-    B.style.transform = "scale(" + Math.pow(SB0, 1 - eCubic).toFixed(4) + ")";
-
-    /* scrim: stays stronger longer, fades as wide shot settles */
-    scrim.style.opacity = (1 - 0.45*sm((p - 0.22) / 0.42)).toFixed(3);
-    if(hint) hint.classList.toggle("hide", p > 0.03);
+    const e = Math.min(1, p/.9), s = Math.pow(SB0, 1-e);
+    let tx = (1-e)*(g.Tp.x-g.Dp.x), ty = (1-e)*(g.Tp.y-g.Dp.y);
+    tx = Math.min((s-1)*g.Dp.x, Math.max((1-s)*(g.W-g.Dp.x), tx));   /* never reveal an edge */
+    ty = Math.min((s-1)*g.Dp.y, Math.max((1-s)*(g.H-g.Dp.y), ty));
+    B.style.transform = "translate3d(" + tx.toFixed(1) + "px," + ty.toFixed(1) + "px,0) scale(" + s.toFixed(4) + ")";
+    scrim.style.opacity = (1 - .45*sm((p-.2)/.4)).toFixed(3);
+    if(hint) hint.classList.toggle("hide", p > .03);
   }
   let raf = 0;
   cover.addEventListener("scroll", ()=>{ if(!raf) raf = requestAnimationFrame(()=>{ raf = 0; render(); }); }, {passive:true});
