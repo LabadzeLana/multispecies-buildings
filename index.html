@@ -1291,16 +1291,6 @@ const DOGS_STORY = {
     lede: "",
     listen: "Listen to the street",
     media: [
-      {type:"photo", src:"media/dogs/9.jpg", thumb:"media/dogs/thumb/9.jpg", w:1600, h:1200,
-       alt:"Two small wooden dog houses, one with a cushion on its roof, stand on the pavement in front of a pharmacy window. An electric scooter is parked beside them, in front of advertising posters.", caption:null, credit:null},
-      {type:"photo", src:"media/dogs/3.jpg", thumb:"media/dogs/thumb/3.jpg", w:1600, h:1200,
-       alt:"A grey apartment block with enclosed balconies and metal garage doors. A small dog house with a red roof stands under the balconies; a white dog with dark ears stands in the open asphalt yard. Bare trees and parked cars behind.", caption:null, credit:null},
-      {type:"photo", src:"media/dogs/8.jpg", thumb:"media/dogs/thumb/8.jpg", w:1600, h:1200,
-       alt:"A wooden box on a pallet, covered with dark sheeting, stands on the paving outside a supermarket, next to an air-conditioning unit and a payment terminal.", caption:null, credit:null},
-      {type:"photo", src:"media/dogs/10.jpg", thumb:"media/dogs/thumb/10.jpg", w:1600, h:1200,
-       alt:"Two puppies, one tan and one black, white and brown, sit together at the foot of a large tree in a dim yard scattered with litter. A third pale dog walks at the left edge.", caption:null, credit:null},
-      {type:"photo", src:"media/dogs/11.jpg", thumb:"media/dogs/thumb/11.jpg", w:1600, h:1200,
-       alt:"The same dim yard: three puppies move about on the bare earth; a black, white and brown puppy in the foreground looks up towards the camera.", caption:null, credit:null},
       {type:"audio", src:"media/dogs/street.m4a",
        alt:"Street ambience recorded outdoors, with dogs barking.", caption:null, credit:null}
     ]
@@ -2034,7 +2024,7 @@ function openDogsStory(){
       const c = stCaption(m); if(c) fig.appendChild(c);
       grid.appendChild(fig);
     });
-    st.wrap.appendChild(grid);
+    if(photos.length) st.wrap.appendChild(grid);
     v.appendChild(st.sec);
   }
 
