@@ -388,13 +388,36 @@ body.view-open main,body.view-open .seasons{display:none}
 /* ---------- story page: #/story/dogs ---------- */
 body.story-page #view{padding:0;max-width:none}
 .st-wrap{max-width:62rem;margin:0 auto;padding:0 clamp(1rem,4vw,3rem)}
-.st-hero{position:relative;width:100%;height:min(88vh,62vw);min-height:min(78vh,34rem);overflow:hidden;background:var(--paper-2)}
-.st-hero > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:55% 60%;display:block}
-.st-hero .slot{position:absolute;inset:0;margin:0}
-.st-hero .slot .frame.pending{height:100%}
-.st-hero-text{position:absolute;left:0;right:0;bottom:0;padding:5rem 0 1.2rem;
-  background:linear-gradient(to top,var(--paper) 0,rgba(232,233,229,.88) 28%,rgba(232,233,229,0) 100%)}
-#view .st-hero-text h2{font-size:clamp(2.4rem,7vw,3.6rem);line-height:1.05;margin:.1rem 0 .5rem}
+.st-hero{position:relative;width:100%;height:100vh;height:calc(100dvh - var(--st-bar,0px));min-height:22rem;
+  overflow:hidden;background:#1B211F}
+.st-hero > .slot{position:absolute;inset:0;margin:0}
+.st-hero > .slot .frame.pending{height:100%}
+.dz-view{position:absolute;inset:0;cursor:grab;touch-action:pan-y;outline-offset:-4px}
+.dz-view.grabbing{cursor:grabbing}
+.dz-view canvas{display:block;width:100%;height:100%}
+.dz-head{position:absolute;left:0;right:0;top:0;padding:1.2rem 0 4.5rem;pointer-events:none;
+  background:linear-gradient(180deg,rgba(14,18,16,.66) 0%,rgba(14,18,16,.28) 60%,rgba(14,18,16,0) 100%)}
+.dz-head .eyebrow{color:rgba(243,244,240,.85)}
+#view .dz-head h2{color:#F6F7F3;font-size:clamp(2.4rem,7vw,3.6rem);line-height:1.05;margin:.1rem 0 .2rem;text-shadow:0 1px 14px rgba(0,0,0,.45)}
+.dz-head .st-back{color:#F0F2EC;pointer-events:auto}
+.dz-head .st-back:hover{border-bottom-color:#F0F2EC}
+.dz-strip{position:absolute;left:0;right:0;bottom:0;height:12vh;min-height:64px;display:flex;align-items:center;justify-content:center;
+  touch-action:pan-y;background:linear-gradient(0deg,rgba(14,18,16,.6) 0%,rgba(14,18,16,0) 100%)}
+.dz-continue{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.5rem 1.2rem;font-family:var(--sans);font-size:.9rem;
+  color:#F6F7F3;border:1px solid rgba(246,247,243,.75);border-radius:999px;background:rgba(14,18,16,.35)}
+.dz-continue:hover{background:rgba(14,18,16,.6)}
+.dz-continue:focus-visible,.dz-ctrl button:focus-visible{outline-color:#F6F7F3}
+.dz-ctrl{position:absolute;right:.75rem;bottom:calc(max(12vh,64px) + .5rem);display:flex;flex-direction:column;gap:.4rem}
+.dz-ctrl button,.dz-next{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:2px;
+  background:rgba(232,233,229,.92);color:var(--ink);border:1px solid var(--line);font-family:var(--sans);font-size:1.25rem;line-height:1}
+.dz-ctrl button:hover,.dz-next:hover{background:#F6F7F3}
+.dz-ctrl button:disabled{opacity:.45;cursor:default}
+.dz-next{position:absolute;left:.75rem;bottom:calc(max(12vh,64px) + .5rem);width:auto;padding:0 .9rem;font-size:.85rem}
+.dz-hint{position:absolute;left:50%;bottom:calc(max(12vh,64px) + 4rem);transform:translateX(-50%);max-width:calc(100% - 7rem);
+  font-family:var(--sans);font-size:.85rem;color:#F6F7F3;background:rgba(14,18,16,.6);padding:.4rem .8rem;border-radius:2px;
+  text-align:center;opacity:0;transition:opacity .6s ease;pointer-events:none}
+.dz-hint.show{opacity:1}
+@media (prefers-reduced-motion: reduce){ .dz-hint{transition:none} }
 .st-back{display:inline-flex;align-items:center;min-height:44px;font-family:var(--sans);font-size:.88rem;
   color:var(--oil);text-decoration:none;border-bottom:1px solid transparent}
 .st-back:hover{border-bottom-color:var(--oil)}
@@ -1196,13 +1219,24 @@ const DOGS_STORY = {
   title: "Dogs",
   kicker: "Inhabitants",
   intro: "According to Mayhew Georgia, there are more than 30,000 urban dogs in Tbilisi. We call them urban rather than stray because most of them were born on the streets. A stray is usually a lost or abandoned pet, already used to living with people, whereas a street or urban dog is born and raised in public space. Many of these puppies are looked after by dog lovers in the neighbourhood, which sometimes leads to disputes with other residents.",
-  opening: {
-    title: "",
-    lede: "",
-    media: [
-      {type:"photo", src:"media/dogs/12.jpg", thumb:"media/dogs/thumb/12.jpg", w:1600, h:900,
-       alt:"A brown dog stands on grey asphalt, looking to the left, in front of a pale wall with large black graffiti letters and a purple payment terminal.", caption:null, credit:null}
-    ]
+  /* Opening deep-zoom photograph (Dogs/10.jpeg, 4032x3024), served as a tile pyramid:
+     <tiles>/<level>/<col>_<row>.jpg, level 0 = native pixels, each level halves; preview = 1200 px.
+     focus: x/y = normalised point between the eyes; zoom = image width / visible width,
+     i.e. the magnification at which the eyes span about a third of the frame. The viewer caps
+     every zoom at maxDevicePx device pixels per image pixel, so on screens the focus zoom is
+     usually limited by the photograph's resolution rather than reached. */
+  hero: {
+    src:"media/dogs/10.jpg", preview:"media/dogs/hero/preview.jpg", tiles:"media/dogs/hero",
+    width:4032, height:3024, tileSize:512, levels:2, maxDevicePx:1.5,
+    focus:[
+      {x:.6252, y:.6875, zoom:11.4},   /* puppy on the right, white with black-and-tan head, facing the camera */
+      {x:.5402, y:.6878, zoom:12.6}    /* puppy on the left, tan */
+    ],
+    alt:"Two puppies sit together at the foot of a large tree in a dim yard of bare earth scattered with litter and ivy; one is tan, the other white with a black-and-tan head and its mouth open. A third pale dog walks, blurred, at the left edge. Behind them stand a wooden table with plastic bottles and a small wooden shelter under trees.",
+    hint:"Drag and zoom to look closer",
+    next:"Next dog",
+    cont:"Continue",
+    caption:null, credit:null
   },
   street: {
     title: "On the street",
@@ -1399,6 +1433,328 @@ function stSection(key){
   return {sec, wrap, s};
 }
 
+/* deep-zoom photograph on a canvas: preview first, then tiles of the level the view needs.
+   s = CSS px per image px; (ox, oy) = image point at the viewport's top-left corner. */
+function stDeepZoom(H, head){
+  const reduced = stReduced();
+  const hero = el("div","st-hero");
+  const view = el("div","dz-view");
+  view.tabIndex = 0;
+  view.setAttribute("role","img");
+  view.setAttribute("aria-label", H.alt + " Zoomable photograph: drag or use the arrow keys to look around, plus and minus to zoom, 0 or Escape to see the whole photograph.");
+  const cv = document.createElement("canvas"); cv.setAttribute("aria-hidden","true");
+  view.appendChild(cv); hero.appendChild(view); hero.appendChild(head);
+
+  const ctrl = el("div","dz-ctrl");
+  const mk = (cls, label, html)=>{ const b = el("button",cls); b.type = "button"; b.setAttribute("aria-label",label); b.innerHTML = html; return b; };
+  const bIn = mk("dz-in","Zoom in","+"), bOut = mk("dz-out","Zoom out","−");
+  const bReset = mk("dz-reset","Show the whole photograph",
+    '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 6V2h4M12 2h4v4M16 12v4h-4M6 16H2v-4"/></svg>');
+  ctrl.appendChild(bIn); ctrl.appendChild(bOut); ctrl.appendChild(bReset);
+  hero.appendChild(ctrl);
+  let bNext = null;
+  if(H.focus.length >= 2){ bNext = el("button","dz-next",H.next); bNext.type = "button"; hero.appendChild(bNext); }
+  const hint = el("div","dz-hint",H.hint); hint.setAttribute("aria-hidden","true"); hero.appendChild(hint);
+  const strip = el("div","dz-strip"), cont = el("button","dz-continue");
+  cont.type = "button"; cont.appendChild(el("span",null,H.cont)); cont.appendChild(el("span",null,"↓"));
+  cont.querySelector("span:last-child").setAttribute("aria-hidden","true");
+  strip.appendChild(cont); hero.appendChild(strip);
+
+  const W = H.width, Hh = H.height, T = H.tileSize, maxL = H.levels - 1;
+  const ctx = cv.getContext("2d");
+  let vw = 0, vh = 0, dpr = 1, s = 0, ox = 0, oy = 0, minS = 0, maxS = 0, alive = true;
+
+  /* ---- images ---- */
+  const prev = new Image(); let prevOK = false, prevD = 0;
+  const tiles = new Map();
+  function tile(L, c, r){
+    const k = L + "/" + c + "_" + r; let t = tiles.get(k);
+    if(!t){
+      t = {img:new Image(), ok:false};
+      t.img.decoding = "async";
+      t.img.onload = ()=>{ t.ok = true; draw(); };
+      t.img.src = H.tiles + "/" + L + "/" + c + "_" + r + ".jpg";
+      tiles.set(k, t);
+    }
+    return t;
+  }
+
+  /* ---- geometry ---- */
+  const zoomed = ()=> s > minS * 1.002;
+  const clampS = x => Math.min(maxS, Math.max(minS, x));
+  function clamp(){
+    s = clampS(s);
+    ox = Math.min(W - vw/s, Math.max(0, ox));
+    oy = Math.min(Hh - vh/s, Math.max(0, oy));
+  }
+  const center = ()=>({x:ox + vw/2/s, y:oy + vh/2/s});
+  function setCenter(x, y){ ox = x - vw/2/s; oy = y - vh/2/s; }
+  function zoomAt(ns, ax, ay){ const ix = ox + ax/s, iy = oy + ay/s; s = clampS(ns); ox = ix - ax/s; oy = iy - ay/s; clamp(); }
+  function measure(){
+    const r = view.getBoundingClientRect();
+    if(!r.width || !r.height) return;
+    const c = vw ? center() : {x:W/2, y:Hh/2}, rel = minS ? s/minS : 1;
+    vw = r.width; vh = r.height; dpr = Math.min(3, window.devicePixelRatio || 1);
+    cv.width = Math.round(vw*dpr); cv.height = Math.round(vh*dpr);
+    minS = Math.max(vw/W, vh/Hh);                 /* cover: never any empty space */
+    maxS = Math.max(minS, H.maxDevicePx / dpr);   /* no more than ~1.5 device px per image px */
+    s = clampS(minS * rel); setCenter(c.x, c.y); clamp(); sync(); render();
+  }
+  function sync(){
+    view.style.touchAction = zoomed() ? "none" : "pan-y";
+    bIn.disabled = s >= maxS * .998; bOut.disabled = !zoomed();
+  }
+
+  /* ---- drawing ---- */
+  let drawQ = 0;
+  function draw(){ if(!drawQ && alive) drawQ = requestAnimationFrame(()=>{ drawQ = 0; render(); }); }
+  function render(){
+    if(!vw) return;
+    const k = s*dpr, X = ix => Math.round((ix-ox)*k), Y = iy => Math.round((iy-oy)*k);
+    ctx.fillStyle = "#1B211F"; ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+    if(prevOK) ctx.drawImage(prev, X(0), Y(0), X(W)-X(0), Y(Hh)-Y(0));
+    /* a level may be upscaled by up to ~1.6x before the next finer one is fetched */
+    const need = k * .62;
+    if(need <= prevD) return;                     /* the preview is sharp enough */
+    const L = Math.max(0, Math.min(maxL, Math.floor(-Math.log2(need))));
+    /* coarser levels already loaded are drawn first, so nothing flickers while finer tiles arrive */
+    for(let lev = maxL; lev >= L; lev--){
+      const ts = T * Math.pow(2, lev);
+      const c0 = Math.max(0, Math.floor(ox/ts)), c1 = Math.min(Math.ceil(W/ts)-1, Math.floor((ox+vw/s)/ts));
+      const r0 = Math.max(0, Math.floor(oy/ts)), r1 = Math.min(Math.ceil(Hh/ts)-1, Math.floor((oy+vh/s)/ts));
+      for(let r = r0; r <= r1; r++) for(let c = c0; c <= c1; c++){
+        const t = lev === L ? tile(lev, c, r) : tiles.get(lev + "/" + c + "_" + r);
+        if(!t || !t.ok) continue;
+        const x0 = c*ts, y0 = r*ts, x1 = Math.min(W, x0+ts), y1 = Math.min(Hh, y0+ts);
+        ctx.drawImage(t.img, X(x0), Y(y0), X(x1)-X(x0), Y(y1)-Y(y0));
+      }
+    }
+  }
+
+  /* ---- motion: one loop for glides, smoothed zoom and inertia ---- */
+  let raf = 0, mode = null;
+  function stop(){ cancelAnimationFrame(raf); raf = 0; mode = null; }
+  function loop(now){
+    raf = 0; if(!mode || !alive) return;
+    const m = mode, done = m.step(now);
+    clamp(); sync(); render();
+    if(mode !== m) return;
+    if(done){ mode = null; if(m.end) m.end(); } else raf = requestAnimationFrame(loop);
+  }
+  function run(m){ stop(); mode = m; raf = requestAnimationFrame(loop); }
+  const ease = p => p < .5 ? 4*p*p*p : 1 - Math.pow(-2*p + 2, 3)/2;
+  /* glide: scale interpolated geometrically, centre moved so the motion feels even on screen */
+  function glide(ts, tx, ty, dur, end){
+    ts = clampS(ts);
+    tx = Math.min(W - vw/2/ts, Math.max(vw/2/ts, tx)); ty = Math.min(Hh - vh/2/ts, Math.max(vh/2/ts, ty));
+    if(reduced || dur <= 0){ stop(); s = ts; setCenter(tx, ty); clamp(); sync(); render(); if(end) end(); return; }
+    const c0 = center(), s0 = s, a = 1/s0, b = 1/ts, t0 = performance.now();
+    run({kind:"glide", end, step(now){
+      const p = Math.min(1, (now - t0)/dur), e = ease(p);
+      s = s0 * Math.pow(ts/s0, e);
+      const u = Math.abs(a - b) < 1e-9 ? e : (a - 1/s)/(a - b);
+      setCenter(c0.x + (tx - c0.x)*u, c0.y + (ty - c0.y)*u);
+      return p >= 1;
+    }});
+  }
+  let zTarget = null;
+  function zoomTo(target, ax, ay){
+    target = clampS(target);
+    if(reduced){ stop(); zoomAt(target, ax, ay); sync(); render(); return; }
+    zTarget = {s:target, ax, ay};
+    if(!mode || mode.kind !== "zoom") run({kind:"zoom", last:performance.now(), step(now){
+      const dt = Math.min(64, now - this.last); this.last = now;
+      const z = zTarget, f = 1 - Math.exp(-dt/80);
+      if(Math.abs(Math.log(z.s/s)) < .003){ zoomAt(z.s, z.ax, z.ay); return true; }
+      zoomAt(s * Math.pow(z.s/s, f), z.ax, z.ay);
+      return false;
+    }});
+  }
+  const zoomBase = ()=> mode && mode.kind === "zoom" ? zTarget.s : s;
+  function inertia(vx, vy){
+    if(reduced) return;
+    run({kind:"inertia", last:performance.now(), step(now){
+      const dt = Math.min(64, now - this.last); this.last = now;
+      const ax = ox, ay = oy;
+      ox -= vx*dt/s; oy -= vy*dt/s; clamp();
+      if(ox === ax) vx = 0; if(oy === ay) vy = 0;      /* stop dead at an edge, no overshoot */
+      const f = Math.pow(.93, dt/16); vx *= f; vy *= f;
+      return Math.hypot(vx, vy) < .02;
+    }});
+  }
+  const focusScale = f => f.zoom * vw / W;
+  const reset = ()=> glide(minS, W/2, Hh/2, 700);
+
+  /* ---- intro: whole photograph, then glide to the eyes ---- */
+  let introTimer = 0, introOn = false, hintTimer = 0, touched = false;
+  function showHint(){
+    if(touched) return;
+    hint.classList.add("show");
+    hintTimer = setTimeout(()=>hint.classList.remove("show"), 4500);
+  }
+  function startIntro(){
+    if(reduced){ showHint(); return; }
+    introOn = true;
+    introTimer = setTimeout(()=>{
+      const f = H.focus[0];
+      glide(focusScale(f), f.x*W, f.y*Hh, 3500, ()=>{ introOn = false; showHint(); });
+    }, 600);
+  }
+  /* any input hands control to the visitor at once, from wherever the view is */
+  function userInput(){
+    touched = true; clearTimeout(hintTimer); hint.classList.remove("show");
+    if(introOn){ introOn = false; clearTimeout(introTimer); if(mode && mode.kind === "glide") stop(); }
+  }
+  const onDocKey = ()=>{ if(introOn) userInput(); };
+  document.addEventListener("keydown", onDocKey, true);
+
+  /* ---- wheel: zooms only when zoomed in (or pinch / ctrl); otherwise the page scrolls ---- */
+  let wheelOwned = false, wheelT = 0;
+  view.addEventListener("wheel", e=>{
+    const now = performance.now(), fresh = now - wheelT > 250;
+    wheelT = now;
+    if(fresh){
+      /* a whole wheel gesture belongs either to the photograph or to the page, never both */
+      wheelOwned = e.ctrlKey || zoomed() || zoomBase() > minS*1.002 || (e.deltaY < 0 && window.scrollY < 2);
+    }
+    if(!wheelOwned) return;
+    e.preventDefault(); userInput();
+    const r = view.getBoundingClientRect();
+    const dy = e.deltaMode === 1 ? e.deltaY*16 : e.deltaMode === 2 ? e.deltaY*vh : e.deltaY;
+    zoomTo(zoomBase() * Math.exp(-dy * (e.ctrlKey ? .01 : .0025)), e.clientX - r.left, e.clientY - r.top);
+  }, {passive:false});
+  /* Safari trackpad pinch */
+  let gs0 = 0;
+  const pts = new Map();
+  view.addEventListener("gesturestart", e=>{ e.preventDefault(); gs0 = s; }, {passive:false});
+  view.addEventListener("gesturechange", e=>{
+    e.preventDefault();
+    if(pts.size) return;                          /* touch pinches are handled by pointer events */
+    userInput(); const r = view.getBoundingClientRect();
+    stop(); zoomAt(gs0 * e.scale, e.clientX - r.left, e.clientY - r.top); sync(); render();
+  }, {passive:false});
+
+  /* ---- pointers: drag to pan, two fingers to pinch, double-tap to zoom ---- */
+  let drag = null, pinch = null, track = [], down = null, lastTap = null;
+  const two = ()=>{ const [a, b] = [...pts.values()]; return {d:Math.hypot(a.x-b.x, a.y-b.y) || 1, x:(a.x+b.x)/2, y:(a.y+b.y)/2}; };
+  view.addEventListener("pointerdown", e=>{
+    if(e.pointerType === "mouse" && e.button !== 0) return;
+    userInput(); stop();
+    try{ view.setPointerCapture(e.pointerId); }catch(err){}
+    pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
+    if(pts.size === 1){
+      drag = {x:e.clientX, y:e.clientY}; track = [{t:e.timeStamp, x:e.clientX, y:e.clientY}];
+      down = {t:e.timeStamp, x:e.clientX, y:e.clientY, moved:false, type:e.pointerType};
+      view.classList.add("grabbing");
+    } else if(pts.size === 2){ const g = two(); pinch = {d:g.d, s:s, x:g.x, y:g.y}; drag = null; if(down) down.moved = true; }
+  });
+  view.addEventListener("pointermove", e=>{
+    if(!pts.has(e.pointerId)) return;
+    pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
+    const r = view.getBoundingClientRect();
+    if(pinch && pts.size >= 2){
+      const g = two(), ix = ox + (pinch.x - r.left)/s, iy = oy + (pinch.y - r.top)/s;
+      s = clampS(pinch.s * g.d / pinch.d);
+      ox = ix - (g.x - r.left)/s; oy = iy - (g.y - r.top)/s; pinch.x = g.x; pinch.y = g.y;
+      clamp(); sync(); draw();
+    } else if(drag){
+      ox -= (e.clientX - drag.x)/s; oy -= (e.clientY - drag.y)/s;
+      drag = {x:e.clientX, y:e.clientY}; clamp(); draw();
+      track.push({t:e.timeStamp, x:e.clientX, y:e.clientY});
+      while(track.length > 2 && e.timeStamp - track[0].t > 100) track.shift();
+      if(down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8) down.moved = true;
+    }
+  });
+  function lift(e){
+    if(!pts.has(e.pointerId)) return;
+    pts.delete(e.pointerId);
+    if(pts.size < 2) pinch = null;
+    if(pts.size === 1){ const p = [...pts.values()][0]; drag = {x:p.x, y:p.y}; track = [{t:e.timeStamp, x:p.x, y:p.y}]; return; }
+    if(pts.size) return;
+    view.classList.remove("grabbing");
+    const wasDrag = drag; drag = null;
+    if(e.type !== "pointerup") return;
+    if(wasDrag && track.length > 1){
+      const a = track[0], b = track[track.length-1], dt = b.t - a.t;
+      if(dt > 0 && e.timeStamp - b.t < 60) inertia((b.x - a.x)/dt, (b.y - a.y)/dt);
+    }
+    if(down && down.type !== "mouse" && !down.moved && e.timeStamp - down.t < 300){
+      const r = view.getBoundingClientRect();
+      if(lastTap && e.timeStamp - lastTap.t < 320 && Math.hypot(e.clientX - lastTap.x, e.clientY - lastTap.y) < 30){
+        lastTap = null; zoomTo(zoomBase()*2, e.clientX - r.left, e.clientY - r.top);
+      } else lastTap = {t:e.timeStamp, x:e.clientX, y:e.clientY};
+    }
+  }
+  view.addEventListener("pointerup", lift);
+  view.addEventListener("pointercancel", lift);
+  view.addEventListener("dblclick", e=>{
+    userInput(); const r = view.getBoundingClientRect();
+    zoomTo(zoomBase()*2, e.clientX - r.left, e.clientY - r.top);
+  });
+
+  /* ---- keyboard on the photograph ---- */
+  function pan(dx, dy){ const a = ox, b = oy; ox += dx/s; oy += dy/s; clamp(); draw(); return ox !== a || oy !== b; }
+  view.addEventListener("keydown", e=>{
+    let used = true;
+    if(e.altKey || e.ctrlKey || e.metaKey) return;
+    switch(e.key){
+      case "ArrowLeft": used = pan(-vw*.12, 0); break;
+      case "ArrowRight": used = pan(vw*.12, 0); break;
+      case "ArrowUp": used = pan(0, -vh*.12); break;
+      case "ArrowDown": used = pan(0, vh*.12); break;
+      case "+": case "=": zoomTo(zoomBase()*1.5, vw/2, vh/2); break;
+      case "-": case "_": used = zoomed(); zoomTo(zoomBase()/1.5, vw/2, vh/2); break;
+      case "0": reset(); break;
+      case "Escape": used = zoomed(); if(used) reset(); break;
+      default: used = false;
+    }
+    if(used){ e.preventDefault(); e.stopPropagation(); userInput(); }
+  });
+
+  /* ---- buttons ---- */
+  bIn.onclick = ()=>{ userInput(); zoomTo(zoomBase()*1.6, vw/2, vh/2); };
+  bOut.onclick = ()=>{ userInput(); zoomTo(zoomBase()/1.6, vw/2, vh/2); };
+  bReset.onclick = ()=>{ userInput(); reset(); };
+  let fi = 0;
+  if(bNext) bNext.onclick = ()=>{
+    userInput(); fi = (fi + 1) % H.focus.length;
+    const f = H.focus[fi]; glide(focusScale(f), f.x*W, f.y*Hh, 1600);
+  };
+  cont.onclick = ()=>{
+    const next = hero.nextElementSibling; if(!next) return;
+    const bar = $(".bar"), top = next.getBoundingClientRect().top + window.scrollY - (bar ? bar.offsetHeight : 0) - 16;
+    window.scrollTo({top, behavior: reduced ? "auto" : "smooth"});
+  };
+
+  /* ---- sizing and loading ---- */
+  const setBar = ()=>{ const bar = $(".bar"); hero.style.setProperty("--st-bar", (bar ? bar.offsetHeight : 0) + "px"); };
+  const onResize = ()=>{ setBar(); measure(); };
+  window.addEventListener("resize", onResize);
+  let ro = null;
+  if("ResizeObserver" in window){ ro = new ResizeObserver(()=>measure()); ro.observe(view); }
+  let started = false;
+  const begin = ()=>{ if(started || !alive) return; started = true; setBar(); measure(); startIntro(); };
+  prev.decoding = "async";
+  prev.onload = ()=>{ prevOK = true; prevD = prev.naturalWidth / W; begin(); render(); };
+  prev.onerror = ()=>{
+    if(!alive) return;
+    view.remove(); ctrl.remove(); hint.remove(); if(bNext) bNext.remove();
+    hero.insertBefore(stPending("photo", H.alt), hero.firstChild);
+  };
+  prev.src = H.preview;
+  requestAnimationFrame(()=>{ setBar(); measure(); });
+
+  dogsStory.cleanup.push(()=>{
+    alive = false; stop(); cancelAnimationFrame(drawQ); clearTimeout(introTimer); clearTimeout(hintTimer);
+    document.removeEventListener("keydown", onDocKey, true);
+    window.removeEventListener("resize", onResize);
+    if(ro) ro.disconnect();
+    tiles.clear();
+  });
+  return hero;
+}
+
 function openDogsStory(){
   leaveDogsStory();
   dogsStory.active = true;
@@ -1408,17 +1764,13 @@ function openDogsStory(){
   const D = DOGS_STORY;
   const photo = m => m.type === "photo" && m.src;
 
-  /* 1 — opening */
-  const heroM = D.opening.media.find(photo);
-  const hero = el("div","st-hero");
-  if(heroM) hero.appendChild(stImg(heroM, "100vw", true));
-  const ht = el("div","st-hero-text"), hw = el("div","st-wrap");
+  /* 1 — opening: deep-zoom photograph */
+  const ht = el("div","dz-head"), hw = el("div","st-wrap");
   hw.appendChild(el("div","eyebrow", D.kicker));
   hw.appendChild(el("h2",null,D.title));
-  const back = el("a","st-back","← Back to the building"); back.href = "#/";
-  hw.appendChild(back);
-  ht.appendChild(hw); hero.appendChild(ht);
-  v.appendChild(hero);
+  const back = el("a","st-back","\u2190 Back to the building"); back.href = "#/";
+  hw.appendChild(back); ht.appendChild(hw);
+  v.appendChild(stDeepZoom(D.hero, ht));
   if(D.intro){ const iw = el("div","st-wrap"); iw.appendChild(el("p","st-intro",D.intro)); v.appendChild(iw); }
 
   let street = null, video = null;
