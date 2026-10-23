@@ -459,6 +459,7 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
   .st-gallery .w5{grid-column:span 5}
   .st-gallery .lo{align-self:end}
   .st-gallery .hi{align-self:start;margin-top:2.5rem}
+  .st-gallery .w7r{grid-column:6 / span 7}
 }
 .st-listen{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;margin:0 0 .4rem}
 .st-sound{display:inline-flex;align-items:center;gap:.6rem;min-height:44px;padding:.55rem 1.1rem;
@@ -1329,7 +1330,14 @@ const DOGS_STORY = {
     id: "homes",
     title: "Homes",
     lede: "People make homes",
-    media: []
+    media: [
+      {type:"photo", src:"media/dogs/8.jpg", thumb:"media/dogs/thumb/8.jpg", w:1600, h:1200,
+       alt:"A wooden box on a pallet, covered with dark sheeting, stands on the paving outside a shop with a red sign reading \u201c\u10e1\u10de\u10d0\u10e0\u10d8\u201d and the SPAR logo, next to an air-conditioning unit, a blue payment terminal and stacked plastic crates.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/9.jpg", thumb:"media/dogs/thumb/9.jpg", w:1600, h:1200,
+       alt:"Two small wooden dog houses, one with a cushion on its roof, stand on the pavement in front of a pharmacy window under a sign reading \u201cIBERIPHARMA\u201d and \u201cA PHARMACY YOU TRUST\u201d. An electric scooter is parked beside them, in front of advertising posters showing children.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/3.jpg", thumb:"media/dogs/thumb/3.jpg", w:1600, h:1200,
+       alt:"A grey apartment block with enclosed balconies and metal garage doors. A small dog house with a red roof stands under the balconies; a white dog with dark ears stands in the open asphalt yard. Bare trees and parked cars behind.", caption:null, credit:null}
+    ]
   },
   stairwell: {
     title: "In the stairwell",
@@ -2039,9 +2047,28 @@ function openDogsStory(){
     v.appendChild(stCarousel({...D.streetCarousel, media:D.streetCarousel.media.filter(photo)}));
   }
 
-  /* 3a — homes (text only for now) */
+  /* 3a — homes: text, then a gallery with the same viewer as the other photos */
   const hm = stSection("homes");
-  if(hm.s.title || hm.s.lede){ if(hm.s.id) hm.sec.id = hm.s.id; v.appendChild(hm.sec); }
+  const hmPhotos = hm.s.media.filter(photo);
+  if(hm.s.title || hm.s.lede || hmPhotos.length){
+    if(hm.s.id) hm.sec.id = hm.s.id;
+    if(hmPhotos.length){
+      const lb3 = stLightbox(hmPhotos);
+      const grid = el("div","st-gallery");
+      const slots = ["w7 lo","w5 lo","w7r hi"];
+      hmPhotos.forEach((m,n)=>{
+        const fig = el("figure","st-fig " + slots[n % slots.length]);
+        const b = el("button","st-open"); b.setAttribute("aria-label","Open full screen: " + m.alt);
+        b.appendChild(stImg(m, "(min-width:769px) 40vw, 100vw"));
+        b.onclick = ()=>{ if(b.querySelector("img")) lb3.open(n, b); };
+        fig.appendChild(b);
+        const c = stCaption(m); if(c) fig.appendChild(c);
+        grid.appendChild(fig);
+      });
+      hm.wrap.appendChild(grid);
+    }
+    v.appendChild(hm.sec);
+  }
 
   /* 3 — in the stairwell */
   const sw = stSection("stairwell");
