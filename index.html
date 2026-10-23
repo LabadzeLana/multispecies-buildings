@@ -425,7 +425,9 @@ html.st-locked body{position:fixed;inset:0;width:100%;touch-action:none}
 html.st-locked .bar{display:none}
 html.st-locked #view > :not(.st-hero){visibility:hidden}
 html.st-locked .st-hero{height:100vh;height:100dvh}
-html.st-locked .dz-head,html.st-locked .dz-next{display:none}
+html.st-locked .dz-next,html.st-locked .dz-head .eyebrow,html.st-locked .dz-head h2{display:none}
+/* zoom buttons are not shown; wheel, pinch, double-click/tap and the + - 0 keys still zoom */
+.dz-ctrl{display:none}
 html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
 .bar.st-bar-in{animation:stBarIn .5s ease both}
 @keyframes stBarIn{from{opacity:0}to{opacity:1}}
