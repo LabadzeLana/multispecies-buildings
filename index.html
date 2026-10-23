@@ -1325,6 +1325,12 @@ const DOGS_STORY = {
        alt:"View from inside a building entrance, down concrete steps and through an open metal door, to a black-and-white dog standing on the asphalt outside and looking in. On the rough wall to the left, black spray paint reads \u201cB+G\u201d with a heart drawn around the G. Cars are parked beyond.", caption:null, credit:null}
     ]
   },
+  homes: {
+    id: "homes",
+    title: "Homes",
+    lede: "People make homes",
+    media: []
+  },
   stairwell: {
     title: "In the stairwell",
     lede: "People make homes for these dogs in all sorts of creative ways. In winter, the in-between spaces of apartment blocks, between one floor and the next, are sometimes turned into temporary shelters. In summer, the dogs settle in shared courtyards and gardens. Some dogs spend years living in and around the same building blocks.",
@@ -2032,6 +2038,10 @@ function openDogsStory(){
   if(D.streetCarousel && D.streetCarousel.media.some(photo)){
     v.appendChild(stCarousel({...D.streetCarousel, media:D.streetCarousel.media.filter(photo)}));
   }
+
+  /* 3a — homes (text only for now) */
+  const hm = stSection("homes");
+  if(hm.s.title || hm.s.lede){ if(hm.s.id) hm.sec.id = hm.s.id; v.appendChild(hm.sec); }
 
   /* 3 — in the stairwell */
   const sw = stSection("stairwell");
