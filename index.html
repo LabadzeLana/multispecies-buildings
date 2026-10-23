@@ -490,6 +490,33 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
 .story-link{margin-top:2rem}
 .story-link a{display:inline-flex;align-items:center;min-height:44px;font-family:var(--sans);font-size:.92rem;color:var(--oil);text-decoration:none;border-bottom:1px solid var(--oil)}
 
+/* full-screen carousel */
+.st-carousel{position:relative;width:100%;height:100vh;height:100dvh;margin-top:4.5rem;background:#1B211F;overflow:hidden}
+.car-track{display:flex;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
+  overscroll-behavior-x:contain;touch-action:pan-x pan-y pinch-zoom;scrollbar-width:none;cursor:grab;outline-offset:-4px}
+.car-track::-webkit-scrollbar{display:none}
+.car-track.dragging{scroll-snap-type:none;cursor:grabbing}
+.car-slide{flex:0 0 100%;height:100%;position:relative;overflow:hidden;scroll-snap-align:start;scroll-snap-stop:always}
+.car-slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;user-select:none;-webkit-user-drag:none}
+.car-slide.fit img{object-fit:contain}
+.car-bg{position:absolute;inset:-48px;background-size:cover;background-position:center;filter:blur(28px) brightness(.5);display:none}
+.car-slide.fit .car-bg{display:block}
+.car-slide .slot{position:absolute;inset:0;margin:0}
+.car-slide .slot .frame.pending{height:100%}
+.car-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:52px;height:52px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;background:rgba(14,18,16,.66);color:#F6F7F3;
+  border:1px solid rgba(246,247,243,.6);font-family:var(--sans);font-size:1.7rem;line-height:1;transition:opacity .2s}
+.car-btn:hover{background:rgba(14,18,16,.85)}
+.car-btn:focus-visible{outline-color:#F6F7F3}
+.car-btn:disabled{opacity:0;pointer-events:none}
+.car-prev{left:.75rem}.car-next{right:.75rem}
+.car-foot{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:3rem 1rem 1.1rem;text-align:center;pointer-events:none;
+  color:#F6F7F3;font-family:var(--sans);background:linear-gradient(0deg,rgba(14,18,16,.62) 0%,rgba(14,18,16,0) 100%)}
+.car-count{font-size:.85rem;letter-spacing:.06em}
+.car-cap{font-size:.85rem;max-width:60ch;margin:.35rem auto 0}
+.car-cap[hidden]{display:none}
+@media (prefers-reduced-motion: reduce){ .car-btn{transition:none} }
+
 /* full-screen viewer */
 .st-lb{position:fixed;inset:0;z-index:80;background:rgba(14,18,16,.94);display:flex;flex-direction:column;
   align-items:center;justify-content:center;touch-action:pan-y pinch-zoom}
@@ -1264,24 +1291,37 @@ const DOGS_STORY = {
     lede: "",
     listen: "Listen to the street",
     media: [
-      {type:"photo", src:"media/dogs/7.jpg", thumb:"media/dogs/thumb/7.jpg", w:1600, h:1200,
-       alt:"A black dog with white patches sleeps on the pavement in front of a pale green picket fence, under a flowering pink oleander.", caption:null, credit:null},
       {type:"photo", src:"media/dogs/9.jpg", thumb:"media/dogs/thumb/9.jpg", w:1600, h:1200,
        alt:"Two small wooden dog houses, one with a cushion on its roof, stand on the pavement in front of a pharmacy window. An electric scooter is parked beside them, in front of advertising posters.", caption:null, credit:null},
       {type:"photo", src:"media/dogs/3.jpg", thumb:"media/dogs/thumb/3.jpg", w:1600, h:1200,
        alt:"A grey apartment block with enclosed balconies and metal garage doors. A small dog house with a red roof stands under the balconies; a white dog with dark ears stands in the open asphalt yard. Bare trees and parked cars behind.", caption:null, credit:null},
       {type:"photo", src:"media/dogs/8.jpg", thumb:"media/dogs/thumb/8.jpg", w:1600, h:1200,
        alt:"A wooden box on a pallet, covered with dark sheeting, stands on the paving outside a supermarket, next to an air-conditioning unit and a payment terminal.", caption:null, credit:null},
-      {type:"photo", src:"media/dogs/1.jpg", thumb:"media/dogs/thumb/1.jpg", w:1600, h:1200,
-       alt:"A black dog lies on gravel in front of a worn apartment block with graffiti on its walls, barred ground-floor windows and laundry hanging from the balconies.", caption:null, credit:null},
-      {type:"photo", src:"media/dogs/2.jpg", thumb:"media/dogs/thumb/2.jpg", w:1600, h:1200,
-       alt:"A dog with a dark brown and tan coat lies curled on bare earth between trees and wooden benches beside a shaded path.", caption:null, credit:null},
       {type:"photo", src:"media/dogs/10.jpg", thumb:"media/dogs/thumb/10.jpg", w:1600, h:1200,
        alt:"Two puppies, one tan and one black, white and brown, sit together at the foot of a large tree in a dim yard scattered with litter. A third pale dog walks at the left edge.", caption:null, credit:null},
       {type:"photo", src:"media/dogs/11.jpg", thumb:"media/dogs/thumb/11.jpg", w:1600, h:1200,
        alt:"The same dim yard: three puppies move about on the bare earth; a black, white and brown puppy in the foreground looks up towards the camera.", caption:null, credit:null},
       {type:"audio", src:"media/dogs/street.m4a",
        alt:"Street ambience recorded outdoors, with dogs barking.", caption:null, credit:null}
+    ]
+  },
+  /* full-screen carousel. keep = normalised box [x0,y0,x1,y1] that must stay visible (dogs and any
+     writing); a slide fills the screen with object-fit: cover only when that box fits, otherwise the
+     whole photograph is shown over a blurred, darkened copy of itself. */
+  streetCarousel: {
+    id: "street-carousel",
+    layout: "carousel",
+    title: "",
+    lede: "",
+    media: [
+      {type:"photo", src:"media/dogs/carousel/1.jpg", small:"media/dogs/carousel/1-1200.jpg", w:2400, h:1800, keep:[.16,.32,.61,.80],
+       alt:"A worn apartment block with an open entrance at the top of a few concrete steps, a blue pipe down the wall, barred ground-floor windows, air conditioners and laundry hanging from the balconies. A black dog lies on the gravel in front. Beside the entrance, black spray paint reads \u201cThug Life\u201d, with handwriting above it: \u201cThe sun's shining through the window and it's making me think of you\u201d. Further right, over other overlapping letters that are hard to read, black spray paint reads \u201cKATO\u201d inside a circle and \u201cTHUG LiFE\u201d. A faded plate by the entrance reads \u201c\u10d9\u10dd\u10e0\u10de\u10e3\u10e1\u10d8\u201d, \u201c\u041a\u041e\u0420\u041f\u0423\u0421\u201d, the large number \u201c23\u201d, \u201c\u10d9\u10d5\u10d0\u10e0\u10e2\u10d0\u10da\u10d8\u201d, \u201c\u041a\u0412\u0410\u0420\u0422\u0410\u041b\u201d and \u201c3\u201d, with two further lines at the top too faded to read reliably.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/carousel/12.jpg", small:"media/dogs/carousel/12-1200.jpg", w:2400, h:1350, keep:[.06,0,.86,.98],
+       alt:"A brown dog stands on grey asphalt, seen from behind and looking to the left, in front of a pale wall. Large black letters in Georgian script are spray-painted across the wall, with fainter Georgian words written in white chalk to their left. A purple payment terminal stands at the right edge.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/carousel/2.jpg", small:"media/dogs/carousel/2-1200.jpg", w:2400, h:1800, keep:[.40,.62,.55,.80],
+       alt:"A dog with a dark brown and tan coat lies curled on bare earth beside a paved path under trees, with wooden benches behind it and a green building in the background.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/carousel/7.jpg", small:"media/dogs/carousel/7-1200.jpg", w:2400, h:1800, keep:[.36,.66,.62,.84],
+       alt:"A black dog with white patches sleeps on the pavement in front of a pale green picket fence, under a flowering pink oleander; behind the fence are the barred windows of a building.", caption:null, credit:null}
     ]
   },
   notAllowed: {
@@ -1449,6 +1489,120 @@ function stLightbox(items){
   }, {passive:true});
   dogsStory.cleanup.push(()=>{ close(); document.removeEventListener("keydown", onKey); lb.remove(); });
   return {open};
+}
+
+/* full-screen carousel: native horizontal scroll-snap for touch and trackpads, plus mouse drag,
+   arrow buttons and arrow keys. Vertical wheel and swipes are left to the page. */
+function stCarousel(S){
+  const reduced = stReduced(), n = S.media.length;
+  const sec = el("section","st-carousel"); if(S.id) sec.id = S.id;
+  sec.setAttribute("aria-roledescription","carousel"); sec.setAttribute("aria-label","Photographs");
+  const track = el("div","car-track"); track.tabIndex = 0;
+  track.setAttribute("aria-label","Photographs. Use the left and right arrow keys to move between them.");
+  const slides = S.media.map((m,i)=>{
+    const sl = el("div","car-slide");
+    sl.setAttribute("role","group"); sl.setAttribute("aria-roledescription","slide"); sl.setAttribute("aria-label",(i+1) + " of " + n);
+    const bg = el("div","car-bg"); bg.setAttribute("aria-hidden","true");
+    const img = document.createElement("img");
+    img.alt = m.alt || ""; img.width = m.w; img.height = m.h; img.decoding = "async"; img.draggable = false;
+    sl.appendChild(bg); sl.appendChild(img); track.appendChild(sl);
+    return {m, sl, bg, img, loaded:false};
+  });
+  const prev = el("button","car-btn car-prev","\u2039"), next = el("button","car-btn car-next","\u203a");
+  prev.type = next.type = "button";
+  prev.setAttribute("aria-label","Previous photo"); next.setAttribute("aria-label","Next photo");
+  const foot = el("div","car-foot"), count = el("div","car-count"), cap = el("div","car-cap");
+  count.setAttribute("aria-live","polite");
+  foot.appendChild(count); foot.appendChild(cap);
+  sec.appendChild(track); sec.appendChild(prev); sec.appendChild(next); sec.appendChild(foot);
+
+  /* cover when the dogs/writing box fits the screen, else the whole photo over its blurred copy */
+  function fit(x){
+    const W = track.clientWidth, H = track.clientHeight; if(!W || !H) return;
+    const m = x.m, k = m.keep || [0,0,1,1];
+    const sc = Math.max(W/m.w, H/m.h), fx = W/(m.w*sc), fy = H/(m.h*sc);
+    const cover = k[2]-k[0] <= fx + 1e-6 && k[3]-k[1] <= fy + 1e-6;
+    const pos = (a0, a1, f)=>{
+      if(f >= .999) return 50;
+      const lo = Math.max(0, a1 - f), hi = Math.min(a0, 1 - f);
+      return Math.min(hi, Math.max(lo, (a0 + a1)/2 - f/2)) / (1 - f) * 100;
+    };
+    x.sl.classList.toggle("fit", !cover);
+    x.img.style.objectPosition = cover ? pos(k[0],k[2],fx).toFixed(1) + "% " + pos(k[1],k[3],fy).toFixed(1) + "%" : "50% 50%";
+    if(!cover && x.loaded && !x.bg.style.backgroundImage) x.bg.style.backgroundImage = 'url("' + (m.small || m.src) + '")';
+    /* tell the browser how wide the photo really renders, so a phone showing it whole gets the 1200 px file */
+    x.img.sizes = Math.ceil(cover ? m.w*sc : Math.min(W, H*m.w/m.h)) + "px";
+  }
+  function load(i){
+    const x = slides[i]; if(!x || x.loaded) return;
+    x.loaded = true;
+    x.img.addEventListener("error", ()=>{
+      if(!x.img.isConnected) return;
+      x.sl.classList.remove("fit"); x.bg.remove(); x.img.replaceWith(stPending("photo", x.m.alt));
+    }, {once:true});
+    if(x.m.small) x.img.srcset = x.m.small + " 1200w, " + x.m.src + " " + Math.max(x.m.w, x.m.h) + "w";
+    fit(x);
+    x.img.src = x.m.src;
+  }
+
+  let cur = -1, near = false, seen = false;
+  function update(){
+    const W = track.clientWidth || 1;
+    const i = Math.max(0, Math.min(n-1, Math.round(track.scrollLeft / W)));
+    if(i === cur) return;
+    cur = i;
+    const m = S.media[i];
+    count.textContent = (i+1) + " / " + n;
+    cap.textContent = [m.caption, m.credit].filter(Boolean).join(" \u00b7 "); cap.hidden = !cap.textContent;
+    prev.disabled = i === 0; next.disabled = i === n-1;
+    if(near){ load(i); if(seen) load(i+1); }
+  }
+  function go(i){
+    i = Math.max(0, Math.min(n-1, i));
+    load(i);
+    track.scrollTo({left:i * track.clientWidth, behavior: reduced ? "auto" : "smooth"});
+  }
+  track.addEventListener("scroll", update, {passive:true});
+  prev.onclick = ()=>go(cur - 1);
+  next.onclick = ()=>go(cur + 1);
+  track.addEventListener("keydown", e=>{
+    const k = {ArrowLeft:cur-1, ArrowRight:cur+1, Home:0, End:n-1}[e.key];
+    if(k === undefined || e.altKey || e.ctrlKey || e.metaKey) return;
+    e.preventDefault(); go(k);
+  });
+  /* mouse drag (touch and trackpads use the native snap scroll) */
+  let drag = null;
+  track.addEventListener("pointerdown", e=>{
+    if(e.pointerType !== "mouse" || e.button !== 0) return;
+    drag = {x:e.clientX, left:track.scrollLeft, from:cur};
+    try{ track.setPointerCapture(e.pointerId); }catch(err){}
+    track.classList.add("dragging");
+  });
+  track.addEventListener("pointermove", e=>{ if(drag) track.scrollLeft = drag.left - (e.clientX - drag.x); });
+  const endDrag = e=>{
+    if(!drag) return;
+    const dx = e.clientX - drag.x, from = drag.from; drag = null;
+    track.classList.remove("dragging");
+    go(dx < -40 ? from + 1 : dx > 40 ? from - 1 : from);
+  };
+  track.addEventListener("pointerup", endDrag);
+  track.addEventListener("pointercancel", endDrag);
+
+  const onResize = ()=>{ slides.forEach(x=>{ if(x.loaded) fit(x); }); if(cur >= 0) track.scrollLeft = cur * track.clientWidth; };
+  window.addEventListener("resize", onResize);
+  /* the first slide loads when the section comes near; the next one once the carousel is really in view */
+  let io = null;
+  if("IntersectionObserver" in window){
+    io = new IntersectionObserver(es=>es.forEach(e=>{
+      if(!e.isIntersecting) return;
+      near = true; load(cur);
+      if(e.intersectionRatio >= .4){ seen = true; load(cur + 1); }
+    }), {rootMargin:"600px 0px", threshold:[0, .4]});
+    io.observe(sec);
+  } else { near = seen = true; load(0); load(1); }
+  dogsStory.cleanup.push(()=>{ if(io) io.disconnect(); window.removeEventListener("resize", onResize); });
+  update();
+  return sec;
 }
 
 function stSection(key){
@@ -1882,6 +2036,11 @@ function openDogsStory(){
     });
     st.wrap.appendChild(grid);
     v.appendChild(st.sec);
+  }
+
+  /* 2b — full-screen carousel */
+  if(D.streetCarousel && D.streetCarousel.media.some(photo)){
+    v.appendChild(stCarousel({...D.streetCarousel, media:D.streetCarousel.media.filter(photo)}));
   }
 
   /* 3 — sometimes they are not allowed: a pair of photographs, same viewer as the street */
