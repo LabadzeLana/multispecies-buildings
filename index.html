@@ -401,7 +401,7 @@ body.story-page #view{padding:0;max-width:none}
 #view .dz-head h2{color:#F6F7F3;font-size:clamp(2.4rem,7vw,3.6rem);line-height:1.05;margin:.1rem 0 .2rem;text-shadow:0 1px 14px rgba(0,0,0,.45)}
 .dz-head .st-back{color:#F0F2EC;pointer-events:auto}
 .dz-head .st-back:hover{border-bottom-color:#F0F2EC}
-.dz-strip{position:absolute;left:0;right:0;bottom:0;height:12vh;min-height:64px;display:flex;align-items:center;justify-content:center;
+.dz-strip{position:absolute;z-index:2;left:0;right:0;bottom:0;height:12vh;min-height:64px;display:flex;align-items:center;justify-content:center;
   touch-action:pan-y;background:linear-gradient(0deg,rgba(14,18,16,.6) 0%,rgba(14,18,16,0) 100%)}
 .dz-continue{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.5rem 1.2rem;font-family:var(--sans);font-size:.9rem;
   color:#F6F7F3;border:1px solid rgba(246,247,243,.75);border-radius:999px;background:rgba(14,18,16,.35)}
@@ -418,6 +418,18 @@ body.story-page #view{padding:0;max-width:none}
   text-align:center;opacity:0;transition:opacity .6s ease;pointer-events:none}
 .dz-hint.show{opacity:1}
 @media (prefers-reduced-motion: reduce){ .dz-hint{transition:none} }
+/* locked opening of #/story/dogs: only the photograph, no page scroll, no site navigation,
+   until "Continue". Scoped to <html class="st-locked">, which only that route sets. */
+html.st-locked,html.st-locked body{overflow:hidden;overscroll-behavior:none;height:100%}
+html.st-locked body{position:fixed;inset:0;width:100%;touch-action:none}
+html.st-locked .bar{display:none}
+html.st-locked #view > :not(.st-hero){visibility:hidden}
+html.st-locked .st-hero{height:100vh;height:100dvh}
+html.st-locked .dz-head,html.st-locked .dz-next{display:none}
+html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
+.bar.st-bar-in{animation:stBarIn .5s ease both}
+@keyframes stBarIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion: reduce){ .bar.st-bar-in{animation:none} }
 .st-back{display:inline-flex;align-items:center;min-height:44px;font-family:var(--sans);font-size:.88rem;
   color:var(--oil);text-decoration:none;border-bottom:1px solid transparent}
 .st-back:hover{border-bottom-color:var(--oil)}
@@ -1236,6 +1248,7 @@ const DOGS_STORY = {
     hint:"Drag and zoom to look closer",
     next:"Next dog",
     cont:"Continue",
+    contLabel:"Continue to the story",
     caption:null, credit:null
   },
   street: {
@@ -1435,7 +1448,7 @@ function stSection(key){
 
 /* deep-zoom photograph on a canvas: preview first, then tiles of the level the view needs.
    s = CSS px per image px; (ox, oy) = image point at the viewport's top-left corner. */
-function stDeepZoom(H, head){
+function stDeepZoom(H, head, opts){
   const reduced = stReduced();
   const hero = el("div","st-hero");
   const view = el("div","dz-view");
@@ -1443,7 +1456,14 @@ function stDeepZoom(H, head){
   view.setAttribute("role","img");
   view.setAttribute("aria-label", H.alt + " Zoomable photograph: drag or use the arrow keys to look around, plus and minus to zoom, 0 or Escape to see the whole photograph.");
   const cv = document.createElement("canvas"); cv.setAttribute("aria-hidden","true");
-  view.appendChild(cv); hero.appendChild(view); hero.appendChild(head);
+  view.appendChild(cv);
+  /* Continue comes first in the DOM so it is the first stop for keyboard and screen readers */
+  const strip = el("div","dz-strip"), cont = el("button","dz-continue");
+  cont.type = "button"; cont.setAttribute("aria-label", H.contLabel);
+  cont.appendChild(el("span",null,H.cont)); cont.appendChild(el("span",null,"\u2193"));
+  cont.querySelector("span:last-child").setAttribute("aria-hidden","true");
+  strip.appendChild(cont); hero.appendChild(strip);
+  hero.appendChild(view);
 
   const ctrl = el("div","dz-ctrl");
   const mk = (cls, label, html)=>{ const b = el("button",cls); b.type = "button"; b.setAttribute("aria-label",label); b.innerHTML = html; return b; };
@@ -1455,14 +1475,12 @@ function stDeepZoom(H, head){
   let bNext = null;
   if(H.focus.length >= 2){ bNext = el("button","dz-next",H.next); bNext.type = "button"; hero.appendChild(bNext); }
   const hint = el("div","dz-hint",H.hint); hint.setAttribute("aria-hidden","true"); hero.appendChild(hint);
-  const strip = el("div","dz-strip"), cont = el("button","dz-continue");
-  cont.type = "button"; cont.appendChild(el("span",null,H.cont)); cont.appendChild(el("span",null,"↓"));
-  cont.querySelector("span:last-child").setAttribute("aria-hidden","true");
-  strip.appendChild(cont); hero.appendChild(strip);
+  hero.appendChild(head);
 
   const W = H.width, Hh = H.height, T = H.tileSize, maxL = H.levels - 1;
   const ctx = cv.getContext("2d");
   let vw = 0, vh = 0, dpr = 1, s = 0, ox = 0, oy = 0, minS = 0, maxS = 0, alive = true;
+  const locked = ()=> document.documentElement.classList.contains("st-locked");
 
   /* ---- images ---- */
   const prev = new Image(); let prevOK = false, prevD = 0;
@@ -1501,7 +1519,7 @@ function stDeepZoom(H, head){
     s = clampS(minS * rel); setCenter(c.x, c.y); clamp(); sync(); render();
   }
   function sync(){
-    view.style.touchAction = zoomed() ? "none" : "pan-y";
+    view.style.touchAction = zoomed() ? "none" : "pan-y";   /* the locked state overrides this in CSS */
     bIn.disabled = s >= maxS * .998; bOut.disabled = !zoomed();
   }
 
@@ -1609,14 +1627,16 @@ function stDeepZoom(H, head){
   const onDocKey = ()=>{ if(introOn) userInput(); };
   document.addEventListener("keydown", onDocKey, true);
 
-  /* ---- wheel: zooms only when zoomed in (or pinch / ctrl); otherwise the page scrolls ---- */
+  /* ---- wheel: always zooms while locked; once unlocked only when zoomed in (or pinch / ctrl),
+     otherwise the page scrolls. Over the bottom strip an unlocked page always scrolls. ---- */
   let wheelOwned = false, wheelT = 0;
-  view.addEventListener("wheel", e=>{
+  hero.addEventListener("wheel", e=>{
+    if(!locked() && !view.contains(e.target)) return;
     const now = performance.now(), fresh = now - wheelT > 250;
     wheelT = now;
     if(fresh){
       /* a whole wheel gesture belongs either to the photograph or to the page, never both */
-      wheelOwned = e.ctrlKey || zoomed() || zoomBase() > minS*1.002 || (e.deltaY < 0 && window.scrollY < 2);
+      wheelOwned = locked() || e.ctrlKey || zoomed() || zoomBase() > minS*1.002;
     }
     if(!wheelOwned) return;
     e.preventDefault(); userInput();
@@ -1695,14 +1715,17 @@ function stDeepZoom(H, head){
 
   /* ---- keyboard on the photograph ---- */
   function pan(dx, dy){ const a = ox, b = oy; ox += dx/s; oy += dy/s; clamp(); draw(); return ox !== a || oy !== b; }
-  view.addEventListener("keydown", e=>{
+  function photoKey(e){
     let used = true;
-    if(e.altKey || e.ctrlKey || e.metaKey) return;
+    if(e.altKey || e.ctrlKey || e.metaKey) return false;
     switch(e.key){
       case "ArrowLeft": used = pan(-vw*.12, 0); break;
       case "ArrowRight": used = pan(vw*.12, 0); break;
       case "ArrowUp": used = pan(0, -vh*.12); break;
       case "ArrowDown": used = pan(0, vh*.12); break;
+      case "PageUp": used = pan(0, -vh*.8); break;
+      case "PageDown": used = pan(0, vh*.8); break;
+      case " ": used = pan(0, (e.shiftKey ? -1 : 1) * vh*.8); break;
       case "+": case "=": zoomTo(zoomBase()*1.5, vw/2, vh/2); break;
       case "-": case "_": used = zoomed(); zoomTo(zoomBase()/1.5, vw/2, vh/2); break;
       case "0": reset(); break;
@@ -1710,7 +1733,19 @@ function stDeepZoom(H, head){
       default: used = false;
     }
     if(used){ e.preventDefault(); e.stopPropagation(); userInput(); }
-  });
+    return used;
+  }
+  view.addEventListener("keydown", photoKey);
+  /* locked: no key may scroll the page; arrows, space and page keys pan the photograph instead.
+     Space/Enter on a focused button keep their normal meaning (pressing it). */
+  const SCROLL_KEYS = ["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","PageUp","PageDown","Home","End"," "];
+  const onLockedKey = e=>{
+    if(!locked() || !SCROLL_KEYS.includes(e.key) || e.defaultPrevented) return;
+    if(e.key === " " && e.target.closest && e.target.closest("button,a")) return;
+    if(e.target !== view && !photoKey(e)) e.preventDefault();
+    else if(e.target === view) e.preventDefault();
+  };
+  document.addEventListener("keydown", onLockedKey);
 
   /* ---- buttons ---- */
   bIn.onclick = ()=>{ userInput(); zoomTo(zoomBase()*1.6, vw/2, vh/2); };
@@ -1722,6 +1757,9 @@ function stDeepZoom(H, head){
     const f = H.focus[fi]; glide(focusScale(f), f.x*W, f.y*Hh, 1600);
   };
   cont.onclick = ()=>{
+    if(opts && opts.unlock) opts.unlock();
+    setBar(); measure();
+    /* reading the layout here already includes the header that just came back */
     const next = hero.nextElementSibling; if(!next) return;
     const bar = $(".bar"), top = next.getBoundingClientRect().top + window.scrollY - (bar ? bar.offsetHeight : 0) - 16;
     window.scrollTo({top, behavior: reduced ? "auto" : "smooth"});
@@ -1739,6 +1777,7 @@ function stDeepZoom(H, head){
   prev.onload = ()=>{ prevOK = true; prevD = prev.naturalWidth / W; begin(); render(); };
   prev.onerror = ()=>{
     if(!alive) return;
+    if(opts && opts.unlock) opts.unlock();       /* never leave anyone on an empty locked screen */
     view.remove(); ctrl.remove(); hint.remove(); if(bNext) bNext.remove();
     hero.insertBefore(stPending("photo", H.alt), hero.firstChild);
   };
@@ -1748,12 +1787,30 @@ function stDeepZoom(H, head){
   dogsStory.cleanup.push(()=>{
     alive = false; stop(); cancelAnimationFrame(drawQ); clearTimeout(introTimer); clearTimeout(hintTimer);
     document.removeEventListener("keydown", onDocKey, true);
+    document.removeEventListener("keydown", onLockedKey);
     window.removeEventListener("resize", onResize);
     if(ro) ro.disconnect();
     tiles.clear();
   });
   return hero;
 }
+
+/* the opening lock: html.st-locked hides the site navigation and stops all page scrolling */
+function stBlock(e){ e.preventDefault(); }
+function stLock(on, fade){
+  const root = document.documentElement, was = root.classList.contains("st-locked");
+  root.classList.toggle("st-locked", on);
+  const opt = {passive:false};
+  ["touchmove","gesturestart","gesturechange"].forEach(t=>{
+    if(on) document.addEventListener(t, stBlock, opt); else document.removeEventListener(t, stBlock, opt);
+  });
+  document.removeEventListener("wheel", stLockWheel, opt);
+  if(on) document.addEventListener("wheel", stLockWheel, opt);
+  const bar = $(".bar");
+  if(bar){ bar.classList.remove("st-bar-in"); if(!on && was && fade){ void bar.offsetWidth; bar.classList.add("st-bar-in"); } }
+}
+/* wheel outside the photograph (nothing else is visible) must not scroll a locked page either */
+function stLockWheel(e){ if(!e.target.closest || !e.target.closest(".st-hero")) e.preventDefault(); }
 
 function openDogsStory(){
   leaveDogsStory();
@@ -1770,7 +1827,8 @@ function openDogsStory(){
   hw.appendChild(el("h2",null,D.title));
   const back = el("a","st-back","\u2190 Back to the building"); back.href = "#/";
   hw.appendChild(back); ht.appendChild(hw);
-  v.appendChild(stDeepZoom(D.hero, ht));
+  stLock(true);
+  v.appendChild(stDeepZoom(D.hero, ht, {unlock:()=>stLock(false, true)}));
   if(D.intro){ const iw = el("div","st-wrap"); iw.appendChild(el("p","st-intro",D.intro)); v.appendChild(iw); }
 
   let street = null, video = null;
@@ -1889,6 +1947,7 @@ function leaveDogsStory(){
   dogsStory.cleanup.splice(0).forEach(f=>{ try{ f(); }catch(e){} });
   dogsStory.onSound = null;
   document.body.classList.remove("story-page","st-lock");
+  stLock(false);
 }
 
 /* ---- routing ---- */
