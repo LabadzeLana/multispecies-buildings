@@ -446,7 +446,13 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
 .st-fig figcaption .cr{color:var(--muted)}
 .st-fig .slot{margin:0}
 .st-gallery{display:grid;grid-template-columns:1fr;gap:2.4rem;margin-top:1.6rem}
-.st-gallery button.st-open{display:block;width:100%;padding:0;cursor:zoom-in}
+.st-gallery button.st-open,.st-pair button.st-open{display:block;width:100%;padding:0;cursor:zoom-in}
+.st-pair{display:flex;flex-direction:column;gap:2.4rem;margin-top:1.6rem}
+@media (min-width:769px){
+  .st-pair{flex-direction:row;align-items:flex-start;gap:2rem}
+  .st-pair > .st-fig{flex-basis:0;flex-shrink:1;min-width:0}
+}
+@media (max-width:768px){ .st-pair > .st-fig{flex-grow:0 !important} }
 @media (min-width:769px){
   .st-gallery{grid-template-columns:repeat(12,1fr);gap:3.2rem 2rem}
   .st-gallery .w7{grid-column:span 7}
@@ -1282,6 +1288,17 @@ const DOGS_STORY = {
        alt:"Street ambience recorded outdoors, with dogs barking.", caption:null, credit:null}
     ]
   },
+  notAllowed: {
+    id: "not-allowed",
+    title: "Sometimes they are not allowed",
+    lede: "",
+    media: [
+      {type:"photo", src:"media/dogs/5.jpg", thumb:"media/dogs/thumb/5.jpg", w:900, h:1600,
+       alt:"A sheet of paper taped to a grey door in a dim entrance, handwritten in Georgian in black marker with some words underlined in red. It reads: \u201c\u10eb\u10d0\u10e6\u10da\u10d4\u10d1\u10d8 \u10e1\u10d0\u10d3\u10d0\u10e0\u10d1\u10d0\u10d6\u10dd\u10e8\u10d8 \u10d0\u10e0 \u10e8\u10d4\u10db\u10dd\u10e3\u10e8\u10d5\u10d0\u10d7!!! \u10d2\u10d7\u10ee\u10dd\u10d5\u10d7 \u10d9\u10d0\u10e0\u10d4\u10d1\u10d8 \u10d3\u10d0\u10ee\u10e3\u10e0\u10d4\u10d7!!!\u201d (Do not let dogs into the entrance!!! Please close the doors!!!). Daylight shows through a gap at the right edge of the door.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/13.jpg", thumb:"media/dogs/thumb/13.jpg", w:1200, h:1600,
+       alt:"View from inside a building entrance, down concrete steps and through an open metal door, to a black-and-white dog standing on the asphalt outside and looking in. On the rough wall to the left, black spray paint reads \u201cB+G\u201d with a heart drawn around the G. Cars are parked beyond.", caption:null, credit:null}
+    ]
+  },
   stairwell: {
     title: "In the stairwell",
     lede: "People make homes for these dogs in all sorts of creative ways. In winter, the in-between spaces of apartment blocks, between one floor and the next, are sometimes turned into temporary shelters. In summer, the dogs settle in shared courtyards and gardens. Some dogs spend years living in and around the same building blocks.",
@@ -1871,7 +1888,28 @@ function openDogsStory(){
     v.appendChild(st.sec);
   }
 
-  /* 3 — in the stairwell */
+  /* 3 — sometimes they are not allowed: a pair of photographs, same viewer as the street */
+  const na = stSection("notAllowed");
+  const naPhotos = na.s.media.filter(photo);
+  if(naPhotos.length){
+    if(na.s.id) na.sec.id = na.s.id;
+    const lb2 = stLightbox(naPhotos);
+    const pair = el("div","st-pair");
+    naPhotos.forEach((m,n)=>{
+      const fig = el("figure","st-fig");
+      fig.style.flexGrow = (m.w / m.h).toFixed(4);   /* widths in proportion to aspect ratio = equal heights */
+      const b = el("button","st-open"); b.setAttribute("aria-label","Open full screen: " + m.alt);
+      b.appendChild(stImg(m, "(min-width:769px) 32rem, 100vw"));
+      b.onclick = ()=>{ if(b.querySelector("img")) lb2.open(n, b); };
+      fig.appendChild(b);
+      const c = stCaption(m); if(c) fig.appendChild(c);
+      pair.appendChild(fig);
+    });
+    na.wrap.appendChild(pair);
+    v.appendChild(na.sec);
+  }
+
+  /* 4 — in the stairwell */
   const sw = stSection("stairwell");
   const vm = sw.s.media.find(m=>m.type==="video");
   const rest = sw.s.media.filter(photo);
@@ -1928,7 +1966,7 @@ function openDogsStory(){
     v.appendChild(sw.sec);
   }
 
-  /* 4 — closing */
+  /* 5 — closing */
   const cl = el("div","st-wrap st-close-line"), a = el("a",null,D.closing.text);
   a.href = D.closing.href; cl.appendChild(a); v.appendChild(cl);
 
