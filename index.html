@@ -313,6 +313,15 @@ body.view-open main,body.view-open .seasons{display:none}
 .essay p{margin:.5rem 0}
 .essay .role{font-family:var(--sans);font-size:.78rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin:1.8rem 0 0}
 .essay .role + h3{margin-top:.2rem}
+/* About: portrait beside the text (desktop), above it (mobile) */
+.essay.person.has-photo{display:grid;grid-template-columns:240px minmax(0,64ch);grid-template-rows:auto auto 1fr;column-gap:1.8rem;max-width:none}
+.essay.person.has-photo > .portrait{grid-column:1;grid-row:1 / span 3;align-self:start;margin-top:1.8rem}
+.essay.person.has-photo > :not(.portrait){grid-column:2}
+.essay .portrait{display:block;width:100%;height:auto;aspect-ratio:4 / 5;object-fit:cover;border:1px solid var(--line);background:var(--paper-2)}
+@media (max-width:768px){
+  .essay.person.has-photo{display:block}
+  .essay.person.has-photo > .portrait{width:70%;max-width:260px;margin:2.2rem 0 0}
+}
 .note{font-family:var(--sans);font-size:.85rem;color:var(--muted);border-left:2px solid var(--line);padding-left:.9rem;margin:1.6rem 0}
 
 /* ---------- mobile hero & view responsiveness ---------- */
@@ -861,9 +870,9 @@ const T = {
   about:{
     intro:"Multispecies Buildings: Ruins of Care and Repair on the Edge of Empire explores the afterlife of Soviet mass housing in Tbilisi through more-than-human entanglements, infrastructural breakdown, and everyday practices of care and repair. Grounded in multimodal ethnography, the project approaches buildings as shared habitats and living archives, continually reshaped by provisional repairs and forms of multispecies coexistence. Accompanying an experimental book, this website brings together photographs, soundscapes, videos, and short texts to offer an embodied encounter with the sensory life of these buildings.",
     people:[
-      {role:"Multimodal storyteller", name:"Tamta Khalvashi", bio:"Tamta Khalvashi is Professor of Anthropology and founding director of the PhD Program in Social and Cultural Anthropology at Ilia State University in Tbilisi. She holds a PhD from the University of Copenhagen. Her work explores the intersections of infrastructure, affect, and everyday life on the edges of empire. For Multispecies Buildings, she brings together long-term ethnographic research, writing, photography, sound, and video to explore the multispecies afterlife of Soviet mass housing in Georgia. Through experiments in multimodal storytelling, she traces how care, repair, and coexistence continually reshape these shared habitats."},
-      {role:"Visual Curator", name:"Mariam Menteshashvili", bio:"Mariam Menteshashvili is a Tbilisi-based researcher, documentary photographer, and artist, and a Fellow at the Memory and Anxiety Research Lab, Free University of Tbilisi. Her work on infrastructural anxiety approaches the city as a meshwork, not a fixed network of nodes and connections but something alive, unfinished, and always in motion. She holds an MA in Social Anthropology from Goldsmiths and trained in photography at Central Saint Martins. Her work has been exhibited at Copeland Gallery, Leica Centre, and Art Forward Gallery, London."},
-      {role:"Website Concept & Development", name:"Lana Labadze", bio:"Lana Labadze is an innovative and human-centered education and technology leader with 10+ years of experience at the intersection of education, technology, and impact. As CEO of GeoLab, she leads strategic and operational management, cross-functional teams, international partnerships, and multi-year, donor-funded initiatives. Lana actively applies AI-based approaches, including vibe coding, to develop websites, mini-applications, and workflow automations. For Multispecies Buildings, Lana works on the website’s concept and development, building it through vibe coding: describing, testing, and refining the site in dialogue with AI rather than writing code by hand."}
+      {role:"Multimodal storyteller", name:"Tamta Khalvashi", photo:{src:"media/about/tamta-khalvashi.jpg", small:"media/about/tamta-khalvashi-400.jpg", w:800, h:1000}, bio:"Tamta Khalvashi is Professor of Anthropology and founding director of the PhD Program in Social and Cultural Anthropology at Ilia State University in Tbilisi. She holds a PhD from the University of Copenhagen. Her work explores the intersections of infrastructure, affect, and everyday life on the edges of empire. For Multispecies Buildings, she brings together long-term ethnographic research, writing, photography, sound, and video to explore the multispecies afterlife of Soviet mass housing in Georgia. Through experiments in multimodal storytelling, she traces how care, repair, and coexistence continually reshape these shared habitats."},
+      {role:"Visual Curator", name:"Mariam Menteshashvili", photo:{src:"media/about/mariam-menteshashvili.jpg", small:"media/about/mariam-menteshashvili-400.jpg", w:800, h:1000}, bio:"Mariam Menteshashvili is a Tbilisi-based researcher, documentary photographer, and artist, and a Fellow at the Memory and Anxiety Research Lab, Free University of Tbilisi. Her work on infrastructural anxiety approaches the city as a meshwork, not a fixed network of nodes and connections but something alive, unfinished, and always in motion. She holds an MA in Social Anthropology from Goldsmiths and trained in photography at Central Saint Martins. Her work has been exhibited at Copeland Gallery, Leica Centre, and Art Forward Gallery, London."},
+      {role:"Website Concept & Development", name:"Lana Labadze", photo:{src:"media/about/lana-labadze.jpg", small:"media/about/lana-labadze-400.jpg", w:606, h:758}, bio:"Lana Labadze is an innovative and human-centered education and technology leader with 10+ years of experience at the intersection of education, technology, and impact. As CEO of GeoLab, she leads strategic and operational management, cross-functional teams, international partnerships, and multi-year, donor-funded initiatives. Lana actively applies AI-based approaches, including vibe coding, to develop websites, mini-applications, and workflow automations. For Multispecies Buildings, Lana works on the website’s concept and development, building it through vibe coding: describing, testing, and refining the site in dialogue with AI rather than writing code by hand."}
     ]
   }
 };
@@ -1234,7 +1243,20 @@ function openView(kind, arg){
     v.appendChild(el("h2",null,"About the project"));
     v.appendChild(el("p","lede",T.about.intro));
     T.about.people.forEach(p=>{
-      const e = el("div","essay person");
+      const e = el("div","essay person" + (p.photo ? " has-photo" : ""));
+      if(p.photo){
+        const img = document.createElement("img");
+        img.className = "portrait";
+        img.src = p.photo.src;
+        img.srcset = p.photo.small + " 400w, " + p.photo.src + " " + p.photo.w + "w";
+        img.sizes = "(max-width:768px) 70vw, 240px";
+        img.width = p.photo.w; img.height = p.photo.h;
+        img.loading = "lazy"; img.decoding = "async";
+        img.alt = "Portrait of " + p.name;
+        /* a missing file leaves the text block on its own, never a broken image */
+        img.addEventListener("error", ()=>{ img.remove(); e.classList.remove("has-photo"); }, {once:true});
+        e.appendChild(img);
+      }
       e.appendChild(el("div","role",p.role));
       e.appendChild(el("h3",null,p.name));
       e.appendChild(el("p",null,p.bio));
