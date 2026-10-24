@@ -1391,32 +1391,45 @@ function stImg(m, sizes, eager){
 function stStreetSound(m, btn, ind, host){
   const audio = new Audio();
   audio.preload = "none"; audio.loop = true; audio.src = m.src;
-  let ctx = null, gain = null, raf = 0, on = false;
-  const LEVEL = .7, FADE = 600;
-  function setLevel(v){ if(gain) gain.gain.value = v; else audio.volume = Math.max(0, Math.min(1, v)); }
+  let ctx = null, gain = null, raf = 0, rampEnd = 0, on = false;
+  const LEVEL = 1, FADE = 600;
+  /* Web Audio gives smooth fades on iOS, but a page opened straight from disk (file://) gets only
+     silence out of it (cross-origin rule), so there the plain element volume is used instead. */
+  const webAudio = /^https?:$/.test(location.protocol);
+  function setLevel(v){
+    if(gain){ gain.gain.cancelScheduledValues(ctx.currentTime); gain.gain.setValueAtTime(v, ctx.currentTime); }
+    else audio.volume = Math.max(0, Math.min(1, v));
+  }
   function getLevel(){ return gain ? gain.gain.value : audio.volume; }
+  /* fades run on the audio clock (or a timer), never on screen redraws, so they also finish
+     when the page is not being painted */
   function ramp(to, done){
-    cancelAnimationFrame(raf);
-    const from = getLevel(), t0 = performance.now();
-    const step = now => {
-      const k = Math.min(1, (now - t0) / FADE);
-      setLevel(from + (to - from) * k);
-      if(k < 1) raf = requestAnimationFrame(step); else if(done) done();
-    };
-    raf = requestAnimationFrame(step);
+    clearInterval(raf); clearTimeout(rampEnd);
+    if(gain){
+      const t = ctx.currentTime, g = gain.gain;
+      g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.linearRampToValueAtTime(to, t + FADE/1000);
+    } else {
+      const from = getLevel(), t0 = performance.now();
+      raf = setInterval(()=>{
+        const k = Math.min(1, (performance.now() - t0) / FADE);
+        setLevel(from + (to - from) * k);
+        if(k >= 1) clearInterval(raf);
+      }, 30);
+    }
+    rampEnd = setTimeout(()=>{ if(!gain) setLevel(to); if(done) done(); }, FADE + 20);
   }
   function ui(){ btn.setAttribute("aria-pressed", String(on)); ind.classList.toggle("show", on); }
   function start(){
     if(on) return;
     try{
-      if(!ctx){
+      if(!ctx && webAudio){
         const AC = window.AudioContext || window.webkitAudioContext;
         if(AC){ ctx = new AC(); gain = ctx.createGain(); gain.gain.value = 0;
           ctx.createMediaElementSource(audio).connect(gain); gain.connect(ctx.destination); }
       }
       if(ctx && ctx.state === "suspended") ctx.resume();
     }catch(e){ ctx = null; gain = null; }
-    on = true; ui(); setLevel(0);
+    on = true; ui(); setLevel(0); watch();
     dogsStory.onSound && dogsStory.onSound("street");
     const p = audio.play();
     if(p && p.catch) p.catch(()=>{ on = false; ui(); });
@@ -1425,7 +1438,7 @@ function stStreetSound(m, btn, ind, host){
   function stop(instant){
     if(!on) return;
     on = false; ui();
-    if(instant){ cancelAnimationFrame(raf); audio.pause(); setLevel(0); return; }
+    if(instant){ clearInterval(raf); clearTimeout(rampEnd); audio.pause(); setLevel(0); return; }
     ramp(0, ()=>{ if(!on) audio.pause(); });
   }
   audio.addEventListener("error", ()=>{
@@ -1433,12 +1446,18 @@ function stStreetSound(m, btn, ind, host){
     if(host.isConnected) host.replaceWith(stPending("audio", m.alt));
   });
   btn.onclick = ()=> on ? stop() : start();
-  /* stop when the street section scrolls out of view */
-  if("IntersectionObserver" in window){
-    const io = new IntersectionObserver(es=>es.forEach(e=>{ if(!e.isIntersecting) stop(); }), {threshold:0});
-    io.observe(host.closest(".st-sec"));
-    dogsStory.cleanup.push(()=>io.disconnect());
+  /* stop when neither the street section nor the street carousel after it is on screen */
+  let io = null;
+  function watch(){
+    if(io || !("IntersectionObserver" in window)) return;
+    const seen = new Set();
+    io = new IntersectionObserver(es=>{
+      es.forEach(e=>{ if(e.isIntersecting) seen.add(e.target); else seen.delete(e.target); });
+      if(!seen.size) stop();
+    }, {threshold:0});
+    [host.closest(".st-sec"), document.getElementById("street-carousel")].filter(Boolean).forEach(t=>{ seen.add(t); io.observe(t); });
   }
+  dogsStory.cleanup.push(()=>{ if(io) io.disconnect(); });
   dogsStory.cleanup.push(()=>{ stop(true); audio.removeAttribute("src"); audio.load(); if(ctx && ctx.close) ctx.close().catch(()=>{}); });
   return {start, stop, isOn:()=>on};
 }
