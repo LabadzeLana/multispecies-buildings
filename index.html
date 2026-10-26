@@ -111,18 +111,18 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .bar nav button[aria-current="true"]{color:var(--oil)}
 
 /* ---------- layout ---------- */
-main{display:grid;grid-template-columns:minmax(0,1fr);min-height:calc(100vh - 52px)}
+main{display:grid;grid-template-columns:minmax(0,1fr);min-height:calc(100vh - var(--bar-h,52px))}
 body.panel-open main{grid-template-columns:minmax(0,1fr) minmax(320px,30rem)}
 @media (max-width:900px){body.panel-open main{grid-template-columns:minmax(0,1fr)}}
 
-#stage{position:relative;padding:1rem clamp(.5rem,2vw,1.5rem) 5.5rem;display:flex;flex-direction:column;align-items:center}
-#stage svg{max-height:calc(100vh - 235px);width:100%;max-width:min(100%,56rem);height:auto;display:block}
-.stage-caption{
-  width:100%;max-width:min(100%,56rem);
-  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
-  margin-top:.8rem;padding-top:.55rem;border-top:1px solid var(--line-soft);
-  font-family:var(--sans);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
-}
+/* the Building view fills the screen between the sticky header and the season bar */
+#stage{position:relative;padding:0;
+  height:calc(100vh - var(--bar-h,52px) - var(--seasons-h,48px));height:calc(100dvh - var(--bar-h,52px) - var(--seasons-h,48px));min-height:300px}
+.stage-caption{position:absolute;left:clamp(.8rem,2vw,1.4rem);top:.7rem;z-index:7;pointer-events:none;
+  display:flex;flex-direction:column;gap:.1rem;
+  font-family:var(--sans);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+#stage.zoomed .stage-caption{opacity:0}
+@media (max-width:700px){.stage-caption{display:none}}
 
 /* ---------- the drawing ---------- */
 .plate-frame{fill:none;stroke:var(--line-soft);stroke-width:.75}
@@ -180,17 +180,77 @@ html[data-season="autumn"] .canopy{opacity:.7;fill:var(--oxide)}
 html[data-season="winter"] .snow{opacity:1}
 html[data-season="winter"] .rust{stroke-width:2.4}
 
-/* hotspots */
-.hot{cursor:pointer}
-.hot circle.dot{fill:var(--paper);stroke:var(--ink);stroke-width:1.6;vector-effect:non-scaling-stroke;transition:none}
-.hot.visited circle.dot{fill:var(--ink-soft)}
-.hot.active circle.dot{fill:var(--oil);stroke:var(--oil)}
-.hot circle.halo{fill:none;stroke:var(--oil);stroke-width:1.2;vector-effect:non-scaling-stroke;opacity:.4}
-.hot:hover circle.halo,.hot:focus-visible circle.halo,.hot.active circle.halo{opacity:1}
-.hot text{font-family:var(--sans);font-size:16px;fill:var(--ink);opacity:0;paint-order:stroke;stroke:var(--paper);stroke-width:5px;stroke-linejoin:round}
-.hot:hover text,.hot:focus-visible text,.hot.active text{opacity:1}
-.hot line.lead{stroke:var(--ink-soft);stroke-width:.9;vector-effect:non-scaling-stroke;opacity:0}
-.hot:hover line.lead,.hot:focus-visible line.lead,.hot.active line.lead{opacity:.8}
+/* ---------- building viewer: the drawing as a map that develops into photographs ---------- */
+#viewer{position:absolute;inset:0;overflow:hidden;touch-action:none;overscroll-behavior:contain;cursor:grab;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;outline:none;background:var(--paper);--capH:140px}
+#viewer:focus-visible{box-shadow:inset 0 0 0 2px var(--oil)}
+#viewer.drag{cursor:grabbing}
+#viewer.over{cursor:pointer}
+#world{position:absolute;left:0;top:0;width:1000px;height:870px;transform-origin:0 0;isolation:isolate;background:transparent;will-change:transform}
+#section{position:absolute;left:0;top:0;width:1000px;height:870px;display:block;overflow:visible}
+/* the photographs develop *under* the pencil lines (multiply), through a radial reveal mask */
+.zone{position:absolute;pointer-events:none;background-size:cover;background-repeat:no-repeat;
+  mix-blend-mode:multiply;filter:saturate(.9) contrast(1.04);visibility:hidden;
+  --mx:0px;--my:0px;--mr:0px;--wx:0px;
+  --m1:radial-gradient(circle at var(--mx) var(--my), #000 calc(var(--mr)*.74), transparent var(--mr));
+  --fx:linear-gradient(to right, transparent 0, #000 9px, #000 calc(100% - 9px), transparent 100%);
+  --fy:linear-gradient(to bottom, transparent 0, #000 9px, #000 calc(100% - 9px), transparent 100%);
+  -webkit-mask-image:var(--m1),var(--fx),var(--fy);mask-image:var(--m1),var(--fx),var(--fy);
+  -webkit-mask-composite:source-in,source-in;mask-composite:intersect,intersect}
+#viewer.cmp .zone,#viewer.intro .zone{--m1:linear-gradient(90deg, transparent var(--wx), #000 calc(var(--wx) + 70px))}
+.zone.on{visibility:visible}
+#hoverbox{position:absolute;pointer-events:none;border:calc(1.4px*var(--inv,1)) dashed var(--oil);opacity:0;transition:opacity .18s;z-index:5}
+#hoverbox.show{opacity:.9}
+/* compare handle (drawing | reality) */
+#handle{position:absolute;top:30px;height:840px;width:0;z-index:6;display:none;pointer-events:none}
+#viewer.cmp #handle,#viewer.intro #handle{display:block}
+#handle::before{content:"";position:absolute;left:calc(-1px*var(--inv,1));top:0;bottom:0;width:calc(2px*var(--inv,1));background:var(--ink);opacity:.8}
+#handle i{position:absolute;left:calc(-19px*var(--inv,1));top:50%;margin-top:calc(-19px*var(--inv,1));width:calc(38px*var(--inv,1));height:calc(38px*var(--inv,1));
+  border-radius:50%;background:var(--paper);border:calc(1.6px*var(--inv,1)) solid var(--ink);pointer-events:auto;cursor:ew-resize;touch-action:none;
+  display:flex;align-items:center;justify-content:center;font-style:normal;font-family:var(--sans);font-size:calc(15px*var(--inv,1));color:var(--ink)}
+#viewer.intro #handle i{pointer-events:none}
+#handle b{position:absolute;top:calc(-6px*var(--inv,1));font:500 calc(11px*var(--inv,1))/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap}
+#handle b.l{right:calc(10px*var(--inv,1));text-align:right}
+#handle b.r{left:calc(10px*var(--inv,1))}
+/* hotspot markers: screen space, constant size, real buttons */
+#markers{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+.mk{position:absolute;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;padding:0;pointer-events:auto;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.mk .dot{width:14px;height:14px;border-radius:50%;background:var(--paper);border:1.6px solid var(--ink);transition:background .2s,border-color .2s}
+.mk::after{content:"";position:absolute;width:30px;height:30px;border-radius:50%;border:1.2px solid var(--oil);opacity:.35;transition:opacity .2s}
+.mk:hover::after,.mk:focus-visible::after,.mk.act::after,.mk.current::after{opacity:1}
+.mk.visited .dot{background:var(--ink-soft)}
+.mk.act .dot,.mk.current .dot{background:var(--oil);border-color:var(--oil)}
+.mk .lab{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);white-space:nowrap;font-family:var(--sans);font-size:.82rem;color:var(--ink);
+  paint-order:stroke;-webkit-text-stroke:5px var(--paper);opacity:0;transition:opacity .2s;pointer-events:none}
+.mk:hover .lab,.mk:focus-visible .lab,.mk.act .lab,.mk.current .lab{opacity:1}
+.mk.hide{opacity:0;pointer-events:none}
+@media (prefers-reduced-motion: no-preference){
+  .mk.pulse::before{content:"";position:absolute;width:30px;height:30px;border-radius:50%;border:1.4px solid var(--oil);animation:mkpulse 2.4s ease-out infinite}
+}
+@keyframes mkpulse{0%{transform:scale(.7);opacity:.8}100%{transform:scale(2.1);opacity:0}}
+/* controls */
+#viewer .ctl{position:absolute;right:max(14px,env(safe-area-inset-right));top:14px;display:flex;flex-direction:column;gap:6px;z-index:12}
+#viewer .ctl button{width:44px;height:44px;border:1px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;
+  font-family:var(--sans);font-size:1.15rem;color:var(--ink-soft);border-radius:2px}
+#viewer .ctl button:hover{border-color:var(--oil);color:var(--oil)}
+#viewer .ctl button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+#viewer .ctl .wide{width:auto;padding:0 .75rem;font-size:.78rem;letter-spacing:.04em}
+#hint{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(var(--capH) + 14px);font-family:var(--sans);font-size:.76rem;letter-spacing:.05em;
+  color:var(--muted);text-align:center;transition:opacity .5s;pointer-events:none;white-space:nowrap;z-index:8}
+#hint.hide{opacity:0}
+@media (max-width:700px){#hint{white-space:normal;width:84%;bottom:calc(var(--capH) / 2 - .8rem)}#viewer .ctl{top:auto;bottom:calc(var(--capH) + 10px);flex-direction:row;right:10px}}
+/* caption card: only when a zone has developed by zooming and no panel is open */
+#cap{position:absolute;left:0;right:0;bottom:0;height:var(--capH);padding:.9rem clamp(1rem,4vw,2.4rem) 1rem;background:var(--paper);border-top:1px solid var(--line-soft);
+  display:flex;flex-direction:column;justify-content:flex-end;gap:.2rem;z-index:10;pointer-events:none;
+  opacity:0;transform:translateY(10px);transition:opacity .45s,transform .45s}
+#cap.show{opacity:1;transform:none}
+#cap.show .back{pointer-events:auto}
+#cap h2{margin:0;font-weight:400;font-size:clamp(1.35rem,3vw,1.9rem);line-height:1.15}
+#cap .sub{margin:0;font-family:var(--sans);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--oil)}
+#cap p{margin:.2rem 0 0;max-width:62ch;color:var(--ink-soft);font-size:1rem;line-height:1.5}
+#cap .back{align-self:flex-start;margin-top:.35rem;font-family:var(--sans);font-size:.84rem;color:var(--oil);border-bottom:1px solid var(--oil);padding:.35rem 0 1px;min-height:32px}
+@media (max-width:700px){#cap p{font-size:.94rem}}
+@media (prefers-reduced-motion: reduce){#cap,.mk .lab,#hint,#hoverbox{transition:none}}
 
 /* ---------- season control ---------- */
 .seasons{
@@ -210,7 +270,7 @@ body.panel-open .seasons{right:auto;width:calc(100% - 30rem)}
 #panel{
   border-left:1px solid var(--line-soft);background:var(--paper);
   padding:1.6rem clamp(1.1rem,2.4vw,2rem) 6rem;
-  max-height:calc(100vh - 52px);overflow-y:auto;position:sticky;top:52px;
+  max-height:calc(100vh - var(--bar-h,52px));overflow-y:auto;position:sticky;top:var(--bar-h,52px);
   display:none;
 }
 body.panel-open #panel{display:block}
@@ -596,26 +656,41 @@ body.st-lock{overflow:hidden}
 
 <main>
   <section id="stage" aria-label="Building section">
-    <svg id="section" viewBox="0 0 1000 870" role="img" aria-label="Front elevation of a Soviet panel block with clickable spaces">
-      <defs>
-        <pattern id="p-balu" width="5" height="30" patternUnits="userSpaceOnUse"><line class="pat" x1="2.5" y1="0" x2="2.5" y2="30"/></pattern>
-        <pattern id="p-rib" width="7" height="10" patternUnits="userSpaceOnUse"><line class="pat" x1="3.5" y1="0" x2="3.5" y2="10"/></pattern>
-        <filter id="ink" x="-1%" y="-1%" width="102%" height="102%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="7" result="n"/>
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8" xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-      </defs>
-      <rect class="plate-frame" x="5" y="5" width="990" height="860"/>
-      <g id="elev" transform="translate(14 18) scale(0.72)" filter="url(#ink)">
-        <g class="g-struct" id="e-struct"></g>
-        <g class="g-shaft" id="e-shaft"></g>
-        <g class="g-open" id="e-open"></g>
-      </g>
-      <g class="g-struct" id="ground"></g>
-      <g class="g-shaft" id="floornum" aria-hidden="true"></g>
-      <g class="g-life" id="life"></g>
-      <g id="hotspots"></g>
-    </svg>
+    <div id="viewer" tabindex="0" role="application" aria-label="Interactive building drawing. Scroll or pinch to zoom, drag to move. Use the dots to step into a space. Arrow keys move, plus and minus zoom, zero resets.">
+      <div id="world">
+        <svg id="section" viewBox="0 0 1000 870" role="img" aria-label="Front elevation of a Soviet panel block, redrawn after a design sheet">
+          <defs>
+            <pattern id="p-balu" width="5" height="30" patternUnits="userSpaceOnUse"><line class="pat" x1="2.5" y1="0" x2="2.5" y2="30"/></pattern>
+            <pattern id="p-rib" width="7" height="10" patternUnits="userSpaceOnUse"><line class="pat" x1="3.5" y1="0" x2="3.5" y2="10"/></pattern>
+            <filter id="ink" x="-1%" y="-1%" width="102%" height="102%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="7" result="n"/>
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+          </defs>
+          <rect class="plate-frame" x="5" y="5" width="990" height="860"/>
+          <g id="elev" transform="translate(14 18) scale(0.72)" filter="url(#ink)">
+            <g class="g-struct" id="e-struct"></g>
+            <g class="g-shaft" id="e-shaft"></g>
+            <g class="g-open" id="e-open"></g>
+          </g>
+          <g class="g-struct" id="ground"></g>
+          <g class="g-shaft" id="floornum" aria-hidden="true"></g>
+          <g class="g-life" id="life"></g>
+        </svg>
+        <div id="zones"></div>
+        <div id="hoverbox"></div>
+        <div id="handle"><b class="l">Drawing</b><b class="r">Reality</b><i aria-label="Drag to compare drawing and photographs">&#8596;</i></div>
+      </div>
+      <div id="markers"></div>
+      <div class="ctl">
+        <button id="zin" type="button" aria-label="Zoom in">+</button>
+        <button id="zout" type="button" aria-label="Zoom out">&minus;</button>
+        <button id="zhome" type="button" aria-label="Back to the whole drawing">&#8962;</button>
+        <button id="cmpbtn" type="button" class="wide" aria-pressed="false">Compare</button>
+      </div>
+      <div id="hint">Scroll or pinch to zoom &nbsp;&middot;&nbsp; drag to move &nbsp;&middot;&nbsp; click a dot to step in</div>
+      <aside id="cap" aria-live="polite"><div class="sub"></div><h2></h2><p></p><button class="back" type="button" tabindex="-1">Enter the space &rarr;</button></aside>
+    </div>
     <div class="stage-caption">
       <span>Front elevation · redrawn after a Soviet design sheet</span>
       <span>Tbilisi · 8 levels shown</span>
@@ -1007,45 +1082,373 @@ function buildElevation(){
   $("#ground").innerHTML=G; $("#life").innerHTML=V; $("#floornum").innerHTML=N;
 }
 
-(function draw(){
+/* ---- Building view: the drawing as a map that develops into photographs ----
+   Zone rectangles, hotspots and photo framing come from the interactive prototype
+   (building/building-interactive-test.html); names, subtitles and ledes come from T.spaces.
+   The photograph assignment is provisional: remap a space by changing its `photo` / `pos` here. */
+const BUILDING_PHOTOS = "media/building/";
+const BUILDING_ZOOM_MAX = 7;   /* the photographs are web resolution: deeper zoom would show only pixels */
+const BUILDING_ZONES = [
+  /* id, zone rectangle on the 1000 x 870 plane, hotspot, photograph file, background position */
+  {id:"roof",      x:50,  y:38,  w:855, h:102, hx:475, hy:94,  photo:"roof.jpg",      pos:"50% 22%"},
+  {id:"loggia",    x:50,  y:140, w:182, h:645, hx:131, hy:351, photo:"loggia.jpg",    pos:"22% 55%"},
+  {id:"stairwell", x:232, y:140, w:75,  h:645, hx:266, hy:450, photo:"stairwell.jpg", pos:"50% 38%"},
+  {id:"apartment", x:307, y:140, w:253, h:215, hx:421, hy:243, photo:"apartment.jpg", pos:"58% 42%"},
+  {id:"facade",    x:307, y:355, w:253, h:430, hx:472, hy:421, photo:"facade.jpg",    pos:"50% 52%"},
+  {id:"elevator",  x:560, y:140, w:345, h:645, hx:686, hy:364, photo:"elevator.jpg",  pos:"58% 40%"},
+  {id:"courtyard", x:905, y:250, w:92,  h:560, hx:952, hy:700, photo:"courtyard.jpg", pos:"38% 58%"},
+  {id:"basement",  x:50,  y:790, w:390, h:66,  hx:130, hy:824, photo:"basement.jpg",  pos:"50% 88%"},
+  {id:"pipes",     x:440, y:790, w:465, h:66,  hx:560, hy:822, photo:"pipes.jpg",     pos:"30% 92%"}
+];
+
+const buildingView = (function(){
   buildElevation();
-  const hs = $("#hotspots");
-  T.spaces.forEach(s=>{
-    const g = document.createElementNS("http://www.w3.org/2000/svg","g");
-    g.setAttribute("class","hot"); g.setAttribute("id","hot-"+s.id);
-    g.setAttribute("tabindex","0"); g.setAttribute("role","button");
-    const hitarea = document.createElementNS("http://www.w3.org/2000/svg","circle");
-    hitarea.setAttribute("cx",s.x); hitarea.setAttribute("cy",s.y); hitarea.setAttribute("r",44);
-    hitarea.setAttribute("fill","transparent"); hitarea.setAttribute("pointer-events","all");
-    g.appendChild(hitarea);
-    const lead = document.createElementNS("http://www.w3.org/2000/svg","line");
-    lead.setAttribute("x1",s.x); lead.setAttribute("y1",s.y);
-    lead.setAttribute("x2",s.x+s.lx); lead.setAttribute("y2",s.y+s.ly+ (s.ly<0?4:-4));
-    lead.setAttribute("class","lead"); g.appendChild(lead);
-    const halo = document.createElementNS("http://www.w3.org/2000/svg","circle");
-    halo.setAttribute("cx",s.x); halo.setAttribute("cy",s.y); halo.setAttribute("r",15); halo.setAttribute("class","halo");
-    g.appendChild(halo);
-    const dot = document.createElementNS("http://www.w3.org/2000/svg","circle");
-    dot.setAttribute("cx",s.x); dot.setAttribute("cy",s.y); dot.setAttribute("r",7.5); dot.setAttribute("class","dot");
-    g.appendChild(dot);
-    const tx = document.createElementNS("http://www.w3.org/2000/svg","text");
-    tx.setAttribute("x",s.x+s.lx); tx.setAttribute("y",s.y+s.ly); tx.setAttribute("text-anchor",s.anchor);
-    g.appendChild(tx);
-    g.addEventListener("click",()=>location.hash = "#/space/"+s.id);
-    g.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault(); location.hash="#/space/"+s.id;} });
-    hs.appendChild(g);
+  const stage = $("#stage"), viewer = $("#viewer"), world = $("#world"), zonesEl = $("#zones"), markersEl = $("#markers"),
+        hoverbox = $("#hoverbox"), capEl = $("#cap"), hint = $("#hint"), handle = $("#handle"), cmpBtn = $("#cmpbtn");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const KMAX = BUILDING_ZOOM_MAX;
+  const body = document.body;
+  const panelOpen = () => body.classList.contains("panel-open");
+
+  const ZONES = BUILDING_ZONES.map(z => Object.assign({}, z, {space: T.spaces.find(s => s.id === z.id)})).filter(z => z.space);
+  const byId = Object.fromEntries(ZONES.map(z => [z.id, z]));
+  const nameOf = z => L()==="ka" ? z.space.ka : z.space.en;
+
+  ZONES.forEach(z=>{
+    const d = el("div","zone");
+    Object.assign(d.style, {left:z.x+"px", top:z.y+"px", width:z.w+"px", height:z.h+"px", backgroundPosition:z.pos});
+    zonesEl.appendChild(d);
+    z.el = d; z.p = 0; z.ox = z.w/2; z.oy = z.h/2; z.ready = false;
+    const b = el("button","mk"); b.type = "button";
+    b.appendChild(el("span","dot")); z.lab = el("span","lab"); b.appendChild(z.lab);
+    b.addEventListener("click", e=>{ e.stopPropagation(); interacted(); open(z.id); });
+    b.addEventListener("pointerdown", e=>e.stopPropagation());
+    markersEl.appendChild(b); z.mk = b;
   });
+  if(byId.facade) byId.facade.mk.classList.add("pulse");
+
+  /* ---------- camera: (cx,cy) = world point at the centre of the free area above the caption ---------- */
+  let VW = 0, VH = 0, CAP = 140, VHe = 0, S0 = 1;
+  const cam = {k:1, cx:500, cy:435};
+  const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+  const sm = (a,b,x)=>{ const t = clamp((x-a)/(b-a),0,1); return t*t*(3-2*t); };
+  const scale = ()=>S0*cam.k;
+  const w2sx = x=>VW/2+(x-cam.cx)*scale(), w2sy = y=>VHe/2+(y-cam.cy)*scale();
+  const s2wx = x=>cam.cx+(x-VW/2)/scale(), s2wy = y=>cam.cy+(y-VHe/2)/scale();
+  function clampCam(){ cam.k = clamp(cam.k,1,KMAX); cam.cx = clamp(cam.cx,0,1000); cam.cy = clamp(cam.cy,0,870); }
+
+  /* the stage fills the screen between the sticky header and the season bar */
+  function setFrame(){
+    const bar = $(".bar"), seasons = $("#seasonBar"), r = document.documentElement.style;
+    r.setProperty("--bar-h", (bar ? bar.offsetHeight : 52) + "px");
+    r.setProperty("--seasons-h", (seasons ? seasons.offsetHeight : 0) + "px");
+  }
+  let pendingRoute;   /* a route that arrived while the viewer had no size yet */
+  function measure(){
+    setFrame();
+    const w = viewer.clientWidth, h = viewer.clientHeight;
+    if(!w || !h) return;
+    VW = w; VH = h;
+    CAP = panelOpen() ? 0 : (VW<700 ? 216 : 140);   /* no caption space beside an open panel */
+    viewer.style.setProperty("--capH", CAP+"px");
+    /* on narrow screens the controls sit in a row above the caption: keep the drawing clear of them */
+    const CTL = VW<700 ? 60 : 0;
+    VHe = VH-CAP-CTL; S0 = Math.min(VW/1000, VHe/870)*0.94;
+    if(pendingRoute !== undefined){ const p = pendingRoute; pendingRoute = undefined; apply(p, true); }
+    maybePreload(); tryTeaser(); kick();
+  }
+
+  /* ---------- state ---------- */
+  let focusId = null, clickOrigin = null, compare = false, wipeX = 1100, introRunning = false, introCancel = false, userTouched = false;
+  let userTouchedSince = true, dirty = true, raf = 0, tween = null, capId = null, hoverZone = null;
+  function kick(){ dirty = true; if(!raf) raf = requestAnimationFrame(frame); }
+
+  function frame(t){
+    raf = 0;
+    if(!VW) return;
+    if(tween){
+      const u = clamp((t-tween.t0)/tween.d,0,1), e = u<.5 ? 4*u*u*u : 1-Math.pow(-2*u+2,3)/2;
+      cam.k = tween.k0+(tween.k1-tween.k0)*e; cam.cx = tween.x0+(tween.x1-tween.x0)*e; cam.cy = tween.y0+(tween.y1-tween.y0)*e;
+      if(u>=1) tween = null;
+    }
+    clampCam();
+    const s = scale(), tx = VW/2-cam.cx*s, ty = VHe/2-cam.cy*s;
+    world.style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
+    world.style.setProperty("--inv", (1/s).toFixed(5));
+    stage.classList.toggle("zoomed", cam.k>1.05);   /* the sheet caption only over the whole drawing */
+    handle.style.left = wipeX+"px";
+
+    let busy = !!tween || introRunning;
+    const cxw = cam.cx, cyw = cam.cy;
+    let activeId = null, bestP = 0;
+    ZONES.forEach(z=>{
+      let target = 0;
+      if(!compare){
+        const f = Math.max(z.w*s/VW, z.h*s/VHe);
+        const dx = Math.max(z.x-cxw,0,cxw-(z.x+z.w))*s, dy = Math.max(z.y-cyw,0,cyw-(z.y+z.h))*s;
+        const c = 1-sm(0,0.28*Math.min(VW,VHe),Math.hypot(dx,dy));
+        target = sm(0.78,0.93,f)*c;
+        if(focusId===z.id && !userTouchedSince) target = 1;
+      }
+      z.p += (target-z.p)*(reduce ? 1 : 0.14);
+      if(Math.abs(target-z.p)<0.002) z.p = target; else busy = true;
+      /* reveal origin: where the visitor clicked, else the centre of the view */
+      const tox = clickOrigin&&clickOrigin.id===z.id ? clickOrigin.x-z.x : clamp(cxw-z.x,0,z.w);
+      const toy = clickOrigin&&clickOrigin.id===z.id ? clickOrigin.y-z.y : clamp(cyw-z.y,0,z.h);
+      z.ox += (tox-z.ox)*0.2; z.oy += (toy-z.oy)*0.2;
+      if(Math.abs(tox-z.ox)>.3 || Math.abs(toy-z.oy)>.3) busy = true;
+      const zel = z.el;
+      if(!z.ready){ zel.classList.remove("on"); }      /* no photograph (yet): the zone stays a drawing */
+      else if(compare || introRunning){
+        zel.classList.add("on"); zel.style.setProperty("--wx", (wipeX-z.x)+"px");
+      } else {
+        const R = Math.hypot(Math.max(z.ox,z.w-z.ox), Math.max(z.oy,z.h-z.oy))+60;
+        if(z.p>0.003){ zel.classList.add("on"); zel.style.setProperty("--mx",z.ox+"px"); zel.style.setProperty("--my",z.oy+"px"); zel.style.setProperty("--mr",(z.p*R).toFixed(1)+"px"); }
+        else zel.classList.remove("on");
+      }
+      if(z.p>bestP){ bestP = z.p; activeId = z.id; }
+      const m = z.mk, mx = w2sx(z.hx), my = w2sy(z.hy);
+      m.style.transform = `translate(${mx.toFixed(1)}px,${my.toFixed(1)}px)`;
+      m.classList.toggle("act", z.p>0.55);
+      m.classList.toggle("hide", mx<-30 || mx>VW+30 || my<-30 || my>VHe+30);
+    });
+    /* caption card only while no panel is open: the panel already carries the same text */
+    if(!compare && !panelOpen() && bestP>0.62) showCap(activeId);
+    else { capEl.classList.remove("show"); capEl.querySelector(".back").tabIndex = -1; capId = null; }
+    if(hoverZone) placeHover(hoverZone);
+    if(busy || dirty){ dirty = false; if(busy) raf = requestAnimationFrame(frame); }
+  }
+  function showCap(id){
+    if(capId!==id){
+      const z = byId[id];
+      capEl.querySelector(".sub").textContent = z.space.suben;
+      capEl.querySelector("h2").textContent = nameOf(z);
+      capEl.querySelector("p").textContent = z.space.lede;
+      capId = id;
+    }
+    capEl.classList.add("show"); capEl.querySelector(".back").tabIndex = 0;
+  }
+
+  /* ---------- camera moves ---------- */
+  function animateTo(k,cx,cy,dur){
+    if(reduce || dur===0){ cam.k = k; cam.cx = cx; cam.cy = cy; tween = null; kick(); return; }
+    tween = {t0:performance.now(), d:dur, k0:cam.k, x0:cam.cx, y0:cam.cy, k1:k, x1:cx, y1:cy}; kick();
+  }
+  const fitK = z => clamp(0.93*Math.min(VW/z.w, VHe/z.h)/S0, 1, KMAX);
+  function focusZone(id, pt, instant){
+    const z = byId[id]; if(!z) return;
+    if(compare) setCompare(false);
+    if(introRunning) introCancel = true;
+    preload();
+    focusId = id; userTouchedSince = false;
+    clickOrigin = {id, x:pt ? pt.x : z.x+z.w/2, y:pt ? pt.y : z.y+z.h/2};
+    if(instant){ z.ox = clickOrigin.x-z.x; z.oy = clickOrigin.y-z.y; }
+    animateTo(fitK(z), z.x+z.w/2, z.y+z.h/2, instant ? 0 : 1300);
+    hint.classList.add("hide");
+  }
+  function home(instant){ focusId = null; clickOrigin = null; userTouchedSince = true; animateTo(1,500,435, instant ? 0 : 1000); }
+  function interacted(){
+    if(!userTouched){ userTouched = true; if(byId.facade) byId.facade.mk.classList.remove("pulse"); hint.classList.add("hide"); preload(); }
+    if(introRunning) introCancel = true;
+  }
+  function userMove(){ tween = null; userTouchedSince = true; clickOrigin = null; interacted(); }
+  function zoomAt(px,py,factor){
+    const wx = s2wx(px), wy = s2wy(py);
+    const nk = clamp(cam.k*factor,1,KMAX); if(nk===cam.k) return;
+    cam.k = nk; const s = scale();
+    cam.cx = wx-(px-VW/2)/s; cam.cy = wy-(py-VHe/2)/s; kick();
+  }
+
+  /* ---------- routing: the hash decides the space; the camera follows ---------- */
+  let clickPt = null;
+  function open(id, pt){
+    clickPt = pt ? {id, x:pt.x, y:pt.y} : null;
+    const h = "#/space/"+id;
+    if(location.hash===h) apply(id, false);   /* same space again: no hashchange, move the camera anyway */
+    else location.hash = h;
+  }
+  function apply(id, instant){
+    const z = id && byId[id];
+    if(z){ const pt = clickPt && clickPt.id===id ? clickPt : null; clickPt = null; focusZone(id, pt, instant); }
+    else home(instant);
+  }
+  /* called by route(): id of the open space, or null for the whole drawing */
+  function show(id){
+    if(id) teaserDone = true;
+    measure();
+    if(!VW || !viewer.clientWidth){ pendingRoute = id; return; }
+    apply(id, false);
+  }
+
+  /* ---------- pointer / wheel / keyboard ---------- */
+  const ptrs = new Map(); let drag = null, pinch0 = null;
+  function vpt(e){ const r = viewer.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; }
+  function hit(wx,wy){
+    let best = null;
+    ZONES.forEach(z=>{ if(wx>=z.x && wx<=z.x+z.w && wy>=z.y && wy<=z.y+z.h){ if(!best || z.w*z.h<best.w*best.h) best = z; } });
+    return best;
+  }
+  function placeHover(z){ hoverbox.style.left = z.x+"px"; hoverbox.style.top = z.y+"px"; hoverbox.style.width = z.w+"px"; hoverbox.style.height = z.h+"px"; }
+  function setHover(z){
+    if(z===hoverZone) return; hoverZone = z;
+    if(z && !compare && z.p<0.5){ placeHover(z); hoverbox.classList.add("show"); viewer.classList.add("over"); }
+    else { hoverbox.classList.remove("show"); viewer.classList.remove("over"); }
+  }
+  viewer.addEventListener("pointerdown", e=>{
+    if(e.target.closest(".ctl,.mk,#cap .back,#handle i")) return;
+    try{ viewer.setPointerCapture(e.pointerId); }catch(err){}
+    const p = vpt(e); ptrs.set(e.pointerId,p);
+    if(ptrs.size===1){ drag = {x:p.x, y:p.y, cx:cam.cx, cy:cam.cy, moved:0, t:performance.now()}; }
+    else if(ptrs.size===2){ const [a,b] = [...ptrs.values()]; pinch0 = {d:Math.hypot(a.x-b.x,a.y-b.y), k:cam.k}; drag = null; }
+  });
+  viewer.addEventListener("pointermove", e=>{
+    const p = vpt(e);
+    if(ptrs.has(e.pointerId)){
+      ptrs.set(e.pointerId,p);
+      if(ptrs.size===2 && pinch0){
+        userMove(); const [a,b] = [...ptrs.values()]; const d = Math.hypot(a.x-b.x,a.y-b.y);
+        const target = clamp(pinch0.k*d/pinch0.d,1,KMAX); zoomAt((a.x+b.x)/2,(a.y+b.y)/2,target/cam.k);
+      } else if(drag){
+        const dx = p.x-drag.x, dy = p.y-drag.y; drag.moved = Math.max(drag.moved, Math.hypot(dx,dy));
+        if(drag.moved>5){
+          if(!viewer.classList.contains("drag")){ viewer.classList.add("drag"); userMove(); setHover(null); }
+          cam.cx = drag.cx-dx/scale(); cam.cy = drag.cy-dy/scale(); kick();
+        }
+      }
+    } else if(e.pointerType==="mouse") setHover(hit(s2wx(p.x),s2wy(p.y)));
+  });
+  function endPtr(e){
+    const was = drag; ptrs.delete(e.pointerId);
+    if(ptrs.size<2) pinch0 = null;
+    if(ptrs.size===0){
+      viewer.classList.remove("drag");
+      if(e.type==="pointerup" && was && was.moved<=5 && performance.now()-was.t<600){
+        interacted(); const p = vpt(e); const wx = s2wx(p.x), wy = s2wy(p.y), z = hit(wx,wy);
+        if(z && !compare) open(z.id, {x:wx, y:wy});
+      }
+      drag = null;
+    }
+  }
+  viewer.addEventListener("pointerup", endPtr); viewer.addEventListener("pointercancel", endPtr);
+  viewer.addEventListener("pointerleave", ()=>setHover(null));
+  /* the wheel zooms only over the viewer, and never scrolls or zooms the page there */
+  viewer.addEventListener("wheel", e=>{
+    e.preventDefault(); userMove(); const p = vpt(e);
+    const dy = e.deltaMode===1 ? e.deltaY*16 : e.deltaY;
+    zoomAt(p.x,p.y,Math.exp(-dy*(e.ctrlKey ? 0.012 : 0.0017)));
+  }, {passive:false});
+  ["gesturestart","gesturechange"].forEach(t=>viewer.addEventListener(t, e=>e.preventDefault(), {passive:false}));
+  viewer.addEventListener("dblclick", e=>{ const p = vpt(e); userMove(); zoomAt(p.x,p.y,1.9); });
+  viewer.addEventListener("keydown", e=>{
+    if(e.target.closest(".mk,.ctl button,#cap .back") && (e.key==="Enter" || e.key===" ")) return;
+    const st = 60/scale(); let used = true;
+    if(e.key==="ArrowLeft") cam.cx -= st; else if(e.key==="ArrowRight") cam.cx += st;
+    else if(e.key==="ArrowUp") cam.cy -= st; else if(e.key==="ArrowDown") cam.cy += st;
+    else if(e.key==="+" || e.key==="=") zoomAt(VW/2,VHe/2,1.3); else if(e.key==="-" || e.key==="_") zoomAt(VW/2,VHe/2,1/1.3);
+    else if(e.key==="0" || e.key==="Escape"){ interacted(); home(); } else used = false;
+    if(used){ e.preventDefault(); if(e.key!=="0" && e.key!=="Escape") userMove(); kick(); }
+  });
+  $("#zin").onclick = ()=>{ userMove(); zoomAt(VW/2,VHe/2,1.5); };
+  $("#zout").onclick = ()=>{ userMove(); zoomAt(VW/2,VHe/2,1/1.5); };
+  $("#zhome").onclick = ()=>{ interacted(); if(location.hash.indexOf("#/space/")===0) location.hash = "#/"; else home(); };
+  capEl.querySelector(".back").onclick = ()=>{ if(capId) open(capId); };
+
+  /* ---------- compare: drawing | reality ---------- */
+  function setCompare(on){
+    compare = on; viewer.classList.toggle("cmp",on); cmpBtn.setAttribute("aria-pressed",String(on));
+    if(on){ focusId = null; clickOrigin = null; hoverbox.classList.remove("show"); if(wipeX>1000 || wipeX<0) wipeX = 470; }
+    else ZONES.forEach(z=>z.el.classList.remove("on"));
+    kick();
+  }
+  cmpBtn.onclick = ()=>{ interacted(); if(!compare){ home(); wipeX = 1100; setCompare(true); slideWipe(470,1100); } else setCompare(false); };
+  let wipeAnim = 0;
+  function slideWipe(to,dur){
+    const from = wipeX, t0 = performance.now(); cancelAnimationFrame(wipeAnim);
+    if(reduce){ wipeX = to; kick(); return; }
+    (function step(t){
+      const u = clamp((t-t0)/(dur>1000 ? 1100 : dur),0,1), e = u<.5 ? 2*u*u : 1-Math.pow(-2*u+2,2)/2;
+      wipeX = from+(to-from)*e; kick();
+      if(u<1) wipeAnim = requestAnimationFrame(step);
+    })(t0);
+  }
+  let wdrag = false;
+  const knob = $("#handle i");
+  knob.addEventListener("pointerdown", e=>{ e.stopPropagation(); wdrag = true; try{ knob.setPointerCapture(e.pointerId); }catch(err){} cancelAnimationFrame(wipeAnim); interacted(); });
+  knob.addEventListener("pointermove", e=>{ if(!wdrag) return; const p = vpt(e); wipeX = clamp(s2wx(p.x),-60,1070); kick(); });
+  knob.addEventListener("pointerup", ()=>{ wdrag = false; });
+  knob.addEventListener("pointercancel", ()=>{ wdrag = false; });
+
+  /* ---------- photographs: fetched quietly once the Building view is on screen after the cover ---------- */
+  let preloadStarted = false, photosSettled = false;
+  function preload(){
+    if(preloadStarted || !body.classList.contains("entered")) return;
+    preloadStarted = true;
+    let left = ZONES.length;
+    ZONES.forEach(z=>{
+      const im = new Image(); im.decoding = "async";
+      im.onload = ()=>{ z.el.style.backgroundImage = 'url("' + im.src + '")'; z.ready = true; settle(); };
+      im.onerror = settle;   /* a missing photograph: this zone simply stays a drawing */
+      im.src = BUILDING_PHOTOS + z.photo;
+    });
+    function settle(){ kick(); if(--left===0){ photosSettled = true; tryTeaser(); } }
+  }
+  function maybePreload(){
+    if(preloadStarted || !VW || !body.classList.contains("entered") || body.classList.contains("view-open")) return;
+    const idle = window.requestIdleCallback || (f=>setTimeout(f,300));
+    idle(()=>preload(), {timeout:2000});
+  }
+
+  /* ---------- a one-time teaser: the drawing develops into reality, then returns ---------- */
+  let teaserDone = reduce || /^#\/?space\//.test(location.hash);   /* never when landing on a space */
+  function tryTeaser(){
+    if(teaserDone || !photosSettled || userTouched || !VW) return;
+    if(!body.classList.contains("entered") || panelOpen() || body.classList.contains("view-open")) return;
+    teaserDone = true;
+    if(!ZONES.some(z=>z.ready)) return;
+    setTimeout(()=>{ if(!userTouched && !panelOpen() && !body.classList.contains("view-open") && !focusId) intro(); }, 500);
+  }
+  function intro(){
+    introRunning = true; introCancel = false; viewer.classList.add("intro"); wipeX = 1100; kick();
+    const seq = [[330,2600],[330,700],[1100,1700]]; let i = 0, from = wipeX, t0 = performance.now(), dur = seq[0][1], to = seq[0][0], hold = false;
+    (function step(t){
+      if(introCancel){ finish(true); return; }
+      const u = clamp((t-t0)/dur,0,1), e = u<.5 ? 2*u*u : 1-Math.pow(-2*u+2,2)/2;
+      wipeX = hold ? from : from+(to-from)*e; kick();
+      if(u<1){ requestAnimationFrame(step); return; }
+      i++; if(i>=seq.length){ finish(false); return; }
+      from = wipeX; to = seq[i][0]; dur = seq[i][1]; t0 = t; hold = (from===to); requestAnimationFrame(step);
+    })(performance.now());
+    function finish(cancelled){
+      const start = wipeX, t1 = performance.now(), d = cancelled ? 420 : 1;
+      (function out(t){
+        const u = clamp((t-t1)/d,0,1); wipeX = start+(1100-start)*u; kick();
+        if(u<1){ requestAnimationFrame(out); return; }
+        introRunning = false; viewer.classList.remove("intro"); if(!compare) ZONES.forEach(z=>z.el.classList.remove("on")); kick();
+      })(t1);
+    }
+  }
+
+  /* markers: label, visited and current state (was the SVG hotspot painting) */
+  function paint(activeId){
+    ZONES.forEach(z=>{
+      const n = nameOf(z);
+      z.lab.textContent = n;
+      z.mk.setAttribute("aria-label", "Open the space: " + n);
+      z.mk.classList.toggle("visited", visited.has(z.id));
+      z.mk.classList.toggle("current", z.id===activeId);
+    });
+  }
+
+  if("ResizeObserver" in window) new ResizeObserver(()=>measure()).observe(viewer);
+  addEventListener("resize", measure);
+  /* the cover being dismissed, and the panel opening or closing, change body classes */
+  new MutationObserver(()=>measure()).observe(body, {attributes:true, attributeFilter:["class"]});
+  paint(null);
+  measure();
+  return {show, paint};
 })();
 
-function paintHotspots(activeId){
-  T.spaces.forEach(s=>{
-    const g = document.getElementById("hot-"+s.id);
-    g.classList.toggle("visited", visited.has(s.id));
-    g.classList.toggle("active", s.id===activeId);
-    g.querySelector("text").textContent = L()==="ka"?s.ka:s.en;
-    g.setAttribute("aria-label", L()==="ka"?s.ka:s.en);
-  });
-}
+function paintHotspots(activeId){ buildingView.paint(activeId); }
 
 /* ---- media slot ---- */
 const slotName = {photo:{ka:"ფოტო",en:"Photograph"},audio:{ka:"ხმა",en:"Sound"},video:{ka:"ვიდეო",en:"Video"},archive:{ka:"არქივი",en:"Archival"}};
@@ -2223,7 +2626,7 @@ function route(){
   if(a==="story" && b==="dogs"){ openDogsStory(); markNav("inhabitants"); return; }
   leaveDogsStory();
 
-  if(a==="space"){ openSpace(b); markNav("building"); return; }
+  if(a==="space"){ openSpace(b); markNav("building"); buildingView.show(T.spaces.some(x=>x.id===b) ? b : null); return; }
   if(a==="inhabitant"||a==="sense"){ openView("one", b); markNav(a==="inhabitant"?"inhabitants":"senses"); return; }
   if(a==="inhabitants"){ openView("inhabitants"); markNav("inhabitants"); return; }
   if(a==="senses"){ openView("senses"); markNav("senses"); return; }
@@ -2232,6 +2635,7 @@ function route(){
   document.body.classList.remove("panel-open","view-open");
   markNav("building");
   paintHotspots(null);
+  buildingView.show(null);
 }
 window.addEventListener("hashchange", route);
 
