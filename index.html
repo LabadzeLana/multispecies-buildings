@@ -583,7 +583,12 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
 .ink-svg.ink-fade{opacity:0;transition:opacity .9s ease-out}
 .ink-svg.ink-fade.ink-drawn{opacity:1}
 /* dividers between sections, fading toward the edges */
-.ink-div{height:120px;margin-top:3rem;display:flex;align-items:center}
+.ink-div{height:80px;margin-top:3rem;display:flex;align-items:center}
+/* dividers about 20% quieter than the other fragments */
+.ink-div .ink-svg .ink-d{opacity:.48}
+.ink-div .ink-svg .e2.ink-d,.ink-div .ink-svg .pane.ink-d{opacity:.64}
+.ink-div .ink-svg.ink-drawn .hatch{fill-opacity:.8}
+.ink-div .ink-svg .ink-d.ink-near{opacity:1}
 .ink-div > .st-wrap{width:100%;height:100%;
   -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 18%,#000 82%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 18%,#000 82%,transparent 100%)}
 .ink-div .ink-svg{width:100%;height:100%}
@@ -2047,7 +2052,8 @@ const INK = (function(){
         els.push(g);
       });
       const w = horiz ? (marks.length-1)*step + 52 : 52, h = horiz ? 30 : (marks.length-1)*step + 30;
-      return {els, vb:[-2, -2, w+4, h+4], src:"#elev"};
+      /* each mark: numeral above (y 1-12), tick line at y 16, triangle down to y 24 */
+      return {els, vb: opt.numerals ? [-2, -2, w+4, h+4] : [-2, 13, w+4, h-11], src:"#elev"};
     }
     if(name==="balconies"){   /* two rows of hatched railings across the four bays */
       const r = [58, 549, 1236, 700];
@@ -2096,8 +2102,9 @@ const INK = (function(){
     p.els.forEach(n=>{
       const c = take(n);
       /* text never gets the wobble: it goes to its own group, keeping its mark's position */
-      if(c.tagName==="text"){ texts.appendChild(c); return; }
+      if(c.tagName==="text"){ if(opt.numerals) texts.appendChild(c); return; }
       const t = [...c.querySelectorAll("text")];
+      if(!opt.numerals){ t.forEach(x=>x.remove()); t.length = 0; }
       if(t.length){
         const tg = document.createElementNS(NS,"g"), tf = c.getAttribute("transform");
         if(tf) tg.setAttribute("transform", tf);
