@@ -619,16 +619,17 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
 .ink-ruler .tick:focus-visible{outline-offset:-2px}
 @media (max-width:699px){.ink-ruler{display:none}}
 @media (prefers-reduced-motion: reduce){.ink-ruler,.ink-ruler .tick .lab{transition:none}}
-/* the develop moment: drawn window frames over one photograph, lifted by a soft lens */
+/* the develop moment: one drawing across the "Homes" paper, through the photographs, lifted by a lens */
 @property --lr{syntax:"<length>";inherits:false;initial-value:0px}
-.st-open.ink-host{position:relative}
-.ink-dev{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.7;--lr:0px;--lx:50%;--ly:50%;
-  transition:opacity 1.2s ease,--lr .4s ease;
-  -webkit-mask-image:radial-gradient(circle at var(--lx) var(--ly),transparent 0,transparent calc(var(--lr)*.55),#000 var(--lr));
-  mask-image:radial-gradient(circle at var(--lx) var(--ly),transparent 0,transparent calc(var(--lr)*.55),#000 var(--lr))}
-.ink-dev.lens{--lr:160px;transition:opacity 1.2s ease,--lr .25s ease}
-.ink-dev .ink-svg{width:100%;height:100%}
-.ink-dev .ink-d,.ink-dev .e2.ink-d,.ink-dev .pane.ink-d{stroke:var(--ink-soft);stroke-width:1.2;opacity:.9}
+#homes{position:relative}
+.ink-bleed,.ink-veil{position:absolute;left:0;width:100%;pointer-events:none;z-index:1;overflow:hidden}
+.ink-bleed{mix-blend-mode:multiply;--lr:0px;transition:--lr .4s ease}
+.ink-bleed.lens{--lr:160px;transition:--lr .25s ease}
+.ink-bleed .ink-svg{width:100%;height:100%;display:block;overflow:hidden}
+.ink-bleed .ink-d{stroke:var(--ink-soft);stroke-width:1.1;opacity:.85}
+.ink-bleed .e2.ink-d,.ink-bleed .pane.ink-d,.ink-bleed .glaze.ink-d{opacity:.78}
+.ink-bleed .hatch.ink-d,.ink-bleed .rib.ink-d,.ink-bleed .glaze.ink-d{fill:none}
+.ink-veil{background:var(--paper);opacity:.26}   /* paper lines end up at about .58-.63 */
 .st-open.ink-frame{outline:1px solid var(--line);outline-offset:6px}
 
 /* full-screen carousel */
@@ -2082,6 +2083,11 @@ const INK = (function(){
       const r = [312, 372, 388, 610];
       return {els:pick("#e-shaft rect", r, cls("rib","ef")), vb:[r[0], r[1], r[2]-r[0], r[3]-r[1]], src:"#elev"};
     }
+    if(name==="facade"){      /* the whole front elevation's calm lines: windows, balconies, shafts, columns */
+      const r = [40, 80, 1240, 1080];
+      return {els:pick("#e-open rect, #e-open line, #e-shaft rect, #e-struct line, #e-struct rect", r, cls("pane","e2","ef","ef2","e","hatch","glaze","rib")),
+              vb:[r[0], r[1], r[2]-r[0], r[3]-r[1]], src:"#elev"};
+    }
     if(name==="windows"){     /* window frames and mullions of the two left bays, three floors */
       const r = opt.region || [76, 166, 628, 596];
       return {els:pick("#e-open rect, #e-open line", r, cls("pane","e2")), vb:[r[0], r[1], r[2]-r[0], r[3]-r[1]], src:"#elev"};
@@ -2241,6 +2247,8 @@ function stInk(v){
   /* dividers between neighbouring sections, never repeating a motif in a row */
   const kinds = ["ground", "levels", "balconies", "levels", "balconies"];
   secs.slice(1).forEach((sec, i)=>{
+    /* none next to "Homes": its drawing already runs across the whole section */
+    if(sec.id==="homes" || secs[i].id==="homes") return;
     const kind = kinds[i % kinds.length];
     const d = el("div","ink ink-div"); d.setAttribute("aria-hidden","true");
     const w = el("div","st-wrap");
@@ -2250,29 +2258,107 @@ function stInk(v){
     INK.observe(svg); INK.proximity(svg);
   });
   stRuler(v, secs);
-  /* the develop moment: drawn window frames over the first photograph of "Homes" */
-  const btn = v.querySelector("#homes .st-gallery .st-open");
-  const img = btn && btn.querySelector("img");
-  if(!img) return;
-  if(INK.reduce){ btn.classList.add("ink-frame"); return; }
-  const ov = el("span","ink-dev"); ov.setAttribute("aria-hidden","true");
-  ov.appendChild(INK.fragment("windows", {fit:"xMidYMid slice", wobble:true}));
-  btn.classList.add("ink-host"); btn.appendChild(ov);
-  img.addEventListener("error", ()=>ov.remove(), {once:true});
-  if(INK.finePointer){
-    const at = e=>{ const r = btn.getBoundingClientRect(); ov.style.setProperty("--lx", (e.clientX-r.left)+"px"); ov.style.setProperty("--ly", (e.clientY-r.top)+"px"); };
-    btn.addEventListener("pointerenter", e=>{ at(e); ov.classList.add("lens"); });
-    btn.addEventListener("pointermove", at, {passive:true});
-    btn.addEventListener("pointerleave", ()=>ov.classList.remove("lens"));
-  } else if("IntersectionObserver" in window){
-    /* touch: the lines fade while the photograph is mostly on screen, and return when it leaves */
-    const io = new IntersectionObserver(es=>es.forEach(e=>{
-      const k = Math.min(1, Math.max(0, (e.intersectionRatio - .3) / .5));
-      ov.style.opacity = (.7 * (1 - k)).toFixed(2);
-    }), {threshold:[0,.25,.4,.55,.7,.85,1]});
-    io.observe(btn);
+  /* the develop moment: one drawing across the paper that passes through the "Homes" photographs */
+  stInkBleed(v.querySelector("#homes"));
+}
+
+/* Homes: one wide drawing that runs across the paper and passes through the photographs.
+   A single SVG of the elevation, scaled so its width is the section's width; the lines over the
+   photographs are the same strokes as on the paper. A mask on the layer fades the paper edges and,
+   only inside the photograph rectangles, opens the lens (or the touch fade). */
+function stInkBleed(sec){
+  const gallery = sec && sec.querySelector(".st-gallery"); if(!gallery) return;
+  const shots = [...gallery.querySelectorAll(".st-open")];
+  const above = sec.querySelector(".st-lede") || sec.querySelector("h3");
+  const reduce = INK.reduce, fine = INK.finePointer;
+  const DX = 48, DW = 1186, DCY = 587;   /* elevation: wall to wall, and the middle of its floors */
+  const layer = el("div","ink ink-bleed"); layer.setAttribute("aria-hidden","true");
+  const svg = INK.fragment("facade"); svg.setAttribute("preserveAspectRatio","none");
+  layer.appendChild(svg);
+  /* the lines on the paper are a little lighter than over the photographs: a paper veil outside them */
+  const veil = el("div","ink-veil"); veil.setAttribute("aria-hidden","true");
+  sec.appendChild(layer); sec.appendChild(veil);
+  if(reduce) shots.forEach(b=>b.classList.add("ink-frame"));
+
+  let box = null, fade = shots.map(()=>0);   /* touch: how far each photograph's lines have faded */
+  const px = n => Math.round(n) + "px";
+  function maskFor(holes){
+    const {W, H, rects, clearL, mobile} = box;
+    const R = rects.map((r,i)=>({img:`linear-gradient(rgba(0,0,0,${holes ? holes[i] : 1}),rgba(0,0,0,${holes ? holes[i] : 1}))`, size:px(r.w)+" "+px(r.h), pos:px(r.x)+" "+px(r.y)}));
+    const fadeH = mobile ? "linear-gradient(#000,#000)"
+      : `linear-gradient(90deg,transparent 0,transparent ${px(clearL)},#000 ${px(clearL + W*.09)},#000 ${px(W*.91)},transparent 100%)`;
+    const fadeV = `linear-gradient(180deg,transparent 0,#000 ${px(box.m)},#000 ${px(H - box.m)},transparent 100%)`;
+    const hole = "radial-gradient(circle at var(--lx,-999px) var(--ly,-999px),#000 0,#000 calc(var(--lr)*.55),transparent var(--lr))";
+    /* bottom-up: photo rectangles (union) -> [lens hole: intersect] -> paper fade minus that -> side fade */
+    const L = [{img:fadeH, op:"intersect", wk:"source-in"}, {img:fadeV, op:"subtract", wk:"source-out"}]
+      .concat(holes ? [] : [{img:hole, op:"intersect", wk:"source-in"}])
+      .concat(R.slice().reverse().map(r=>Object.assign(r, {op:"add", wk:"source-over"})));
+    const full = "100% 100%", s = layer.style;
+    const imgs = L.map(l=>l.img).join(","), sizes = L.map(l=>l.size || full).join(","), poss = L.map(l=>l.pos || "0 0").join(",");
+    s.webkitMaskImage = s.maskImage = imgs;
+    s.webkitMaskSize = s.maskSize = sizes; s.webkitMaskPosition = s.maskPosition = poss;
+    s.webkitMaskRepeat = s.maskRepeat = "no-repeat";
+    s.maskComposite = L.map(l=>l.op).join(","); s.webkitMaskComposite = L.map(l=>l.wk).join(",");
+    /* veil: everywhere except the photographs */
+    const V = ["linear-gradient(#000,#000)"].concat(R.map(r=>"linear-gradient(#000,#000)"));
+    const v = veil.style;
+    v.webkitMaskImage = v.maskImage = V.join(",");
+    v.webkitMaskSize = v.maskSize = [full].concat(R.map(r=>r.size)).join(",");
+    v.webkitMaskPosition = v.maskPosition = ["0 0"].concat(R.map(r=>r.pos)).join(",");
+    v.webkitMaskRepeat = v.maskRepeat = "no-repeat";
+    v.maskComposite = ["subtract"].concat(R.map(()=>"add")).join(",");
+    v.webkitMaskComposite = ["source-out"].concat(R.map(()=>"source-over")).join(",");
+  }
+  const paintMask = ()=>{ if(!box) return; maskFor(reduce ? shots.map(()=>1) : fine ? null : fade); };
+
+  /* one coordinate system: the layer box, measured from the photograph row and the section */
+  function measure(){
+    const sr = sec.getBoundingClientRect(), gr = gallery.getBoundingClientRect(), ar = above.getBoundingClientRect();
+    if(!sr.width || !gr.height) return;
+    const W = sec.clientWidth, m = 44, mobile = innerWidth < 700;
+    const top = Math.max(ar.bottom - sr.top + 14, gr.top - sr.top - m);   /* clear of the title and lede */
+    const H = Math.round(gr.bottom - sr.top + m - top);
+    const ruler = document.querySelector(".ink-ruler");
+    const rOn = ruler && !ruler.hidden && getComputedStyle(ruler).display !== "none";
+    const clearL = rOn ? ruler.getBoundingClientRect().right + 12 : 0;   /* never under the ruler */
+    const k = W / DW, vbH = H / k;
+    svg.setAttribute("viewBox", `${DX} ${(DCY - vbH/2).toFixed(1)} ${DW} ${vbH.toFixed(1)}`);
+    Object.assign(layer.style, {top:px(top), height:px(H)});
+    Object.assign(veil.style, {top:px(top), height:px(H)});
+    const rects = shots.map(b=>{ const r = b.getBoundingClientRect(); return {x:r.left - sr.left, y:r.top - sr.top - top, w:r.width, h:r.height}; });
+    box = {W, H, rects, clearL, mobile, top, m: Math.min(m, gr.top - sr.top - top)};
+    paintMask();
+  }
+
+  /* the lens: only over a photograph, throttled to one update per frame */
+  if(!reduce && fine){
+    let raf = 0, ev = null;
+    const move = ()=>{ raf = 0; if(!ev || !box) return;
+      const lr = layer.getBoundingClientRect();
+      layer.style.setProperty("--lx", px(ev.clientX - lr.left)); layer.style.setProperty("--ly", px(ev.clientY - lr.top)); };
+    shots.forEach(b=>{
+      b.addEventListener("pointerenter", e=>{ ev = e; move(); layer.classList.add("lens"); });
+      b.addEventListener("pointermove", e=>{ ev = e; if(!raf) raf = requestAnimationFrame(move); }, {passive:true});
+      b.addEventListener("pointerleave", ()=>{ layer.classList.remove("lens"); });
+    });
+  } else if(!reduce && "IntersectionObserver" in window){
+    /* touch: the lines over a photograph fade while it is mostly on screen; the paper keeps its lines */
+    const io = new IntersectionObserver(es=>{
+      es.forEach(e=>{ fade[shots.indexOf(e.target)] = Math.min(1, Math.max(0, (e.intersectionRatio - .3) / .5)); });
+      paintMask();
+    }, {threshold:[0,.25,.4,.55,.7,.85,1]});
+    shots.forEach(b=>io.observe(b));
     dogsStory.cleanup.push(()=>io.disconnect());
   }
+  INK.observe(svg);   /* draws on once when it scrolls into view */
+  const ro = "ResizeObserver" in window ? new ResizeObserver(()=>measure()) : null;
+  if(ro){ ro.observe(gallery); ro.observe(sec); }
+  addEventListener("resize", measure);
+  requestAnimationFrame(measure);
+  /* measure again whenever the section comes into view: the ruler only appears after Continue */
+  const seen = "IntersectionObserver" in window ? new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) measure(); })) : null;
+  if(seen) seen.observe(sec);
+  dogsStory.cleanup.push(()=>{ if(ro) ro.disconnect(); if(seen) seen.disconnect(); removeEventListener("resize", measure); });
 }
 
 /* full-screen carousel: native horizontal scroll-snap for touch and trackpads, plus mouse drag,
