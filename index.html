@@ -560,6 +560,53 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
 .story-link{margin-top:2rem}
 .story-link a{display:inline-flex;align-items:center;min-height:44px;font-family:var(--sans);font-size:.92rem;color:var(--oil);text-decoration:none;border-bottom:1px solid var(--oil)}
 
+/* ---------- ink: fragments of the building drawing as quiet accents (Dogs page) ---------- */
+.ink{pointer-events:none;user-select:none;-webkit-user-select:none}
+.ink-svg{display:block;overflow:visible}
+.ink-svg .ink-d{fill:none;stroke:var(--ink-soft);stroke-width:1;vector-effect:non-scaling-stroke;opacity:.6;transition:stroke .3s,opacity .3s}
+.ink-svg .e2.ink-d,.ink-svg .pane.ink-d{stroke:var(--line);stroke-width:.9;opacity:.8}
+.ink-svg .hatch.ink-d{fill:url(#ink-p-balu)}
+.ink-svg .rib.ink-d{fill:url(#ink-p-rib)}
+.ink-svg .rust.ink-d{stroke:var(--oxide);stroke-width:1.1}
+.ink-svg .dash{stroke-dasharray:5 5}
+.ink-svg .ink-t{fill:var(--ink-soft);opacity:.6}
+.ink-svg .ink-d.ink-near{stroke:var(--ink);opacity:1}
+.ink-svg.ink-pre .ink-d[pathLength]{stroke-dasharray:1;stroke-dashoffset:1}
+.ink-svg.ink-pre .hatch,.ink-svg.ink-pre .rib{fill-opacity:0}
+.ink-svg.ink-pre .ink-t,.ink-svg.ink-pre .ink-d.dash{opacity:0}
+.ink-svg.ink-drawn .ink-d[pathLength]{stroke-dashoffset:0;
+  transition:stroke-dashoffset .9s cubic-bezier(.2,.7,.3,1) calc(var(--i,0)*12ms),stroke .3s,opacity .3s}
+.ink-svg.ink-drawn .hatch,.ink-svg.ink-drawn .rib{fill-opacity:1;transition:fill-opacity .6s ease-out .35s,stroke .3s,opacity .3s}
+.ink-svg.ink-drawn .ink-t,.ink-svg.ink-drawn .ink-d.dash{opacity:.6;transition:opacity .6s ease-out .3s}
+.ink-svg.ink-done .ink-d[pathLength]{stroke-dasharray:none}
+.ink-svg.ink-fade .ink-d[pathLength]{stroke-dasharray:none;stroke-dashoffset:0}
+.ink-svg.ink-fade{opacity:0;transition:opacity .9s ease-out}
+.ink-svg.ink-fade.ink-drawn{opacity:1}
+/* dividers between sections, fading toward the edges */
+.ink-div{height:120px;margin-top:3rem;display:flex;align-items:center}
+.ink-div > .st-wrap{width:100%;height:100%;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 18%,#000 82%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 18%,#000 82%,transparent 100%)}
+.ink-div .ink-svg{width:100%;height:100%}
+.ink-div + .st-sec{padding-top:2rem}
+.ink-div + .st-carousel{margin-top:2rem}
+@media (max-width:768px){.ink-div{height:70px;margin-top:2rem}}
+/* small level marks in the left margin beside section titles (desktop only) */
+.st-sec > .st-wrap{position:relative}
+.ink-mark{position:absolute;left:calc(clamp(1rem,4vw,3rem) - 4.4rem);top:.6rem;width:42px;display:block}
+.ink-mark .ink-svg{width:100%;height:auto}
+@media (max-width:1180px){.ink-mark{display:none}}
+/* the develop moment: drawn window frames over one photograph, lifted by a soft lens */
+@property --lr{syntax:"<length>";inherits:false;initial-value:0px}
+.st-open.ink-host{position:relative}
+.ink-dev{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.7;--lr:0px;--lx:50%;--ly:50%;
+  transition:opacity 1.2s ease,--lr .4s ease;
+  -webkit-mask-image:radial-gradient(circle at var(--lx) var(--ly),transparent 0,transparent calc(var(--lr)*.55),#000 var(--lr));
+  mask-image:radial-gradient(circle at var(--lx) var(--ly),transparent 0,transparent calc(var(--lr)*.55),#000 var(--lr))}
+.ink-dev.lens{--lr:160px;transition:opacity 1.2s ease,--lr .25s ease}
+.ink-dev .ink-svg{width:100%;height:100%}
+.ink-dev .ink-d,.ink-dev .e2.ink-d,.ink-dev .pane.ink-d{stroke:var(--ink-soft);stroke-width:1.2;opacity:.9}
+.st-open.ink-frame{outline:1px solid var(--line);outline-offset:6px}
+
 /* full-screen carousel */
 .st-carousel{position:relative;width:100%;height:100vh;height:100dvh;margin-top:4.5rem;background:#1B211F;overflow:hidden}
 .car-track{display:flex;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
@@ -1939,6 +1986,234 @@ function stLightbox(items){
   return {open};
 }
 
+/* ---- ink: small decorative fragments of the building drawing, reused on other pages ----
+   Fragments are cloned from the elevation that buildElevation() already drew (#e-shaft, #e-open,
+   #ground), so the drawing exists only once. Decorative only: aria-hidden, no focus, no pointer. */
+const INK = (function(){
+  const NS = "http://www.w3.org/2000/svg";
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
+  /* draw-on relies on pathLength on every shape; without it the lines just fade in */
+  const canDraw = "pathLength" in SVGRectElement.prototype && "pathLength" in SVGLineElement.prototype;
+  /* the hatch patterns and the wobble filter live in the Building drawing, which is display:none on
+     other pages; some browsers then ignore them, so keep small copies in an always-rendered SVG */
+  let defsReady = false;
+  function ensureDefs(){
+    if(defsReady) return; defsReady = true;
+    const src = document.querySelector("#section defs"); if(!src) return;
+    const svg = document.createElementNS(NS,"svg");
+    svg.setAttribute("aria-hidden","true"); svg.setAttribute("focusable","false");
+    svg.setAttribute("width","0"); svg.setAttribute("height","0");
+    svg.style.cssText = "position:absolute;width:0;height:0;overflow:hidden";
+    const d = src.cloneNode(true);
+    d.querySelectorAll("[id]").forEach(n=>n.id = "ink-" + n.id);   /* ink-p-balu, ink-p-rib, ink-ink */
+    svg.appendChild(d); document.body.appendChild(svg);
+  }
+  const nums = s => (String(s).match(/-?\d+(\.\d+)?/g) || []).map(Number);
+  /* rough box of a drawing element from its own attributes (works while the Building view is hidden) */
+  function box(n){
+    const a = k => parseFloat(n.getAttribute(k)) || 0, t = n.tagName;
+    if(t==="rect") return [a("x"), a("y"), a("x")+a("width"), a("y")+a("height")];
+    if(t==="line") return [Math.min(a("x1"),a("x2")), Math.min(a("y1"),a("y2")), Math.max(a("x1"),a("x2")), Math.max(a("y1"),a("y2"))];
+    if(t==="text") return [a("x"), a("y")-11, a("x")+44, a("y")+2];
+    if(t==="path"){ const v = nums(n.getAttribute("d")); return [v[0], v[1], v[0]+12, v[1]+10]; }
+    return [0,0,0,0];
+  }
+  const inside = (b, r) => b[0]>=r[0]-1 && b[1]>=r[1]-1 && b[2]<=r[2]+1 && b[3]<=r[3]+1;
+  /* the drawing never changes after it is built, so its elements and boxes are read only once */
+  const cache = new Map();
+  const source = sel => { if(!cache.has(sel)) cache.set(sel, [...document.querySelectorAll(sel)].map(n=>({n, b:box(n)}))); return cache.get(sel); };
+  const pick = (sel, region, keep) => source(sel).filter(o=>inside(o.b, region) && (!keep || keep(o.n))).map(o=>o.n);
+  const cls = (...c) => n => c.some(k=>n.classList.contains(k));
+
+  /* the level marks of the left column: [text, tick line, triangle] at each level */
+  function levelMarks(){
+    return source("#e-shaft text.lvl").map(o=>o.n).filter(t=>Math.abs(parseFloat(t.getAttribute("x"))-400)<1).map(t=>{
+      const y = parseFloat(t.getAttribute("y"));
+      return pick("#e-shaft line, #e-shaft path", [396, y, 446, y+14]).concat([t]);
+    });
+  }
+  /* named fragments: elements + viewBox in the drawing's own coordinates */
+  function parts(name, opt){
+    opt = opt || {};
+    if(name==="levels"){
+      const from = opt.from || 0, marks = levelMarks().slice(from, from + (opt.count || 4)), step = opt.step || 34, horiz = opt.dir==="h";
+      const els = [];
+      marks.forEach((m,i)=>{
+        const y0 = parseFloat(m[m.length-1].getAttribute("y"));
+        const g = document.createElementNS(NS,"g");
+        g.setAttribute("transform", horiz ? `translate(${i*step - 396} ${-y0+12})` : `translate(${-396} ${i*step - y0 + 12})`);
+        m.forEach(n=>g.appendChild(n.cloneNode(true)));
+        els.push(g);
+      });
+      const w = horiz ? (marks.length-1)*step + 52 : 52, h = horiz ? 30 : (marks.length-1)*step + 30;
+      return {els, vb:[-2, -2, w+4, h+4], src:"#elev"};
+    }
+    if(name==="balconies"){   /* two rows of hatched railings across the four bays */
+      const r = [58, 549, 1236, 700];
+      return {els:pick("#e-open rect, #e-open line", r, cls("hatch","ef","e")), vb:[r[0], r[1], r[2]-r[0], r[3]-r[1]], src:"#elev"};
+    }
+    if(name==="stair"){
+      const r = [312, 372, 388, 610];
+      return {els:pick("#e-shaft rect", r, cls("rib","ef")), vb:[r[0], r[1], r[2]-r[0], r[3]-r[1]], src:"#elev"};
+    }
+    if(name==="windows"){     /* window frames and mullions of the two left bays, three floors */
+      const r = opt.region || [76, 166, 628, 596];
+      return {els:pick("#e-open rect, #e-open line", r, cls("pane","e2")), vb:[r[0], r[1], r[2]-r[0], r[3]-r[1]], src:"#elev"};
+    }
+    if(name==="ground"){
+      const gl = document.querySelector("#ground line"), gy = gl ? parseFloat(gl.getAttribute("y1")) : 784;
+      const r = [40, gy-6, 916, gy+72];
+      const els = source("#ground line, #ground rect, #ground path").map(o=>o.n);
+      return {els, vb:[r[0], r[1], r[2]-r[0], r[3]-r[1]], src:"#ground"};
+    }
+    return {els:[], vb:[0,0,1,1]};
+  }
+  /* render a fragment into a new inline SVG */
+  function fragment(name, opt){
+    opt = opt || {};
+    ensureDefs();
+    const p = parts(name, opt);
+    const svg = document.createElementNS(NS,"svg");
+    svg.setAttribute("class", "ink-svg ink-" + name);
+    svg.setAttribute("viewBox", p.vb.join(" "));
+    svg.setAttribute("preserveAspectRatio", opt.fit || "xMidYMid meet");
+    svg.setAttribute("aria-hidden","true"); svg.setAttribute("focusable","false");
+    const lines = document.createElementNS(NS,"g"), texts = document.createElementNS(NS,"g");
+    if(opt.wobble) lines.setAttribute("filter","url(#ink-ink)");   /* the hand-drawn wobble, never on text */
+    let k = 0;
+    const take = n => {
+      const c = n.cloneNode(true);
+      [c, ...c.querySelectorAll("*")].forEach(e=>{
+        if(e.tagName==="text"){ e.classList.add("ink-t"); return; }
+        if(e.tagName==="g") return;
+        e.classList.add("ink-d");
+        if(!e.classList.contains("dash")) e.setAttribute("pathLength","1");
+        e.style.setProperty("--i", Math.min(k++, 24));
+      });
+      return c;
+    };
+    p.els.forEach(n=>{
+      const c = take(n);
+      /* text never gets the wobble: it goes to its own group, keeping its mark's position */
+      if(c.tagName==="text"){ texts.appendChild(c); return; }
+      const t = [...c.querySelectorAll("text")];
+      if(t.length){
+        const tg = document.createElementNS(NS,"g"), tf = c.getAttribute("transform");
+        if(tf) tg.setAttribute("transform", tf);
+        t.forEach(x=>tg.appendChild(x)); texts.appendChild(tg);
+      }
+      lines.appendChild(c);
+    });
+    svg.appendChild(lines); svg.appendChild(texts);
+    return svg;
+  }
+
+  /* draw-on once per fragment, one fragment at a time */
+  const queue = []; let drawing = false;
+  function drawNext(){
+    if(drawing || !queue.length) return;
+    const svg = queue.shift(); if(!svg.isConnected){ drawNext(); return; }
+    drawing = true;
+    svg.classList.add("ink-drawn");
+    setTimeout(()=>{ svg.classList.add("ink-done"); drawing = false; drawNext(); }, 1250);
+  }
+  let io = null;
+  function observe(svg){
+    if(reduce){ svg.classList.add("ink-static"); return; }
+    svg.classList.add("ink-pre");
+    if(!canDraw) svg.classList.add("ink-fade");
+    if(!("IntersectionObserver" in window)){ svg.classList.add("ink-drawn"); return; }
+    if(!io) io = new IntersectionObserver(es=>es.forEach(e=>{
+      if(!e.isIntersecting) return;
+      io.unobserve(e.target); queue.push(e.target); drawNext();
+    }), {threshold:.35});
+    io.observe(svg);
+  }
+
+  /* proximity: with a mouse, the lines nearest the pointer darken a little */
+  const near = new Set(); let px = -1e4, py = -1e4, rafP = 0, watching = [];
+  function onMove(e){ px = e.clientX; py = e.clientY; if(!rafP) rafP = requestAnimationFrame(tick); }
+  function tick(){
+    rafP = 0;
+    const R = 120, now = new Set();
+    watching.forEach(svg=>{
+      if(!svg.isConnected) return;
+      const b = svg.getBoundingClientRect();
+      if(px < b.left-R || px > b.right+R || py < b.top-R || py > b.bottom+R) return;   /* not near: no work */
+      svg.querySelectorAll(".ink-d").forEach(n=>{
+        const r = n.getBoundingClientRect();
+        const dx = Math.max(r.left-px, 0, px-r.right), dy = Math.max(r.top-py, 0, py-r.bottom);
+        if(dx*dx + dy*dy < R*R) now.add(n);
+      });
+    });
+    near.forEach(n=>{ if(!now.has(n)){ n.classList.remove("ink-near"); near.delete(n); } });
+    now.forEach(n=>{ if(!near.has(n)){ n.classList.add("ink-near"); near.add(n); } });
+  }
+  function proximity(svg){
+    if(!finePointer) return;
+    if(!watching.length) document.addEventListener("pointermove", onMove, {passive:true});
+    watching.push(svg);
+  }
+  function reset(){
+    if(io){ io.disconnect(); io = null; }
+    queue.length = 0; drawing = false;
+    document.removeEventListener("pointermove", onMove);
+    watching = []; near.clear(); cancelAnimationFrame(rafP); rafP = 0;
+  }
+  return {fragment, observe, proximity, reset, reduce, finePointer};
+})();
+
+/* Dogs page: dividers between sections, small level marks beside titles, one photograph that develops */
+function stInk(v){
+  dogsStory.cleanup.push(()=>INK.reset());
+  const secs = [...v.querySelectorAll(":scope > section.st-sec, :scope > section.st-carousel")];
+  /* dividers between neighbouring sections, never repeating a motif in a row */
+  const kinds = ["ground", "levels", "balconies", "levels", "balconies"];
+  secs.slice(1).forEach((sec, i)=>{
+    const kind = kinds[i % kinds.length];
+    const d = el("div","ink ink-div"); d.setAttribute("aria-hidden","true");
+    const w = el("div","st-wrap");
+    const svg = INK.fragment(kind, kind==="levels" ? {dir:"h", count:6, step:150} : {wobble:true});
+    w.appendChild(svg); d.appendChild(w);
+    sec.before(d);
+    INK.observe(svg); INK.proximity(svg);
+  });
+  /* margin marks beside the section titles (desktop only, via CSS). Not beside "Homes":
+     that section already carries the develop moment, and a third motif on one screen is too much. */
+  let mi = 0;
+  secs.forEach(sec=>{
+    const h = sec.querySelector(":scope > .st-wrap > h3"); if(!h || sec.id==="homes") return;
+    const m = el("span","ink ink-mark"); m.setAttribute("aria-hidden","true");
+    const svg = INK.fragment("levels", {count:3, step:30, from:[0,3,5][mi++ % 3]});
+    m.appendChild(svg); h.before(m);   /* beside the title, not inside it */
+    INK.observe(svg); INK.proximity(svg);
+  });
+  /* the develop moment: drawn window frames over the first photograph of "Homes" */
+  const btn = v.querySelector("#homes .st-gallery .st-open");
+  const img = btn && btn.querySelector("img");
+  if(!img) return;
+  if(INK.reduce){ btn.classList.add("ink-frame"); return; }
+  const ov = el("span","ink-dev"); ov.setAttribute("aria-hidden","true");
+  ov.appendChild(INK.fragment("windows", {fit:"xMidYMid slice", wobble:true}));
+  btn.classList.add("ink-host"); btn.appendChild(ov);
+  img.addEventListener("error", ()=>ov.remove(), {once:true});
+  if(INK.finePointer){
+    const at = e=>{ const r = btn.getBoundingClientRect(); ov.style.setProperty("--lx", (e.clientX-r.left)+"px"); ov.style.setProperty("--ly", (e.clientY-r.top)+"px"); };
+    btn.addEventListener("pointerenter", e=>{ at(e); ov.classList.add("lens"); });
+    btn.addEventListener("pointermove", at, {passive:true});
+    btn.addEventListener("pointerleave", ()=>ov.classList.remove("lens"));
+  } else if("IntersectionObserver" in window){
+    /* touch: the lines fade while the photograph is mostly on screen, and return when it leaves */
+    const io = new IntersectionObserver(es=>es.forEach(e=>{
+      const k = Math.min(1, Math.max(0, (e.intersectionRatio - .3) / .5));
+      ov.style.opacity = (.7 * (1 - k)).toFixed(2);
+    }), {threshold:[0,.25,.4,.55,.7,.85,1]});
+    io.observe(btn);
+    dogsStory.cleanup.push(()=>io.disconnect());
+  }
+}
+
 /* full-screen carousel: native horizontal scroll-snap for touch and trackpads, plus mouse drag,
    arrow buttons and arrow keys. Vertical wheel and swipes are left to the page. */
 function stCarousel(S){
@@ -2591,6 +2866,9 @@ function openDogsStory(){
     na.wrap.appendChild(pair);
     v.appendChild(na.sec);
   }
+
+  /* ink accents: drawn dividers, margin marks, one photograph that develops */
+  stInk(v);
 
   /* 5 — closing */
   const cl = el("div","st-wrap st-close-line"), a = el("a",null,D.closing.text);
