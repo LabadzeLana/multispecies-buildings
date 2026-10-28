@@ -306,6 +306,16 @@ body.panel-open #panel{display:block}
 .tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:1.1rem 0}
 .tag{font-family:var(--sans);font-size:.8rem;border:1px solid var(--line);padding:.45rem .7rem;border-radius:2px;color:var(--ink-soft)}
 .tag:hover{border-color:var(--oil);color:var(--oil)}
+/* links to the Dogs story: labels keep their own look, words in running text get the site's thin oil underline */
+a.tag{display:inline-block;text-decoration:none;position:relative}
+a.dog-tag::after{content:"";position:absolute;left:0;right:0;top:-6px;bottom:-6px}   /* 44px touch target, no visual change */
+a.dog-label{text-decoration:none;color:inherit}
+a.dog-label:hover,a.dog-label:focus-visible{color:var(--oil)}
+a.dog-link{color:inherit;text-decoration:underline;text-decoration-color:var(--oil);text-decoration-thickness:1px;text-underline-offset:.16em}
+a.dog-link:hover,a.dog-link:focus-visible{color:var(--oil);text-decoration-thickness:2px}
+.row a.t{color:inherit;text-decoration:none}
+.row{cursor:pointer}
+#cap.show a{pointer-events:auto}
 .tag.sense{border-style:dashed}
 .rule{border:none;border-top:1px solid var(--line-soft);margin:1.6rem 0 1.1rem}
 .field{font-family:var(--sans);font-size:.82rem;color:var(--muted);display:flex;gap:.6rem;margin:.15rem 0}
@@ -1029,6 +1039,22 @@ const el = (t,c,x)=>{const n=document.createElement(t); if(c)n.className=c; if(x
 const L = () => document.documentElement.lang;
 const tr = (o,k) => o[k + (L()==="ka"?"ka":"en")] ?? o[L()==="ka"?"ka":"en"];
 
+/* the dog inhabitant: wherever it is named it reads "Dogs", and every mention links to the Dogs story */
+const DOGS_HREF = "#/story/dogs";
+function dogLink(text, cls){ const a = el("a", cls || "dog-link", text); a.href = DOGS_HREF; return a; }
+/* wraps each whole word dog / dogs in a link; the sentence itself stays exactly as written */
+function withDogLinks(text){
+  text = String(text == null ? "" : text);
+  const f = document.createDocumentFragment(); let last = 0;
+  text.replace(/\b(dogs?)\b/gi, (w, g, i)=>{
+    if(i > last) f.appendChild(document.createTextNode(text.slice(last, i)));
+    f.appendChild(dogLink(w)); last = i + w.length; return w;
+  });
+  if(last < text.length) f.appendChild(document.createTextNode(text.slice(last)));
+  return f;
+}
+function elDogs(tag, cls, text){ const n = el(tag, cls); n.appendChild(withDogLinks(text)); return n; }
+
 let visited = new Set();
 try{ const v = localStorage.getItem("msb.visited"); if(v) visited = new Set(JSON.parse(v)); }catch(e){}
 const saveVisited = () => { try{ localStorage.setItem("msb.visited", JSON.stringify([...visited])); }catch(e){} };
@@ -1293,9 +1319,9 @@ const buildingView = (function(){
   function showCap(id){
     if(capId!==id){
       const z = byId[id];
-      capEl.querySelector(".sub").textContent = z.space.suben;
+      capEl.querySelector(".sub").replaceChildren(withDogLinks(z.space.suben));
       capEl.querySelector("h2").textContent = nameOf(z);
-      capEl.querySelector("p").textContent = z.space.lede;
+      capEl.querySelector("p").replaceChildren(withDogLinks(z.space.lede));
       capId = id;
     }
     capEl.classList.add("show"); capEl.querySelector(".back").tabIndex = 0;
@@ -1544,8 +1570,8 @@ function openSpace(id){
   close.onclick = ()=> location.hash = "#/";
   head.appendChild(close);
   p.appendChild(head);
-  p.appendChild(el("div","sub", s.suben));
-  p.appendChild(el("p","lede-text", s.lede));
+  p.appendChild(elDogs("div","sub", s.suben));
+  p.appendChild(elDogs("p","lede-text", s.lede));
 
   if(id==="vineyard"){
     p.appendChild(el("div","eyebrow", L()==="ka"?"სრული ისტორია":"Full story"));
@@ -1561,6 +1587,7 @@ function openSpace(id){
 
   const tags = el("div","tags");
   s.inh.forEach(k=>{
+    if(k==="dog"){ tags.appendChild(dogLink("Dogs","tag dog-tag")); return; }
     const b = el("button","tag", L()==="ka"?T.inhabitants[k].ka:T.inhabitants[k].en);
     b.onclick = ()=> location.hash="#/inhabitant/"+k; tags.appendChild(b);
   });
@@ -1616,7 +1643,7 @@ function mediaSlot(m){
   const cap = el("div","cap");
   const kindLabel = (L()==="ka"?slotName[m.t].ka:slotName[m.t].en) + (pending ? (L()==="ka"?" \u00b7 ჩასაწერია":" \u00b7 not yet recorded") : "");
   cap.appendChild(el("div","kind", kindLabel));
-  cap.appendChild(el("div","desc", L()==="ka"?m.ka:m.en));
+  cap.appendChild(elDogs("div","desc", L()==="ka"?m.ka:m.en));
   w.appendChild(cap);
   return w;
 }
@@ -1661,8 +1688,9 @@ function openView(kind, arg){
     const cols = el("div","cols");
     Object.entries(dict).forEach(([k,o])=>{
       const c = el("div","card");
-      c.appendChild(el("h3",null,L()==="ka"?o.ka:o.en));
-      c.appendChild(el("p",null,L()==="ka"?o.dka:o.den));
+      if(isInh && k==="dog"){ const h = el("h3"); h.appendChild(dogLink("Dogs","dog-label")); c.appendChild(h); }
+      else c.appendChild(el("h3",null,L()==="ka"?o.ka:o.en));
+      c.appendChild(elDogs("p",null,L()==="ka"?o.dka:o.den));
       const list = el("div","links");
       T.spaces.filter(s=>(isInh?s.inh:s.sen).includes(k)).forEach(s=>{
         const b = el("button",null,L()==="ka"?s.ka:s.en);
@@ -1678,8 +1706,9 @@ function openView(kind, arg){
     const o = isInh ? T.inhabitants[arg] : T.senses[arg];
     if(!o){ location.hash="#/"; return; }
     v.appendChild(el("div","eyebrow", isInh ? (L()==="ka"?"მობინადრე":"Inhabitant") : (L()==="ka"?"გრძნობა":"Sense")));
-    v.appendChild(el("h2",null,L()==="ka"?o.ka:o.en));
-    v.appendChild(el("p","lede",L()==="ka"?o.dka:o.den));
+    if(isInh && arg==="dog"){ const h = el("h2"); h.appendChild(dogLink("Dogs","dog-label")); v.appendChild(h); }
+    else v.appendChild(el("h2",null,L()==="ka"?o.ka:o.en));
+    v.appendChild(elDogs("p","lede",L()==="ka"?o.dka:o.den));
     const rows = el("div","rows");
     T.spaces.filter(s=>(isInh?s.inh:s.sen).includes(arg)).forEach(s=>rows.appendChild(spaceRow(s)));
     if(isInh && arg==="grapevine"){
@@ -1744,16 +1773,23 @@ function openView(kind, arg){
 }
 
 function spaceRow(s, showState){
-  const b = el("button","row");
-  const t = el("div","t", L()==="ka"?s.ka:s.en);
-  const m = el("div","m", [...s.inh.map(k=>L()==="ka"?T.inhabitants[k].ka:T.inhabitants[k].en),
-                           ...s.sen.map(k=>L()==="ka"?T.senses[k].ka:T.senses[k].en)].join(", "));
+  const b = el("div","row");
+  const t = el("a","t", L()==="ka"?s.ka:s.en); t.href = "#/space/"+s.id;
+  const m = el("div","m");
+  const names = [...s.inh.map(k=>k==="dog" ? null : (L()==="ka"?T.inhabitants[k].ka:T.inhabitants[k].en)),
+                 ...s.sen.map(k=>L()==="ka"?T.senses[k].ka:T.senses[k].en)];
+  names.forEach((n,i)=>{
+    if(i) m.appendChild(document.createTextNode(", "));
+    if(n===null){ const a = dogLink("Dogs"); a.addEventListener("click", e=>e.stopPropagation()); m.appendChild(a); }
+    else m.appendChild(document.createTextNode(n));
+  });
   b.appendChild(t); b.appendChild(m);
   const st = el("div","st");
   if(showState) st.textContent = visited.has(s.id) ? (L()==="ka"?"ნანახი":"visited") : (s.media.length + (L()==="ka"?" ერთეული":" items"));
   else st.textContent = s.media.length + (L()==="ka"?" ერთეული":" items");
   b.appendChild(st);
-  b.onclick = ()=> location.hash = "#/space/"+s.id;
+  /* the rest of the row still opens the space, as before */
+  b.onclick = e=>{ if(!e.target.closest("a")) location.hash = "#/space/"+s.id; };
   return b;
 }
 
@@ -3130,7 +3166,7 @@ function setLang(l){
 function setSeason(s, quiet){
   document.documentElement.dataset.season = s;
   document.querySelectorAll(".seasons button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.season===s)));
-  $("#seasonNote").textContent = L()==="ka" ? T.seasonNotes[s].ka : T.seasonNotes[s].en;
+  $("#seasonNote").replaceChildren(withDogLinks(L()==="ka" ? T.seasonNotes[s].ka : T.seasonNotes[s].en));
   try{ localStorage.setItem("msb.season", s); }catch(e){}
   if(!quiet && document.body.classList.contains("panel-open")){
     const cur = location.hash.split("/")[2]; if(cur) openSpace(cur);
