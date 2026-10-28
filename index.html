@@ -1194,7 +1194,8 @@ const BUILDING_ZONES = [
   {id:"apartment", x:307, y:140, w:253, h:215, hx:421, hy:243, photo:"apartment.jpg", pos:"58% 42%"},
   {id:"facade",    x:307, y:355, w:253, h:430, hx:472, hy:421, photo:"facade.jpg",    pos:"50% 52%"},
   {id:"elevator",  x:560, y:140, w:345, h:645, hx:686, hy:364, photo:"elevator.jpg",  pos:"58% 40%"},
-  {id:"courtyard", x:905, y:250, w:92,  h:560, hx:952, hy:700, photo:"courtyard.jpg", pos:"38% 58%"},
+  {id:"courtyard", x:307, y:630, w:140, h:155, hx:326, hy:700, photo:"courtyard.jpg", pos:"50% 62%"},   /* the left tree; inside Façade's lower-left corner */
+  {id:"vineyard",  x:905, y:250, w:92,  h:560, hx:952, hy:700, photo:"vineyard.jpg",  pos:"4% 50%"},    /* the right-hand strip: the vine-covered pergola posts */
   {id:"basement",  x:50,  y:790, w:390, h:66,  hx:130, hy:824, photo:"basement.jpg",  pos:"50% 88%"},
   {id:"pipes",     x:440, y:790, w:465, h:66,  hx:560, hy:822, photo:"pipes.jpg",     pos:"30% 92%"}
 ];
@@ -1217,6 +1218,9 @@ const buildingView = (function(){
     Object.assign(d.style, {left:z.x+"px", top:z.y+"px", width:z.w+"px", height:z.h+"px", backgroundPosition:z.pos});
     zonesEl.appendChild(d);
     z.el = d; z.p = 0; z.ox = z.w/2; z.oy = z.h/2; z.ready = false;
+  });
+  /* markers (real buttons) in reading order, so Tab goes top to bottom, left to right */
+  ZONES.slice().sort((a,b)=>Math.round(a.hy/50)-Math.round(b.hy/50) || a.hx-b.hx).forEach(z=>{
     const b = el("button","mk"); b.type = "button";
     b.appendChild(el("span","dot")); z.lab = el("span","lab"); b.appendChild(z.lab);
     b.addEventListener("click", e=>{ e.stopPropagation(); interacted(); open(z.id); });
@@ -1279,9 +1283,14 @@ const buildingView = (function(){
     let busy = !!tween || introRunning;
     const cxw = cam.cx, cyw = cam.cy;
     let activeId = null, bestP = 0;
+    const holds = (z,x,y)=> x>=z.x && x<=z.x+z.w && y>=z.y && y<=z.y+z.h;
+    const within = (a,b)=> a.x>=b.x && a.y>=b.y && a.x+a.w<=b.x+b.w && a.y+a.h<=b.y+b.h;
+    const inner = ZONES.find(z=>holds(z,cxw,cyw) && ZONES.some(o=>o!==z && within(z,o)));
     ZONES.forEach(z=>{
       let target = 0;
-      if(!compare){
+      if(!compare && inner && z!==inner && within(inner,z) && holds(z,cxw,cyw)){
+        /* e.g. Courtyard inside Façade: only the inner photograph develops there */
+      } else if(!compare){
         const f = Math.max(z.w*s/VW, z.h*s/VHe);
         const dx = Math.max(z.x-cxw,0,cxw-(z.x+z.w))*s, dy = Math.max(z.y-cyw,0,cyw-(z.y+z.h))*s;
         const c = 1-sm(0,0.28*Math.min(VW,VHe),Math.hypot(dx,dy));
