@@ -602,14 +602,16 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
 /* over the full-width hero or carousel it fades out, but stays reachable: focusing a tick brings it back */
 .ink-ruler.off{opacity:0;pointer-events:none}
 .ink-ruler.off:focus-within{opacity:1;pointer-events:auto}
-.ink-ruler .tick{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:flex-start;padding:0 0 0 6px}
-.ink-ruler .tick .ink-svg{width:30px;height:auto;overflow:visible}
+.ink-ruler .tick{position:relative;width:58px;height:44px;display:flex;align-items:center;justify-content:flex-start;padding:0 0 0 6px}
+.ink-ruler .tick .ink-svg{width:44px;height:auto;overflow:visible}
+.ink-ruler .tick .ink-t{opacity:.6}
+.ink-ruler .tick.active .ink-t,.ink-ruler .tick:hover .ink-t,.ink-ruler .tick:focus-visible .ink-t{fill:var(--ink);opacity:.9}
 .ink-ruler .tick .ink-d{opacity:.55}
 .ink-ruler .tick path.ink-d{fill:none}
 .ink-ruler .tick:hover .ink-d,.ink-ruler .tick:focus-visible .ink-d{opacity:.9}
 .ink-ruler .tick.active .ink-d{stroke:var(--ink);opacity:.9}
 .ink-ruler .tick.active path.ink-d{fill:var(--ink)}
-.ink-ruler .tick .lab{position:absolute;left:42px;top:50%;transform:translateY(-50%);pointer-events:none;
+.ink-ruler .tick .lab{position:absolute;left:54px;top:50%;transform:translateY(-50%);pointer-events:none;
   width:max-content;max-width:var(--lab-max,140px);line-height:1.3;   /* wraps rather than reach the text column */
   font-family:var(--sans);font-size:.74rem;letter-spacing:.02em;color:var(--ink-soft);background:var(--paper);padding:.15rem .45rem;
   opacity:0;transition:opacity .2s}
@@ -2192,11 +2194,15 @@ const INK = (function(){
 function stRuler(v, secs){
   const reduce = INK.reduce;
   const nav = el("nav","ink-ruler"); nav.setAttribute("aria-label","Sections");
+  /* each section keeps one real level mark of the drawing (index into its left level column):
+     21.65, 16.015, 11.015, 8.015, 2.615 from the top of the page down */
+  const LEVEL = [[".st-street",0], ["#street-carousel",2], ["#not-allowed",4], ["#homes",5], [".st-stairwell",7]];
+  const levelOf = sec => { const m = LEVEL.find(([sel])=>sec.matches(sel)); return m ? m[1] : 0; };
   const ticks = secs.map(sec=>{
     const h = sec.querySelector(":scope > .st-wrap > h3");
     const label = h ? h.textContent : "Photographs";   /* the carousel has no visible title */
     const b = el("button","tick"); b.type = "button"; b.setAttribute("aria-label", label);
-    b.appendChild(INK.fragment("levels", {count:1}));   /* one tick line and its small triangle, no numeral */
+    b.appendChild(INK.fragment("levels", {count:1, from:levelOf(sec), numerals:true}));   /* numeral, tick line, triangle */
     const lab = el("span","lab", label); lab.setAttribute("aria-hidden","true"); b.appendChild(lab);
     b.onclick = ()=>{
       const top = sec.getBoundingClientRect().top + window.scrollY - 12;
@@ -2221,8 +2227,8 @@ function stRuler(v, secs){
   /* only where the left margin is wide enough to hold it beside the content column */
   const fit = ()=>{
     const col = first.querySelector(".st-wrap > *") || first, left = col.getBoundingClientRect().left;
-    nav.hidden = left < 64;
-    nav.style.setProperty("--lab-max", Math.max(60, Math.floor(left - 8 - 42 - 16)) + "px");
+    nav.hidden = left < 80;
+    nav.style.setProperty("--lab-max", Math.max(60, Math.floor(left - 8 - 58 - 16)) + "px");
   };
   fit(); addEventListener("resize", fit);
   dogsStory.cleanup.push(()=>{ io.disconnect(); io2.disconnect(); removeEventListener("resize", fit); });
@@ -2238,7 +2244,7 @@ function stInk(v){
     const kind = kinds[i % kinds.length];
     const d = el("div","ink ink-div"); d.setAttribute("aria-hidden","true");
     const w = el("div","st-wrap");
-    const svg = INK.fragment(kind, kind==="levels" ? {dir:"h", count:6, step:150} : {wobble:true});
+    const svg = INK.fragment(kind, kind==="levels" ? {dir:"h", count:6, step:150, numerals:true} : {wobble:true});
     w.appendChild(svg); d.appendChild(w);
     sec.before(d);
     INK.observe(svg); INK.proximity(svg);
@@ -2821,7 +2827,28 @@ function openDogsStory(){
     v.appendChild(stCarousel({...D.streetCarousel, media:D.streetCarousel.media.filter(photo)}));
   }
 
-  /* 3a — homes: text, then a gallery with the same viewer as the other photos */
+  /* 3 — sometimes they are not allowed: a pair of photographs, same viewer as the street */
+  const na = stSection("notAllowed");
+  const naPhotos = na.s.media.filter(photo);
+  if(naPhotos.length){
+    if(na.s.id) na.sec.id = na.s.id;
+    const lb2 = stLightbox(naPhotos);
+    const pair = el("div","st-pair");
+    naPhotos.forEach((m,n)=>{
+      const fig = el("figure","st-fig");
+      fig.style.flexGrow = (m.w / m.h).toFixed(4);   /* widths in proportion to aspect ratio = equal heights */
+      const b = el("button","st-open"); b.setAttribute("aria-label","Open full screen: " + m.alt);
+      b.appendChild(stImg(m, "(min-width:769px) 32rem, 100vw"));
+      b.onclick = ()=>{ if(b.querySelector("img")) lb2.open(n, b); };
+      fig.appendChild(b);
+      const c = stCaption(m); if(c) fig.appendChild(c);
+      pair.appendChild(fig);
+    });
+    na.wrap.appendChild(pair);
+    v.appendChild(na.sec);
+  }
+
+  /* 4 — homes: text, then a gallery with the same viewer as the other photos */
   const hm = stSection("homes");
   const hmPhotos = hm.s.media.filter(photo);
   if(hm.s.title || hm.s.lede || hmPhotos.length){
@@ -2844,7 +2871,7 @@ function openDogsStory(){
     v.appendChild(hm.sec);
   }
 
-  /* 3 — in the stairwell */
+  /* 5 — in the stairwell */
   const sw = stSection("stairwell");
   const vm = sw.s.media.find(m=>m.type==="video");
   const rest = sw.s.media.filter(photo);
@@ -2901,31 +2928,10 @@ function openDogsStory(){
     v.appendChild(sw.sec);
   }
 
-  /* 4 — sometimes they are not allowed: a pair of photographs, same viewer as the street */
-  const na = stSection("notAllowed");
-  const naPhotos = na.s.media.filter(photo);
-  if(naPhotos.length){
-    if(na.s.id) na.sec.id = na.s.id;
-    const lb2 = stLightbox(naPhotos);
-    const pair = el("div","st-pair");
-    naPhotos.forEach((m,n)=>{
-      const fig = el("figure","st-fig");
-      fig.style.flexGrow = (m.w / m.h).toFixed(4);   /* widths in proportion to aspect ratio = equal heights */
-      const b = el("button","st-open"); b.setAttribute("aria-label","Open full screen: " + m.alt);
-      b.appendChild(stImg(m, "(min-width:769px) 32rem, 100vw"));
-      b.onclick = ()=>{ if(b.querySelector("img")) lb2.open(n, b); };
-      fig.appendChild(b);
-      const c = stCaption(m); if(c) fig.appendChild(c);
-      pair.appendChild(fig);
-    });
-    na.wrap.appendChild(pair);
-    v.appendChild(na.sec);
-  }
-
   /* ink accents: drawn dividers, a section ruler, one photograph that develops */
   stInk(v);
 
-  /* 5 — closing */
+  /* 6 — closing */
   const cl = el("div","st-wrap st-close-line"), a = el("a",null,D.closing.text);
   a.href = D.closing.href; cl.appendChild(a); v.appendChild(cl);
 
