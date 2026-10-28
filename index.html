@@ -595,11 +595,28 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
 .ink-div + .st-sec{padding-top:2rem}
 .ink-div + .st-carousel{margin-top:2rem}
 @media (max-width:768px){.ink-div{height:70px;margin-top:2rem}}
-/* small level marks in the left margin beside section titles (desktop only) */
-.st-sec > .st-wrap{position:relative}
-.ink-mark{position:absolute;left:calc(clamp(1rem,4vw,3rem) - 4.4rem);top:.6rem;width:42px;display:block}
-.ink-mark .ink-svg{width:100%;height:auto}
-@media (max-width:1180px){.ink-mark{display:none}}
+/* section ruler: one tick per section in the left margin; only where the margin is wide enough */
+.ink-ruler{position:fixed;left:max(8px,env(safe-area-inset-left));top:50%;transform:translateY(-50%);z-index:20;
+  display:flex;flex-direction:column;gap:2px;transition:opacity .3s}
+.ink-ruler[hidden],html.st-locked .ink-ruler,body.st-lock .ink-ruler{display:none}
+/* over the full-width hero or carousel it fades out, but stays reachable: focusing a tick brings it back */
+.ink-ruler.off{opacity:0;pointer-events:none}
+.ink-ruler.off:focus-within{opacity:1;pointer-events:auto}
+.ink-ruler .tick{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:flex-start;padding:0 0 0 6px}
+.ink-ruler .tick .ink-svg{width:30px;height:auto;overflow:visible}
+.ink-ruler .tick .ink-d{opacity:.55}
+.ink-ruler .tick path.ink-d{fill:none}
+.ink-ruler .tick:hover .ink-d,.ink-ruler .tick:focus-visible .ink-d{opacity:.9}
+.ink-ruler .tick.active .ink-d{stroke:var(--ink);opacity:.9}
+.ink-ruler .tick.active path.ink-d{fill:var(--ink)}
+.ink-ruler .tick .lab{position:absolute;left:42px;top:50%;transform:translateY(-50%);pointer-events:none;
+  width:max-content;max-width:var(--lab-max,140px);line-height:1.3;   /* wraps rather than reach the text column */
+  font-family:var(--sans);font-size:.74rem;letter-spacing:.02em;color:var(--ink-soft);background:var(--paper);padding:.15rem .45rem;
+  opacity:0;transition:opacity .2s}
+.ink-ruler .tick:hover .lab,.ink-ruler .tick:focus-visible .lab{opacity:1}
+.ink-ruler .tick:focus-visible{outline-offset:-2px}
+@media (max-width:699px){.ink-ruler{display:none}}
+@media (prefers-reduced-motion: reduce){.ink-ruler,.ink-ruler .tick .lab{transition:none}}
 /* the develop moment: drawn window frames over one photograph, lifted by a soft lens */
 @property --lr{syntax:"<length>";inherits:false;initial-value:0px}
 .st-open.ink-host{position:relative}
@@ -2171,7 +2188,47 @@ const INK = (function(){
   return {fragment, observe, proximity, reset, reduce, finePointer};
 })();
 
-/* Dogs page: dividers between sections, small level marks beside titles, one photograph that develops */
+/* section ruler: one tick per section, in page order; jumps to the section, follows the scroll */
+function stRuler(v, secs){
+  const reduce = INK.reduce;
+  const nav = el("nav","ink-ruler"); nav.setAttribute("aria-label","Sections");
+  const ticks = secs.map(sec=>{
+    const h = sec.querySelector(":scope > .st-wrap > h3");
+    const label = h ? h.textContent : "Photographs";   /* the carousel has no visible title */
+    const b = el("button","tick"); b.type = "button"; b.setAttribute("aria-label", label);
+    b.appendChild(INK.fragment("levels", {count:1}));   /* one tick line and its small triangle, no numeral */
+    const lab = el("span","lab", label); lab.setAttribute("aria-hidden","true"); b.appendChild(lab);
+    b.onclick = ()=>{
+      const top = sec.getBoundingClientRect().top + window.scrollY - 12;
+      window.scrollTo({top, behavior: reduce ? "auto" : "smooth"});   /* the hash stays as it is */
+    };
+    nav.appendChild(b);
+    return b;
+  });
+  /* after the intro, so Tab reaches the ticks in page order after the opening */
+  const first = secs[0]; first.before(nav);
+  /* active tick: the section crossing the middle of the screen */
+  const setActive = i => ticks.forEach((t,k)=>{ t.classList.toggle("active", k===i); if(k===i) t.setAttribute("aria-current","true"); else t.removeAttribute("aria-current"); });
+  const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) setActive(secs.indexOf(e.target)); }), {rootMargin:"-48% 0px -50% 0px"});
+  secs.forEach(s=>io.observe(s));
+  /* never over the full-width hero or carousel: hide while either crosses the ruler's band */
+  const wide = [v.querySelector(".st-hero"), v.querySelector("#street-carousel")].filter(Boolean), over = new Set();
+  const io2 = new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting) over.add(e.target); else over.delete(e.target); });
+    nav.classList.toggle("off", over.size>0);
+  }, {rootMargin:"-30% 0px -30% 0px"});
+  wide.forEach(w=>io2.observe(w));
+  /* only where the left margin is wide enough to hold it beside the content column */
+  const fit = ()=>{
+    const col = first.querySelector(".st-wrap > *") || first, left = col.getBoundingClientRect().left;
+    nav.hidden = left < 64;
+    nav.style.setProperty("--lab-max", Math.max(60, Math.floor(left - 8 - 42 - 16)) + "px");
+  };
+  fit(); addEventListener("resize", fit);
+  dogsStory.cleanup.push(()=>{ io.disconnect(); io2.disconnect(); removeEventListener("resize", fit); });
+}
+
+/* Dogs page: dividers between sections, a section ruler, one photograph that develops */
 function stInk(v){
   dogsStory.cleanup.push(()=>INK.reset());
   const secs = [...v.querySelectorAll(":scope > section.st-sec, :scope > section.st-carousel")];
@@ -2186,16 +2243,7 @@ function stInk(v){
     sec.before(d);
     INK.observe(svg); INK.proximity(svg);
   });
-  /* margin marks beside the section titles (desktop only, via CSS). Not beside "Homes":
-     that section already carries the develop moment, and a third motif on one screen is too much. */
-  let mi = 0;
-  secs.forEach(sec=>{
-    const h = sec.querySelector(":scope > .st-wrap > h3"); if(!h || sec.id==="homes") return;
-    const m = el("span","ink ink-mark"); m.setAttribute("aria-hidden","true");
-    const svg = INK.fragment("levels", {count:3, step:30, from:[0,3,5][mi++ % 3]});
-    m.appendChild(svg); h.before(m);   /* beside the title, not inside it */
-    INK.observe(svg); INK.proximity(svg);
-  });
+  stRuler(v, secs);
   /* the develop moment: drawn window frames over the first photograph of "Homes" */
   const btn = v.querySelector("#homes .st-gallery .st-open");
   const img = btn && btn.querySelector("img");
@@ -2874,7 +2922,7 @@ function openDogsStory(){
     v.appendChild(na.sec);
   }
 
-  /* ink accents: drawn dividers, margin marks, one photograph that develops */
+  /* ink accents: drawn dividers, a section ruler, one photograph that develops */
   stInk(v);
 
   /* 5 — closing */
