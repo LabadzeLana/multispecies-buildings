@@ -1,0 +1,895 @@
+{
+ "note": "Web copies for a-city-of-vineyards/index.html. Credits and captions exactly as in 'Visual story of grapevine.docx'. Chapter 0 = opening background.",
+ "total_bytes": 76017327,
+ "items": [
+  {
+   "chapter": 2,
+   "type": "photo",
+   "original": "2. ვაზი როგორც სიცოცხლის ხე/Picture1.jpg",
+   "original_px": "1150x862",
+   "original_bytes": 433430,
+   "files": [
+    {
+     "file": "vineyards-2-metalwork-01.jpg",
+     "px": "1150x862",
+     "bytes": 396686
+    },
+    {
+     "file": "vineyards-2-metalwork-01-1200.jpg",
+     "px": "1150x862",
+     "bytes": 396686
+    }
+   ],
+   "credit": "Grapevines as trees of life in Georgian metalwork, 2023. Lia Khetaguri archive. Courtesy of the author.",
+   "alt": "Metal relief: a figure holding a bunch of grapes among vine leaves",
+   "description": "Embossed metal panel with a grapevine motif, mounted on a brick wall."
+  },
+  {
+   "chapter": 2,
+   "type": "photo",
+   "original": "2. ვაზი როგორც სიცოცხლის ხე/Picture2.jpg",
+   "original_px": "1150x862",
+   "original_bytes": 403394,
+   "files": [
+    {
+     "file": "vineyards-2-metalwork-02.jpg",
+     "px": "1150x862",
+     "bytes": 367527
+    },
+    {
+     "file": "vineyards-2-metalwork-02-1200.jpg",
+     "px": "1150x862",
+     "bytes": 367527
+    }
+   ],
+   "credit": "Grapevines as trees of life in Georgian metalwork, 2023. Lia Khetaguri archive. Courtesy of the author.",
+   "alt": "Copper relief: a kneeling figure tending a young vine with grape clusters",
+   "description": "Embossed copper panel with a grapevine motif, mounted on a brick wall."
+  },
+  {
+   "chapter": 3,
+   "type": "photo",
+   "original": "3. ვაზი როგორც სოფლის მცენარე/1 ფოტო.jpg",
+   "original_px": "800x518",
+   "original_bytes": 83451,
+   "files": [
+    {
+     "file": "vineyards-3-pirosmani-painting-01.jpg",
+     "px": "800x518",
+     "bytes": 103720
+    },
+    {
+     "file": "vineyards-3-pirosmani-painting-01-1200.jpg",
+     "px": "800x518",
+     "bytes": 103720
+    }
+   ],
+   "credit": "**Image 1.** Grape Harvesting, Niko Pirosmani, 1862.",
+   "alt": "Painting: two figures carrying baskets of grapes along a vineyard path",
+   "description": "Reproduction of a painting of a grape harvest."
+  },
+  {
+   "chapter": 3,
+   "type": "photo",
+   "original": "3. ვაზი როგორც სოფლის მცენარე/2 ფოტო.jpg",
+   "original_px": "500x345",
+   "original_bytes": 78833,
+   "files": [
+    {
+     "file": "vineyards-3-pirosmani-painting-02.jpg",
+     "px": "500x345",
+     "bytes": 88425
+    },
+    {
+     "file": "vineyards-3-pirosmani-painting-02-1200.jpg",
+     "px": "500x345",
+     "bytes": 88425
+    }
+   ],
+   "credit": "**Image 2.** Picking the grapes, Niko Pirosmani, 1862.",
+   "alt": "Painting: a harvest scene in an orchard with a cart, oxen and a ladder",
+   "description": "Reproduction of a painting of grape picking."
+  },
+  {
+   "chapter": 3,
+   "type": "photo",
+   "original": "3. ვაზი როგორც სოფლის მცენარე/3.jpg",
+   "original_px": "4032x3024",
+   "original_bytes": 2898147,
+   "files": [
+    {
+     "file": "vineyards-3-book-illustration-03.jpg",
+     "px": "2400x1800",
+     "bytes": 900948
+    },
+    {
+     "file": "vineyards-3-book-illustration-03-1200.jpg",
+     "px": "1200x900",
+     "bytes": 279669
+    }
+   ],
+   "credit": "**Image 3.** A Four-Tier Grapevine Cordon for Wall Cultivation (From the book *Homestead Gardening* by A. Kereselidze, Soviet Georgia State Press, Tbilisi, 1960).",
+   "alt": "Book diagram: a grapevine trained in four horizontal tiers against a brick wall",
+   "description": "Photograph of a book page with a line drawing of a wall-trained vine cordon."
+  },
+  {
+   "chapter": 3,
+   "type": "photo",
+   "original": "3. ვაზი როგორც სოფლის მცენარე/4.png",
+   "original_px": "2420x1006",
+   "original_bytes": 4300933,
+   "files": [
+    {
+     "file": "vineyards-3-book-illustration-04.jpg",
+     "px": "2400x998",
+     "bytes": 572065
+    },
+    {
+     "file": "vineyards-3-book-illustration-04-1200.jpg",
+     "px": "1200x499",
+     "bytes": 186785
+    }
+   ],
+   "credit": "**Image 4.** An Ornamental Living Hedge of Colchis Boxwood, Decorated with Grapevines Trained on Suitable Supports (From the book *Homestead Gardening* by A. Kereselidze, Soviet Georgia State Press, Tbilisi, 1960).",
+   "alt": "Book drawing: a clipped hedge with grapevines trained on posts above it",
+   "description": "Scan of a book illustration of a hedge with vines."
+  },
+  {
+   "chapter": 4,
+   "type": "photo",
+   "original": "4. ვაზის ქალაქში ჩამოსვლა/1.jpeg",
+   "original_px": "731x800",
+   "original_bytes": 241611,
+   "files": [
+    {
+     "file": "vineyards-4-caricature-01.jpg",
+     "px": "731x800",
+     "bytes": 237114
+    },
+    {
+     "file": "vineyards-4-caricature-01-1200.jpg",
+     "px": "731x800",
+     "bytes": 237114
+    }
+   ],
+   "credit": "**Image 1.** Caricature by Murtaz Abashidze from the Georgian satirical magazine Niangi, The National Library of Georgia Archive, 1969.",
+   "alt": "Caricature: a tall block of flats rising out of a field of cut vine stumps",
+   "description": "Magazine caricature, drawn and coloured."
+  },
+  {
+   "chapter": 4,
+   "type": "photo",
+   "original": "4. ვაზის ქალაქში ჩამოსვლა/2.heic",
+   "original_px": "4032x3024",
+   "original_bytes": 3312441,
+   "files": [
+    {
+     "file": "vineyards-4-vine-wall-02.jpg",
+     "px": "1800x2400",
+     "bytes": 1356517
+    },
+    {
+     "file": "vineyards-4-vine-wall-02-1200.jpg",
+     "px": "900x1200",
+     "bytes": 286232
+    }
+   ],
+   "credit": "**Image 2.** Tamta Khalvashi’s archive. Tbilisi, Vazha-Pshavela Blocks, 2022.",
+   "alt": "A young grapevine growing up a concrete wall from a crack by the pavement",
+   "description": "Vine rooted at the base of an apartment block wall."
+  },
+  {
+   "chapter": 4,
+   "type": "photo",
+   "original": "4. ვაზის ქალაქში ჩამოსვლა/3..jpg",
+   "original_px": "1600x1200",
+   "original_bytes": 506645,
+   "files": [
+    {
+     "file": "vineyards-4-autumn-vine-03.jpg",
+     "px": "1600x1200",
+     "bytes": 616024
+    },
+    {
+     "file": "vineyards-4-autumn-vine-03-1200.jpg",
+     "px": "1200x900",
+     "bytes": 480229
+    }
+   ],
+   "credit": "**Image 3.** Nargiza Arjevanidze archive. Tbilisi, Gldani, 2023. Courtesy of the author.",
+   "alt": "Red and orange autumn vine leaves in front of an apartment block",
+   "description": "Autumn grapevine in front of a mass housing façade."
+  },
+  {
+   "chapter": 4,
+   "type": "photo",
+   "original": "4. ვაზის ქალაქში ჩამოსვლა/4.jpg",
+   "original_px": "1536x2048",
+   "original_bytes": 824893,
+   "files": [
+    {
+     "file": "vineyards-4-leaf-alley-04.jpg",
+     "px": "1536x2048",
+     "bytes": 757955
+    },
+    {
+     "file": "vineyards-4-leaf-alley-04-1200.jpg",
+     "px": "900x1200",
+     "bytes": 291218
+    }
+   ],
+   "credit": "**Image 4**. Ana Margvelashvili archive. Tbilisi, Vake, 2023. Courtesy of the author.",
+   "alt": "A lane between blocks under an arch of vines, the ground covered in fallen leaves",
+   "description": "Vine canopy spanning a lane, with parked cars."
+  },
+  {
+   "chapter": 5,
+   "type": "photo",
+   "original": "5. ვაზის მცოცავი აგენტობა/1.heic",
+   "original_px": "4032x3024",
+   "original_bytes": 2852329,
+   "files": [
+    {
+     "file": "vineyards-5-facade-vine-01.jpg",
+     "px": "2400x1800",
+     "bytes": 1459868
+    },
+    {
+     "file": "vineyards-5-facade-vine-01-1200.jpg",
+     "px": "1200x900",
+     "bytes": 379929
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2025",
+   "alt": "Looking up at a tall block with a vine climbing across its balconies",
+   "description": "Vine climbing a multi-storey façade."
+  },
+  {
+   "chapter": 5,
+   "type": "photo",
+   "original": "5. ვაზის მცოცავი აგენტობა/2.heic",
+   "original_px": "4032x3024",
+   "original_bytes": 3507066,
+   "files": [
+    {
+     "file": "vineyards-5-facade-vine-02.jpg",
+     "px": "2400x1800",
+     "bytes": 1692560
+    },
+    {
+     "file": "vineyards-5-facade-vine-02-1200.jpg",
+     "px": "1200x900",
+     "bytes": 424543
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2025",
+   "alt": "A dense vine covering the lower wall of a block, laundry drying above",
+   "description": "Vine on a ground-floor wall."
+  },
+  {
+   "chapter": 5,
+   "type": "photo",
+   "original": "5. ვაზის მცოცავი აგენტობა/3.heic",
+   "original_px": "4032x3024",
+   "original_bytes": 1348611,
+   "files": [
+    {
+     "file": "vineyards-5-facade-vine-03.jpg",
+     "px": "2400x1800",
+     "bytes": 1037409
+    },
+    {
+     "file": "vineyards-5-facade-vine-03-1200.jpg",
+     "px": "1200x900",
+     "bytes": 309815
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2025",
+   "alt": "A vine spreading along a row of concrete balconies",
+   "description": "Vine crossing balconies."
+  },
+  {
+   "chapter": 5,
+   "type": "photo",
+   "original": "5. ვაზის მცოცავი აგენტობა/4.jpg",
+   "original_px": "4032x2268",
+   "original_bytes": 6318103,
+   "files": [
+    {
+     "file": "vineyards-5-facade-vine-04.jpg",
+     "px": "2400x1350",
+     "bytes": 1211188
+    },
+    {
+     "file": "vineyards-5-facade-vine-04-1200.jpg",
+     "px": "1200x675",
+     "bytes": 360061
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2025",
+   "alt": "Vines hanging over the entrance wall of a block with air-conditioning units",
+   "description": "Vine curtain over an entrance."
+  },
+  {
+   "chapter": 5,
+   "type": "photo",
+   "original": "5. ვაზის მცოცავი აგენტობა/5.heic",
+   "original_px": "4032x2268",
+   "original_bytes": 1898303,
+   "files": [
+    {
+     "file": "vineyards-5-facade-vine-05.jpg",
+     "px": "2400x1350",
+     "bytes": 833858
+    },
+    {
+     "file": "vineyards-5-facade-vine-05-1200.jpg",
+     "px": "1200x676",
+     "bytes": 217468
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2025",
+   "alt": "A pink five-storey block with a vine trailing along one balcony row",
+   "description": "Vine along a balcony level."
+  },
+  {
+   "chapter": 6,
+   "type": "photo",
+   "original": "6. ვაზი როგორც საერთო სივრცე/1.heic",
+   "original_px": "4032x3024",
+   "original_bytes": 3228970,
+   "files": [
+    {
+     "file": "vineyards-6-pergola-commons-01.jpg",
+     "px": "2400x1800",
+     "bytes": 1674977
+    },
+    {
+     "file": "vineyards-6-pergola-commons-01-1200.jpg",
+     "px": "1200x900",
+     "bytes": 438994
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2025",
+   "alt": "A courtyard under a vine pergola with a bench and makeshift seats",
+   "description": "Shared courtyard seating under a pergola."
+  },
+  {
+   "chapter": 6,
+   "type": "photo",
+   "original": "6. ვაზი როგორც საერთო სივრცე/2.jpg",
+   "original_px": "4032x3024",
+   "original_bytes": 3822969,
+   "files": [
+    {
+     "file": "vineyards-6-pergola-commons-02.jpg",
+     "px": "2400x1800",
+     "bytes": 1297894
+    },
+    {
+     "file": "vineyards-6-pergola-commons-02-1200.jpg",
+     "px": "1200x900",
+     "bytes": 382608
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2025",
+   "alt": "A pavement along a block, shaded by vines, with a person walking away",
+   "description": "Shaded walkway beside a building."
+  },
+  {
+   "chapter": 6,
+   "type": "photo",
+   "original": "6. ვაზი როგორც საერთო სივრცე/3.jpg",
+   "original_px": "4032x2268",
+   "original_bytes": 9391795,
+   "files": [
+    {
+     "file": "vineyards-6-pergola-commons-03.jpg",
+     "px": "2400x1350",
+     "bytes": 995371
+    },
+    {
+     "file": "vineyards-6-pergola-commons-03-1200.jpg",
+     "px": "1200x675",
+     "bytes": 296199
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2025",
+   "alt": "A vine framing a ground-floor shop front; people on the steps in the evening light",
+   "description": "Vine over a shop entrance at a block."
+  },
+  {
+   "chapter": 6,
+   "type": "photo",
+   "original": "6. ვაზი როგორც საერთო სივრცე/4.heic",
+   "original_px": "4032x3024",
+   "original_bytes": 3071480,
+   "files": [
+    {
+     "file": "vineyards-6-pergola-commons-04.jpg",
+     "px": "2400x1800",
+     "bytes": 1566494
+    },
+    {
+     "file": "vineyards-6-pergola-commons-04-1200.jpg",
+     "px": "1200x900",
+     "bytes": 397368
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2025",
+   "alt": "A clipped hedge and a vine pergola in front of a block; someone sitting on a bench",
+   "description": "Hedge and pergola at the foot of a block."
+  },
+  {
+   "chapter": 6,
+   "type": "photo",
+   "original": "6. ვაზი როგორც საერთო სივრცე/5.heic",
+   "original_px": "4032x2268",
+   "original_bytes": 2338569,
+   "files": [
+    {
+     "file": "vineyards-6-pergola-commons-05.jpg",
+     "px": "2400x1350",
+     "bytes": 1221885
+    },
+    {
+     "file": "vineyards-6-pergola-commons-05-1200.jpg",
+     "px": "1200x676",
+     "bytes": 326390
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2025",
+   "alt": "A vine pergola over the path to a building entrance",
+   "description": "Pergola over an entrance path."
+  },
+  {
+   "chapter": 7,
+   "type": "photo",
+   "original": "7. ვაზი როგორც კერძო სივრცე/1...jpg",
+   "original_px": "5712x4284",
+   "original_bytes": 11272969,
+   "files": [
+    {
+     "file": "vineyards-7-private-vine-01.jpg",
+     "px": "1800x2400",
+     "bytes": 1162779
+    },
+    {
+     "file": "vineyards-7-private-vine-01-1200.jpg",
+     "px": "900x1200",
+     "bytes": 325252
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2026.",
+   "alt": "A fenced, vine-covered plot at the foot of a tall block on a slope",
+   "description": "Fenced vine plot beside a tower block."
+  },
+  {
+   "chapter": 7,
+   "type": "photo",
+   "original": "7. ვაზი როგორც კერძო სივრცე/2..heic",
+   "original_px": "4032x3024",
+   "original_bytes": 3180894,
+   "files": [
+    {
+     "file": "vineyards-7-private-vine-02.jpg",
+     "px": "2400x1800",
+     "bytes": 1436273
+    },
+    {
+     "file": "vineyards-7-private-vine-02-1200.jpg",
+     "px": "1200x900",
+     "bytes": 375194
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2026.",
+   "alt": "Vines trained along a ground-floor enclosure of a brick-faced block",
+   "description": "Vine on a ground-floor enclosure."
+  },
+  {
+   "chapter": 7,
+   "type": "photo",
+   "original": "7. ვაზი როგორც კერძო სივრცე/3...jpg",
+   "original_px": "5712x4284",
+   "original_bytes": 14328043,
+   "files": [
+    {
+     "file": "vineyards-7-private-vine-03.jpg",
+     "px": "2400x1800",
+     "bytes": 1548420
+    },
+    {
+     "file": "vineyards-7-private-vine-03-1200.jpg",
+     "px": "1200x900",
+     "bytes": 429205
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2026.",
+   "alt": "A vine pergola over parked cars behind a fence in front of a long block",
+   "description": "Pergola sheltering parked cars."
+  },
+  {
+   "chapter": 7,
+   "type": "photo",
+   "original": "7. ვაზი როგორც კერძო სივრცე/4.heic",
+   "original_px": "4032x3024",
+   "original_bytes": 2871498,
+   "files": [
+    {
+     "file": "vineyards-7-private-vine-04.jpg",
+     "px": "2400x1800",
+     "bytes": 1314718
+    },
+    {
+     "file": "vineyards-7-private-vine-04-1200.jpg",
+     "px": "1200x900",
+     "bytes": 319010
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2026.",
+   "alt": "A gated, vine-roofed enclosure in a courtyard",
+   "description": "Enclosure under a vine in a courtyard."
+  },
+  {
+   "chapter": 7,
+   "type": "photo",
+   "original": "7. ვაზი როგორც კერძო სივრცე/6.JPG",
+   "original_px": "5184x3456",
+   "original_bytes": 9190354,
+   "files": [
+    {
+     "file": "vineyards-7-private-vine-05.jpg",
+     "px": "2400x1600",
+     "bytes": 1019135
+    },
+    {
+     "file": "vineyards-7-private-vine-05-1200.jpg",
+     "px": "1200x800",
+     "bytes": 266259
+    }
+   ],
+   "credit": "Irakli Kochlashvili archive. Tbilisi, Sanzona and Gldani, 2023. Courtesy of the author.",
+   "alt": "A narrow passage between two metal garages, trees and vines above",
+   "description": "Passage between garages."
+  },
+  {
+   "chapter": 7,
+   "type": "photo",
+   "original": "7. ვაზი როგორც კერძო სივრცე/7.JPG",
+   "original_px": "5184x3456",
+   "original_bytes": 11332248,
+   "files": [
+    {
+     "file": "vineyards-7-private-vine-06.jpg",
+     "px": "2400x1600",
+     "bytes": 1344410
+    },
+    {
+     "file": "vineyards-7-private-vine-06-1200.jpg",
+     "px": "1200x800",
+     "bytes": 352943
+    }
+   ],
+   "credit": "Irakli Kochlashvili archive. Tbilisi, Sanzona and Gldani, 2023. Courtesy of the author.",
+   "alt": "A vine on a metal frame between two garages with graffiti",
+   "description": "Vine between garages."
+  },
+  {
+   "chapter": 8,
+   "type": "photo",
+   "original": "8. ვაზი როგორც წინააღმდეგობა/1.jpg",
+   "original_px": "4032x2268",
+   "original_bytes": 4577120,
+   "files": [
+    {
+     "file": "vineyards-8-garages-vine-01.jpg",
+     "px": "2400x1350",
+     "bytes": 840905
+    },
+    {
+     "file": "vineyards-8-garages-vine-01-1200.jpg",
+     "px": "1200x675",
+     "bytes": 240570
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives; Tbilisi, Vazha-Pshavela Blocks, 2025).",
+   "alt": "Autumn vines over garage roofs, apartment blocks behind",
+   "description": "Garages and vines seen from above in autumn."
+  },
+  {
+   "chapter": 8,
+   "type": "photo",
+   "original": "8. ვაზი როგორც წინააღმდეგობა/2.JPG",
+   "original_px": "5184x3456",
+   "original_bytes": 8525554,
+   "files": [
+    {
+     "file": "vineyards-8-garages-vine-02.jpg",
+     "px": "2400x1600",
+     "bytes": 988877
+    },
+    {
+     "file": "vineyards-8-garages-vine-02-1200.jpg",
+     "px": "1200x800",
+     "bytes": 283615
+    }
+   ],
+   "credit": "Irakli Kochlashvili archives. Tbilisi, Gldani, 2023. Courtesy of the author.",
+   "alt": "A lane of garages under a metal pergola overgrown with vines",
+   "description": "Garage alley under a vine pergola."
+  },
+  {
+   "chapter": 9,
+   "type": "photo",
+   "original": "9. საერთო ვაზის გადარჩენა/1.jpg",
+   "original_px": "1536x2048",
+   "original_bytes": 468036,
+   "files": [
+    {
+     "file": "vineyards-9-rescued-vine-01.jpg",
+     "px": "1536x2048",
+     "bytes": 609763
+    },
+    {
+     "file": "vineyards-9-rescued-vine-01-1200.jpg",
+     "px": "900x1200",
+     "bytes": 354699
+    }
+   ],
+   "credit": "Photographs by George (Goga) Sekhniashvili, one of the neighbors who helped save the severed grapevines through collective care and advice from the community. His daughter, Elene Lika Sekhniashvili, generously shared the photographs with me in 2023.",
+   "alt": "A cut vine trunk with its end placed in a water bottle",
+   "description": "Severed vine with a bottle of water on the cut."
+  },
+  {
+   "chapter": 9,
+   "type": "photo",
+   "original": "9. საერთო ვაზის გადარჩენა/2.jpg",
+   "original_px": "1536x2048",
+   "original_bytes": 400438,
+   "files": [
+    {
+     "file": "vineyards-9-rescued-vine-02.jpg",
+     "px": "1536x2048",
+     "bytes": 520868
+    },
+    {
+     "file": "vineyards-9-rescued-vine-02-1200.jpg",
+     "px": "900x1200",
+     "bytes": 311748
+    }
+   ],
+   "credit": "Photographs by George (Goga) Sekhniashvili, one of the neighbors who helped save the severed grapevines through collective care and advice from the community. His daughter, Elene Lika Sekhniashvili, generously shared the photographs with me in 2023.",
+   "alt": "Cut vines along a path, each ending in a bottle of water resting on a block",
+   "description": "Row of cut vines in water bottles."
+  },
+  {
+   "chapter": 9,
+   "type": "photo",
+   "original": "9. საერთო ვაზის გადარჩენა/3.jpg",
+   "original_px": "1536x2048",
+   "original_bytes": 590552,
+   "files": [
+    {
+     "file": "vineyards-9-rescued-vine-03.jpg",
+     "px": "1536x2048",
+     "bytes": 762203
+    },
+    {
+     "file": "vineyards-9-rescued-vine-03-1200.jpg",
+     "px": "900x1200",
+     "bytes": 422986
+    }
+   ],
+   "credit": "Photographs by George (Goga) Sekhniashvili, one of the neighbors who helped save the severed grapevines through collective care and advice from the community. His daughter, Elene Lika Sekhniashvili, generously shared the photographs with me in 2023.",
+   "alt": "A cut vine branch taped into a plastic water bottle",
+   "description": "Close view of a vine in a water bottle."
+  },
+  {
+   "chapter": 9,
+   "type": "photo",
+   "original": "9. საერთო ვაზის გადარჩენა/4.jpg",
+   "original_px": "1536x2048",
+   "original_bytes": 435336,
+   "files": [
+    {
+     "file": "vineyards-9-rescued-vine-04.jpg",
+     "px": "1536x2048",
+     "bytes": 567159
+    },
+    {
+     "file": "vineyards-9-rescued-vine-04-1200.jpg",
+     "px": "900x1200",
+     "bytes": 333165
+    }
+   ],
+   "credit": "Photographs by George (Goga) Sekhniashvili, one of the neighbors who helped save the severed grapevines through collective care and advice from the community. His daughter, Elene Lika Sekhniashvili, generously shared the photographs with me in 2023.",
+   "alt": "Bottles of water on the cut vines along the path, seen from another angle",
+   "description": "Row of cut vines in water bottles (second view)."
+  },
+  {
+   "chapter": 10,
+   "type": "photo",
+   "original": "10. აღდგენილი ტალავერი/1.HEIC",
+   "original_px": "5712x4284",
+   "original_bytes": 4399323,
+   "files": [
+    {
+     "file": "vineyards-10-restored-pergola-01.jpg",
+     "px": "1800x2400",
+     "bytes": 1747274
+    },
+    {
+     "file": "vineyards-10-restored-pergola-01-1200.jpg",
+     "px": "900x1200",
+     "bytes": 503335
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Vake, 2026.",
+   "alt": "A passage under a dense green vine pergola leading to the street",
+   "description": "Regrown pergola over a passage."
+  },
+  {
+   "chapter": 10,
+   "type": "photo",
+   "original": "10. აღდგენილი ტალავერი/2.HEIC",
+   "original_px": "5712x4284",
+   "original_bytes": 4620480,
+   "files": [
+    {
+     "file": "vineyards-10-restored-pergola-02.jpg",
+     "px": "2400x1800",
+     "bytes": 1560397
+    },
+    {
+     "file": "vineyards-10-restored-pergola-02-1200.jpg",
+     "px": "1200x900",
+     "bytes": 459647
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Vake, 2026.",
+   "alt": "Looking up through vine leaves between blocks, a new tower behind",
+   "description": "Vine between blocks, new tower in the background."
+  },
+  {
+   "chapter": 10,
+   "type": "photo",
+   "original": "10. აღდგენილი ტალავერი/3.jpg",
+   "original_px": "5712x4284",
+   "original_bytes": 13713453,
+   "files": [
+    {
+     "file": "vineyards-10-restored-pergola-03.jpg",
+     "px": "2400x1800",
+     "bytes": 1430980
+    },
+    {
+     "file": "vineyards-10-restored-pergola-03-1200.jpg",
+     "px": "1200x900",
+     "bytes": 422977
+    }
+   ],
+   "credit": "Tamta Khalvashi’s archives. Tbilisi, Vake, 2026.",
+   "alt": "Vine shoots in front of a weathered apartment block",
+   "description": "Vine against a façade."
+  },
+  {
+   "chapter": 10,
+   "type": "photo",
+   "original": "10. აღდგენილი ტალავერი/4.jpg",
+   "original_px": "4032x3024",
+   "original_bytes": 6064519,
+   "files": [
+    {
+     "file": "vineyards-10-restored-pergola-04.jpg",
+     "px": "2400x1800",
+     "bytes": 1783633
+    },
+    {
+     "file": "vineyards-10-restored-pergola-04-1200.jpg",
+     "px": "1200x900",
+     "bytes": 502265
+    }
+   ],
+   "credit": "Darya Tsymbalyuk. Tbilisi, Vake, 2025. Courtesy of the author",
+   "alt": "A driveway under a vine canopy leading to garages",
+   "description": "Vine canopy over a driveway."
+  },
+  {
+   "chapter": 11,
+   "type": "photo",
+   "original": "11. აღდგენილი ვაზის არქივი/2026-06-09 14.51.45.jpg",
+   "original_px": "5712x4284",
+   "original_bytes": 10053505,
+   "files": [
+    {
+     "file": "vineyards-11-leaf-collage-01.jpg",
+     "px": "2400x1800",
+     "bytes": 1020907
+    },
+    {
+     "file": "vineyards-11-leaf-collage-01-1200.jpg",
+     "px": "1200x900",
+     "bytes": 278635
+    }
+   ],
+   "credit": "A collage made from the leaves of the grapevine pergola that was cut down but survived. I planted some of its fallen cuttings in my own garden and gifted the collage to Darya Tsymbalyuk as a symbolic gesture of survival amid the ruins of empire.",
+   "alt": "A pressed vine leaf on an open gardening book, a collage of leaves and tendrils on a card, and a bag of dried cuttings",
+   "description": "Leaf collage photographed with the 1960 gardening book and dried cuttings."
+  },
+  {
+   "chapter": 1,
+   "type": "video",
+   "original": "1. გადაჭრილი ვაზის ვიდეო/1.mp4",
+   "original_px": "240x426",
+   "original_seconds": 69.6,
+   "original_bytes": 2640275,
+   "files": [
+    {
+     "file": "vineyards-1-cut-pergola-video.mp4",
+     "px": "240x426",
+     "seconds": 69.6,
+     "bytes": 2540884,
+     "audio": "AAC 128 kb/s stereo"
+    },
+    {
+     "file": "vineyards-1-cut-pergola-video-poster.jpg",
+     "px": "239x426",
+     "bytes": 28675
+    }
+   ],
+   "credit": "",
+   "alt": "Phone video: a cut-down vine pergola in front of a block",
+   "description": "Phone video of a freshly cut vine pergola in Vake, March 2023."
+  },
+  {
+   "chapter": 12,
+   "type": "video",
+   "original": "12. ვაზის ჩრდილის ვიდეო/IMG_1141.MOV",
+   "original_px": "1920x1080",
+   "original_seconds": 53.85,
+   "original_bytes": 64639713,
+   "files": [
+    {
+     "file": "vineyards-12-vine-shadows-video.mp4",
+     "px": "1920x1080",
+     "seconds": 53.85,
+     "bytes": 20774965,
+     "audio": "AAC 128 kb/s stereo"
+    },
+    {
+     "file": "vineyards-12-vine-shadows-video-poster.jpg",
+     "px": "1920x1080",
+     "bytes": 677154
+    }
+   ],
+   "credit": "Video by Tamta Khalvashi. Vake, Tbilisi, 2026.",
+   "alt": "Shadows of vine leaves moving on a sunlit wall",
+   "description": "Vine shadows moving on a wall."
+  },
+  {
+   "chapter": 0,
+   "type": "video",
+   "original": "12. ვაზის ჩრდილის ვიდეო/IMG_1141.MOV",
+   "original_px": "1920x1080",
+   "original_seconds": 53.85,
+   "original_bytes": 64639713,
+   "files": [
+    {
+     "file": "vineyards-0-vine-shadows-loop.mp4",
+     "px": "960x540",
+     "seconds": 20.0,
+     "bytes": 1345865,
+     "audio": "none"
+    },
+    {
+     "file": "vineyards-0-vine-shadows-loop-poster.jpg",
+     "px": "960x540",
+     "bytes": 170113
+    }
+   ],
+   "credit": "Video by Tamta Khalvashi. Vake, Tbilisi, 2026.",
+   "alt": "",
+   "description": "Muted 20 s excerpt of the chapter 12 video, used as the opening background."
+  }
+ ]
+}
