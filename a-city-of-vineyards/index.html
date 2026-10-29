@@ -2,279 +2,558 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>A City of Vineyards — Multispecies Buildings</title>
-<meta name="description" content="The story of a cut and restored grapevine pergola in Vake, Tbilisi — one small episode in the life of a city of vineyards.">
+<meta name="description" content="Carried from villages into Tbilisi during Soviet industrialization, grapevines took root around newly built mass housing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Georgian:wght@400;500&family=Noto+Sans+Georgian:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="../media/vineyards/vineyards-0-vine-shadows-loop-poster.jpg">
 <style>
-  :root{
-    --bg:#faf7f0;
-    --ink:#2b2a25;
-    --muted:#6b6a5f;
-    --accent:#4a5d3a;
-    --accent-light:#8ba373;
-    --line:#e3ddcc;
-    --serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', serif;
-    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-    --measure: 680px;
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:var(--serif);
-    line-height:1.7;
-    font-size:18px;
-    -webkit-font-smoothing:antialiased;
-  }
-  a{color:var(--accent);}
-  .back-link{
-    display:block;
-    font-family:var(--sans);
-    font-size:13px;
-    letter-spacing:.04em;
-    text-transform:uppercase;
-    color:var(--muted);
-    text-decoration:none;
-    padding:22px 24px;
-  }
-  .back-link:hover{color:var(--accent);}
+/* palette and type: the same tokens as the main site (index.html) */
+:root{
+  --paper:#E8E9E5; --paper-2:#DFE1DC; --ink:#1B211F; --ink-soft:#4A524E; --muted:#7E847F;
+  --line:#BFC3BC; --line-soft:#D2D5CF; --oil:#4F7167; --oil-soft:#8AA79D; --oxide:#8C4A2B; --vine:#4E6B3B;
+  --serif:"Noto Serif Georgian", Georgia, serif;
+  --sans:"Noto Sans Georgian", system-ui, sans-serif;
+  --gut:clamp(1rem,4vw,3rem);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;overflow-x:hidden}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:1.06rem;line-height:1.7;
+  -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;padding:0}
+:focus-visible{outline:2px solid var(--oil);outline-offset:3px}
+img,video{max-width:100%}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.defs{position:absolute;width:0;height:0;overflow:hidden}
 
-  header.hero{
-    position:relative;
-    width:100%;
-    height:70vh;
-    overflow:hidden;
-    background:#111;
-  }
-  .hero-video-frame{
-    position:absolute;
-    top:50%;
-    left:50%;
-    width:177.77vh;
-    height:56.25vw;
-    min-width:100%;
-    min-height:100%;
-    transform:translate(-50%,-50%);
-    border:0;
-    pointer-events:none;
-  }
-  .hero-shade{
-    position:absolute;
-    inset:0;
-    background:linear-gradient(to top, var(--bg) 15%, transparent 100%);
-    pointer-events:none;
-  }
+/* ---------- opening ---------- */
+.open{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;overflow:hidden;
+  background:#d9d2bf url(../media/vineyards/vineyards-0-vine-shadows-loop-poster.jpg) center/cover no-repeat}
+.open video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.6s ease}
+.open video.on{opacity:1}
+.open::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(232,233,229,.62) 0%,rgba(232,233,229,.28) 38%,rgba(232,233,229,.5) 72%,rgba(232,233,229,.9) 100%)}
+.open > *:not(video){position:relative;z-index:1}
+.open-top{padding:.6rem var(--gut) 0;display:flex;align-items:center}
+.back{display:inline-flex;align-items:center;min-height:44px;font-family:var(--sans);font-size:.88rem;color:var(--oil);
+  text-decoration:none;border-bottom:1px solid transparent}
+.back:hover{border-bottom-color:var(--oil)}
+.open-body{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:2rem var(--gut) 3.2rem;max-width:62rem;width:100%;margin:0 auto}
+.open h1{font-weight:400;font-size:clamp(3.1rem,13vw,7.2rem);line-height:.98;letter-spacing:-.01em;margin:0 0 1.4rem}
+.open-desc{max-width:36rem;font-size:clamp(1.02rem,2.6vw,1.18rem);margin:0 0 2rem;color:var(--ink)}
+.enter{display:inline-flex;align-items:center;gap:.7rem;min-height:48px;padding:.6rem 1.3rem;font-family:var(--sans);font-size:.95rem;
+  border:1px solid var(--ink);border-radius:999px;background:rgba(232,233,229,.6);text-decoration:none;align-self:flex-start}
+.enter:hover{background:var(--paper)}
+.enter .arr{display:inline-block;transition:transform .3s}
+.enter:hover .arr{transform:translateY(3px)}
+.bgtoggle{position:absolute;right:max(.6rem,env(safe-area-inset-right));bottom:.8rem;z-index:2;width:44px;height:44px;display:flex;
+  align-items:center;justify-content:center;border-radius:50%;color:var(--ink-soft);background:rgba(232,233,229,.55)}
+.bgtoggle:hover{color:var(--ink);background:rgba(232,233,229,.9)}
+.bgtoggle[hidden]{display:none}
 
-  .title-block{
-    max-width:var(--measure);
-    margin:0 auto;
-    padding:48px 24px 8px;
-    text-align:left;
-  }
-  .kicker{
-    font-family:var(--sans);
-    font-size:13px;
-    letter-spacing:.12em;
-    text-transform:uppercase;
-    color:var(--accent);
-    margin:0 0 14px;
-  }
-  h1{
-    font-size:2.6rem;
-    line-height:1.15;
-    margin:0 0 10px;
-    font-weight:400;
-  }
-  .subtitle{
-    font-size:1.15rem;
-    color:var(--muted);
-    font-style:italic;
-    margin:0 0 6px;
-  }
-  .byline{
-    font-family:var(--sans);
-    font-size:13px;
-    color:var(--muted);
-    margin-top:18px;
-  }
+/* ---------- story, vine ---------- */
+.story{position:relative;padding-bottom:4rem}
+.vine{position:absolute;left:0;top:0;width:100%;pointer-events:none;z-index:0;overflow:visible}
+.vine path{fill:none;stroke:var(--vine);stroke-linecap:round;stroke-linejoin:round}
+.vine .stem{stroke-width:1.4;opacity:.75}
+.vine .leaf{stroke-width:1;opacity:0;transition:opacity 1.2s ease}
+.vine .leaf.on{opacity:.65}
+.vine .knot{fill:var(--paper);stroke:var(--vine);stroke-width:1.2;opacity:0;transition:opacity .8s}
+.vine .knot.on{opacity:.9}
+.vine-marks{position:absolute;left:0;top:0;width:0;height:0;z-index:2}
+.vine-marks a{position:absolute;transform:translate(-50%,-50%);min-width:44px;height:44px;display:flex;align-items:center;
+  justify-content:center;font-family:var(--sans);font-size:.78rem;color:var(--muted);text-decoration:none;opacity:0;transition:opacity .8s,color .3s}
+.vine-marks a.on{opacity:1}
+.vine-marks a.cur{color:var(--ink)}
+.vine-marks a:hover,.vine-marks a:focus-visible{color:var(--oil);opacity:1}
+.vine-marks[hidden]{display:none}
+.wrap{position:relative;z-index:1;max-width:62rem;margin:0 auto;padding:0 var(--gut)}
+@media (max-width:1099px){ .story .wrap{padding-left:max(34px,var(--gut))} }
 
-  main{
-    max-width:var(--measure);
-    margin:0 auto;
-    padding:8px 24px 40px;
-  }
-  section{
-    margin:52px 0;
-  }
-  section h2{
-    font-size:1.5rem;
-    font-weight:400;
-    color:var(--accent);
-    border-bottom:1px solid var(--line);
-    padding-bottom:10px;
-    margin-bottom:20px;
-  }
-  p{margin:0 0 20px;}
-  blockquote{
-    font-style:italic;
-    color:var(--accent);
-    border-left:3px solid var(--accent-light);
-    margin:28px 0;
-    padding:4px 0 4px 20px;
-    font-size:1.08rem;
-  }
-  blockquote cite{
-    display:block;
-    font-family:var(--sans);
-    font-style:normal;
-    font-size:12px;
-    color:var(--muted);
-    margin-top:8px;
-  }
+.ch{position:relative;padding-top:clamp(5rem,12vw,8.5rem);scroll-margin-top:0}
+.ch h2{font-weight:400;font-size:clamp(1.7rem,5vw,2.5rem);line-height:1.18;margin:0 0 1.8rem;max-width:22ch}
+.txt{max-width:38rem;font-size:clamp(1.06rem,2.4vw,1.2rem);margin:2.2rem 0 0}
+.txt.big{font-size:clamp(1.18rem,3.2vw,1.5rem);line-height:1.6;max-width:40rem;margin-top:0}
+.long{max-width:40rem;margin:2.4rem 0 0;font-size:clamp(1.06rem,2.6vw,1.26rem);line-height:1.62;color:var(--ink);
+  padding-left:1.1rem;border-left:1px solid var(--vine)}
+.cap,figcaption{font-family:var(--sans);font-size:.82rem;line-height:1.55;color:var(--ink-soft);margin-top:.6rem;max-width:60ch}
+.cap.group{margin-top:1.2rem}
+figure{margin:0}
+.ph{display:block;width:100%;height:auto;background:var(--paper-2)}
 
-  figure{
-    margin:28px 0;
-  }
-  figure img, figure video{
-    width:100%;
-    display:block;
-    border-radius:2px;
-  }
-  figcaption{
-    font-family:var(--sans);
-    font-size:13px;
-    color:var(--muted);
-    margin-top:10px;
-    line-height:1.5;
-  }
-  .media-row{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-  }
-  @media (max-width:620px){
-    .media-row{grid-template-columns:1fr;}
-    h1{font-size:2rem;}
-    body{font-size:16.5px;}
-  }
+/* zoom affordance on photographs that open the larger view: always visible, not hover-only */
+.zoom{position:relative;display:block;width:100%;cursor:zoom-in;text-align:left}
+.zoom .badge{position:absolute;right:.5rem;bottom:.5rem;width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  border-radius:50%;background:rgba(232,233,229,.88);color:var(--ink);box-shadow:0 1px 3px rgba(27,33,31,.18)}
+.zoom:hover .badge{background:var(--paper)}
+.zoom:focus-visible{outline-offset:4px}
 
-  footer{
-    max-width:var(--measure);
-    margin:0 auto;
-    padding:30px 24px 70px;
-    font-family:var(--sans);
-    font-size:12.5px;
-    color:var(--muted);
-    border-top:1px solid var(--line);
-  }
-  footer p{margin:0 0 8px;}
-  .closing{
-    text-align:center;
-    font-style:italic;
-    color:var(--muted);
-    margin:60px 0 10px;
-    font-size:1.1rem;
-  }
+/* book page (ch 2, 3) */
+.book{position:relative;background:#EFEEE8;padding:clamp(1rem,3.5vw,2.6rem);
+  box-shadow:0 1px 0 var(--line-soft),0 18px 40px -28px rgba(27,33,31,.45);border:1px solid var(--line-soft)}
+.book::before{content:"";position:absolute;top:6%;bottom:6%;left:50%;width:1px;
+  background:linear-gradient(180deg,transparent,var(--line) 20%,var(--line) 80%,transparent)}
+.book .pages{display:grid;grid-template-columns:1fr;gap:2rem}
+@media (min-width:700px){ .book .pages{grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem)} }
+@media (max-width:699px){ .book::before{display:none} }
+.plates{display:grid;grid-template-columns:1fr;gap:2.2rem 2rem}
+@media (min-width:700px){
+  .plates{grid-template-columns:repeat(12,1fr);align-items:start}
+  .plates .p1{grid-column:1 / span 6}
+  .plates .p2{grid-column:8 / span 5;margin-top:3rem}
+  .plates .p3{grid-column:1 / span 5}
+  .plates .p4{grid-column:6 / span 7;align-self:end}
+}
+
+/* ch 4: staggered arrival */
+.arrive{display:grid;grid-template-columns:1fr;gap:2.4rem}
+@media (min-width:700px){
+  .arrive{grid-template-columns:repeat(12,1fr);gap:3rem 2rem;align-items:start}
+  .arrive .a1{grid-column:1 / span 5}
+  .arrive .a2{grid-column:7 / span 4;margin-top:5rem}
+  .arrive .a3{grid-column:2 / span 6}
+  .arrive .a4{grid-column:8 / span 5;margin-top:-4rem}
+}
+@media (max-width:699px){ .arrive .a2,.arrive .a4{width:78%;margin-left:auto} }
+
+/* ch 5: slow filmstrip, moved by the page scroll (motion) or swiped (reduced motion / no JS) */
+.strip{position:relative;margin-top:.5rem}
+.strip-sticky{position:relative}
+.strip-track{display:flex;gap:clamp(1rem,3vw,2.2rem);padding:0 var(--gut);overflow-x:auto;scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;scrollbar-width:thin;overscroll-behavior-x:contain}
+.strip-track figure{flex:0 0 auto;scroll-snap-align:center}
+.strip-track .ph{height:min(56vh,30rem);width:auto;max-width:none}
+@media (max-width:699px){ .strip-track .ph{height:min(44vh,17rem)} }
+.strip.run{height:var(--strip-h,300vh)}
+.strip.run .strip-sticky{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;background:var(--paper)}
+.strip.run .strip-track{overflow:visible;scroll-snap-type:none;will-change:transform}
+.strip-foot{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:1rem var(--gut) 0;max-width:62rem;margin:0 auto;width:100%}
+.story .strip-foot{padding-left:max(34px,var(--gut))}
+@media (min-width:1100px){ .story .strip-foot{padding-left:var(--gut)} }
+.strip-foot .cap{margin:0 auto 0 0}
+.strip-prog{flex-basis:100%;height:1px;background:var(--line);position:relative;margin-top:.4rem}
+.strip-prog i{position:absolute;left:0;top:-1px;height:3px;width:0;background:var(--vine)}
+
+.arrows{display:inline-flex;gap:.4rem}
+.arrow{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;
+  background:var(--paper);color:var(--ink)}
+.arrow:hover{border-color:var(--ink)}
+.arrow:disabled{opacity:.35;cursor:default;border-color:var(--line)}
+
+/* ch 6: collage */
+.collage{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem}
+.collage .c1{grid-column:1 / -1}
+.collage .c2{grid-column:1 / span 3}
+.collage .c3{grid-column:4 / span 3;margin-top:2.5rem}
+.collage .c4{grid-column:1 / span 4}
+.collage .c5{grid-column:3 / -1}
+@media (min-width:700px){
+  .collage{grid-template-columns:repeat(12,1fr);gap:2rem}
+  .collage .c1{grid-column:1 / span 7}
+  .collage .c2{grid-column:8 / span 5;margin-top:6rem}
+  .collage .c3{grid-column:2 / span 4;margin-top:-3rem}
+  .collage .c4{grid-column:6 / span 6;margin-top:1rem}
+  .collage .c5{grid-column:4 / span 6}
+}
+
+/* ch 7: one photograph at a time */
+.seq{position:relative}
+/* without the script the six photographs simply stack */
+.seq-stage{display:grid;gap:1.4rem}
+.js .seq-stage{display:block;position:relative;aspect-ratio:4 / 3;max-height:78vh;max-height:78svh;width:100%;background:var(--paper-2);overflow:hidden;touch-action:pan-y}
+.seq-stage:focus-visible{outline-offset:4px}
+.js .seq-stage figure{position:absolute;inset:0;opacity:0;transition:opacity .9s ease;visibility:hidden}
+.js .seq-stage figure.cur{opacity:1;visibility:visible}
+.js .seq-stage .ph{width:100%;height:100%;object-fit:contain;background:transparent}
+.seq-bar,.seq-cap{display:none}
+.js .seq-bar{display:flex}.js .seq-cap{display:block}
+.seq-bar{align-items:center;gap:.8rem;flex-wrap:wrap;margin-top:.8rem}
+.seq-count{font-family:var(--sans);font-size:.85rem;color:var(--muted);min-width:3.2rem;text-align:center}
+.seq-full{margin-left:auto;display:inline-flex;align-items:center;gap:.45rem;min-height:44px;padding:0 1rem;font-family:var(--sans);font-size:.85rem;
+  border:1px solid var(--line);border-radius:999px}
+.seq-full:hover{border-color:var(--ink)}
+.seq .cap{min-height:3em}
+
+/* ink drawings: labyrinth (ch 8), root in water (ch 9) */
+.draw{display:block;width:100%;height:auto;overflow:visible}
+.draw path,.draw rect,.draw line,.draw ellipse{fill:none;stroke:var(--ink-soft);stroke-width:1.1;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+.draw .v{stroke:var(--vine);stroke-width:1.3}
+.draw .w{stroke:var(--oil-soft)}
+.draw .soft{stroke:var(--line)}
+.draw.pre [pathLength]{stroke-dasharray:1;stroke-dashoffset:1}
+.draw.go [pathLength]{stroke-dashoffset:0;transition:stroke-dashoffset 2.4s cubic-bezier(.3,.6,.3,1) calc(var(--i,0)*70ms)}
+.lab{margin:0 0 2.4rem}
+.pair{display:grid;grid-template-columns:1fr;gap:2.4rem}
+@media (min-width:700px){ .pair{grid-template-columns:7fr 5fr;gap:2rem;align-items:end} }
+.root{width:min(220px,60%);margin:2.4rem 0 1rem}
+.rescue{display:grid;grid-template-columns:1fr 1fr;gap:clamp(.8rem,2.5vw,1.8rem);margin-top:1rem}
+.rescue figure{transition:opacity 1.4s ease,transform 1.4s cubic-bezier(.2,.7,.3,1)}
+.rescue.pre figure{opacity:0;transform:translateY(24px)}
+.rescue.pre figure.in{opacity:1;transform:none}
+@media (min-width:700px){ .rescue{grid-template-columns:repeat(4,1fr)} .rescue figure:nth-child(even){margin-top:3rem} }
+
+/* ch 10 */
+.restore{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.restore .r1{grid-column:1 / -1}
+@media (min-width:700px){
+  .restore{grid-template-columns:5fr 7fr;gap:2rem;align-items:start}
+  .restore .r1{grid-column:1;grid-row:1 / span 2}
+  .restore .r2{grid-column:2}
+  .restore .r3{grid-column:2;width:80%}
+}
+.restore-4{margin-top:2.4rem}
+@media (min-width:700px){ .restore-4{width:72%;margin-left:auto} }
+
+/* ch 11: one still photograph */
+.still{max-width:72rem;margin:0 auto;padding:0 var(--gut)}
+.story .still{padding-left:max(34px,var(--gut))}
+@media (min-width:1100px){ .story .still{padding-left:var(--gut)} }
+.still figcaption{max-width:40rem;font-family:var(--serif);font-size:clamp(1rem,2.3vw,1.12rem);color:var(--ink-soft);margin-top:1rem}
+
+/* video players: no browser chrome, play on request */
+.player{position:relative;background:#141816}
+.player video{display:block;width:100%;height:auto;background:#141816}
+.player .big{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;width:100%;cursor:pointer}
+.player .big span{width:72px;height:72px;border-radius:50%;background:rgba(232,233,229,.9);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 14px rgba(0,0,0,.25);transition:transform .3s}
+.player .big:hover span{transform:scale(1.06)}
+.player.playing .big{display:none}
+.pbar{display:flex;align-items:center;gap:.6rem;padding:.35rem 0 0}
+.pbtn{width:44px;height:44px;flex:0 0 44px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%}
+.pbtn:hover{background:var(--paper-2)}
+.seek{flex:1;min-width:0;height:44px;-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer}
+.seek::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,var(--vine) var(--p,0%),var(--line) var(--p,0%))}
+.seek::-moz-range-track{height:2px;background:var(--line)}
+.seek::-moz-range-progress{height:2px;background:var(--vine)}
+.seek::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-6px;border-radius:50%;background:var(--ink);border:0}
+.seek::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--ink);border:0}
+.ptime{font-family:var(--sans);font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.v1{display:grid;grid-template-columns:1fr;gap:2rem;align-items:center}
+.v1 .player{width:min(300px,100%)}
+@media (min-width:700px){ .v1{grid-template-columns:auto 1fr;gap:clamp(2rem,6vw,5rem)} .v1 .txt{margin:0} }
+
+.end{padding:6rem 0 3rem}
+.end a{display:inline-flex;align-items:center;min-height:44px;font-size:1.1rem;text-decoration:none;border-bottom:1px solid var(--oil);color:var(--ink)}
+.end a:hover{color:var(--oil)}
+
+/* ---------- chapter navigation (bottom) ---------- */
+.cnav{position:fixed;left:50%;bottom:max(.7rem,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;display:flex;align-items:center;
+  gap:.1rem;padding:.2rem;border-radius:999px;background:rgba(232,233,229,.94);border:1px solid var(--line);
+  box-shadow:0 6px 24px -12px rgba(27,33,31,.4);transition:opacity .4s,transform .4s;font-family:var(--sans)}
+.cnav.away{opacity:0;transform:translate(-50%,1rem);pointer-events:none}
+.cnav.away:focus-within{opacity:1;transform:translateX(-50%);pointer-events:auto}
+.cnav .arrow{border:0;background:transparent}
+.cnav .arrow:hover{background:var(--paper-2)}
+.cnav-cur{min-height:44px;min-width:5.6rem;padding:0 .9rem;border-radius:999px;font-size:.86rem;font-variant-numeric:tabular-nums}
+.cnav-cur:hover{background:var(--paper-2)}
+.cnav-cur[aria-expanded="true"]{background:var(--ink);color:var(--paper)}
+.sheet{position:fixed;left:50%;bottom:calc(max(.7rem,env(safe-area-inset-bottom)) + 58px);transform:translateX(-50%);z-index:31;
+  width:min(22rem,calc(100vw - 2rem));padding:1rem;background:var(--paper);border:1px solid var(--line);
+  box-shadow:0 10px 30px -14px rgba(27,33,31,.45);font-family:var(--sans)}
+.sheet[hidden]{display:none}
+.sheet ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,1fr);gap:.25rem}
+.sheet ol a{display:flex;align-items:center;justify-content:center;height:44px;text-decoration:none;font-size:.92rem;border-radius:2px;color:var(--ink-soft)}
+.sheet ol a:hover{background:var(--paper-2);color:var(--ink)}
+.sheet ol a[aria-current="true"]{background:var(--ink);color:var(--paper)}
+.sheet .row{display:flex;justify-content:space-between;gap:.5rem;margin-top:.6rem;font-size:.85rem}
+.sheet .row a{display:inline-flex;align-items:center;min-height:44px;color:var(--oil);text-decoration:none}
+
+/* ---------- larger view (dialog) ---------- */
+.viewer{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#141816;color:#E8E9E5;overflow:hidden}
+.viewer::backdrop{background:#141816}
+.viewer[open]{display:flex;flex-direction:column}
+.vw-stage{position:relative;flex:1;overflow:hidden;touch-action:none;cursor:grab}
+.vw-stage.drag{cursor:grabbing}
+.vw-stage img{position:absolute;left:50%;top:50%;max-width:none;transform-origin:0 0;user-select:none;-webkit-user-drag:none;background:transparent}
+.vw-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:.4rem .5rem;z-index:2;
+  font-family:var(--sans);font-size:.85rem;background:linear-gradient(180deg,rgba(20,24,22,.7),rgba(20,24,22,0))}
+.vw-count{padding-left:.6rem;color:rgba(232,233,229,.8)}
+.vw-btn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#E8E9E5;background:rgba(20,24,22,.45)}
+.vw-btn:hover{background:rgba(232,233,229,.15)}
+.vw-btn:disabled{opacity:.3;cursor:default}
+.vw-btn:focus-visible{outline-color:#E8E9E5}
+.vw-prev,.vw-next{position:absolute;top:50%;transform:translateY(-50%);z-index:2}
+.vw-prev{left:.5rem}.vw-next{right:.5rem}
+.vw-zoom{display:flex;gap:.3rem}
+.vw-cap{font-family:var(--sans);font-size:.82rem;line-height:1.5;color:rgba(232,233,229,.85);padding:.7rem 1rem calc(.8rem + env(safe-area-inset-bottom));max-width:60rem;margin:0 auto;width:100%;max-height:30vh;overflow:auto}
+.vw-cap:empty{display:none}
+
+@media (prefers-reduced-motion: reduce){
+  .open video{display:none}
+  .vine .leaf,.vine .knot,.vine-marks a,.seq-stage figure,.rescue figure,.cnav,.enter .arr{transition:none}
+}
 </style>
 </head>
 <body>
+<svg class="defs" aria-hidden="true" focusable="false"><defs>
+  <!-- the site's ink wobble -->
+  <filter id="ink" x="-1%" y="-1%" width="102%" height="102%"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.8" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <symbol id="i-play" viewBox="0 0 16 16"><path d="M4.5 2.8v10.4L13 8z" fill="currentColor"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 16 16"><path d="M4 3h3v10H4zM9 3h3v10H9z" fill="currentColor"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 16 16"><path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor"/><path d="M11 5.5c1 .8 1 4.2 0 5M12.8 3.8c2 1.8 2 6.6 0 8.4" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 16 16"><path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor"/><path d="M11 6l4 4M15 6l-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-zoom" viewBox="0 0 16 16"><path d="M9.5 2.5h4v4M13.5 2.5L9 7M6.5 13.5h-4v-4M2.5 13.5L7 9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-l" viewBox="0 0 16 16"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-r" viewBox="0 0 16 16"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 16 16"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+</defs></svg>
 
-<a class="back-link" href="../index.html#/space/vineyard">&larr; Multispecies Buildings</a>
-
-<header class="hero">
-  <iframe class="hero-video-frame"
-    src="https://www.youtube.com/embed/FwySg__gGhM?autoplay=1&mute=1&loop=1&playlist=FwySg__gGhM&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1"
-    title="" frameborder="0" tabindex="-1"
-    allow="autoplay; encrypted-media"
-    allowfullscreen>
-  </iframe>
-  <div class="hero-shade" aria-hidden="true"></div>
+<header class="open" id="top">
+  <video class="bgv" muted loop playsinline preload="none" aria-hidden="true" poster="../media/vineyards/vineyards-0-vine-shadows-loop-poster.jpg"
+    data-src="../media/vineyards/vineyards-0-vine-shadows-loop.mp4"></video>
+  <div class="open-top"><a class="back" href="../index.html#/space/vineyard">&larr; Back to the Vineyard</a></div>
+  <div class="open-body">
+    <h1>Grapevines</h1>
+    <p class="open-desc">Carried from villages into Tbilisi during Soviet industrialization, grapevines took root around newly built mass housing. Climbing concrete façades, crossing balconies, and spreading over courtyards, they gradually became living infrastructures, offering shade, fruit, and spaces of communal life. Their unruly growth continues to blur the boundaries between nature and architecture, private and shared space, and care and neglect.</p>
+    <a class="enter" href="#ch-1">Full Story: The City of Vineyards <span class="arr" aria-hidden="true">&darr;</span></a>
+  </div>
+  <button class="bgtoggle" type="button" aria-label="Pause background video" aria-pressed="false" hidden><svg width="16" height="16" aria-hidden="true"><use href="#i-pause"/></svg></button>
 </header>
 
-<div class="title-block">
-  <p class="kicker">A Story from the City of Vineyards</p>
-  <h1>A City of Vineyards</h1>
-  <p class="subtitle">The story of one cut — and restored — pergola in Vake, Tbilisi.</p>
-  <p class="byline">From the essay <em>A City of Vineyards: Multispecies Buildings in the Ruins of Empire</em> by T. Khalvashi</p>
-</div>
+<main class="story" id="story">
+  <svg class="vine" aria-hidden="true" focusable="false"></svg>
+  <nav class="vine-marks" aria-label="Chapters along the vine" hidden></nav>
 
-<main>
-
-  <section>
-    <p>In March 2023, a video went viral in Georgia. A man had stumbled upon a grapevine pergola, freshly cut down, in front of Soviet mass housing in Vake, one of Tbilisi's central neighborhoods. He filmed it, furious.</p>
-    <blockquote>
-      &ldquo;Look how Georgianness is being cut off.&rdquo;
-      <cite>— from the video, shared on social media, March 2023</cite>
-    </blockquote>
-    <p>His anger said something true: in Georgia, a grapevine is never just a plant. It is a way the city holds itself together — and when it is cut, something more than wood is severed.</p>
-  </section>
-
-  <section>
-    <h2>Why a vine matters</h2>
-    <p>Grapevines have shaped this landscape for centuries. The old Georgian words for a vineyard, <em>tsalkoti</em> and <em>samotkhe</em>, both also mean &ldquo;paradise.&rdquo; In the 1950s, as villagers moved to Tbilisi to work in new Soviet industries, they brought vine cuttings with them and planted them around their new apartment blocks — turning bare concrete courtyards into shaded, fruit-bearing, breathing places. Grapevines became the city's own improvised, living infrastructure.</p>
-    <figure>
-      <img src="images/archive-diagram.jpg" alt="A page from an old Georgian manual on vine training, showing diagrams of trellis patterns.">
-      <figcaption>A page from a mid-century Georgian manual on decorative gardening — part of the same history of planting that brought vines to Tbilisi's courtyards.</figcaption>
-    </figure>
-  </section>
-
-  <section>
-    <h2>The cutting</h2>
-    <p>This particular pergola was cut down by the head of the local homeowners' association, who was tired of the dust it left on his car. But the story did not end there. Neighbors gathered the severed roots and set them in containers of water, refusing to let the vine simply die.</p>
-    <div class="media-row">
-      <figure>
-        <img src="images/cut-jar.jpg" alt="The cut base of a grapevine, placed in a glass jar of water to keep it alive.">
-        <figcaption>The severed vine, kept in water by neighbors who weren't ready to let it go.</figcaption>
-      </figure>
-      <figure>
-        <video src="video/cutting-site.mp4" muted loop playsinline controls poster="images/cut-jar.jpg"></video>
-        <figcaption>The site of the cutting, documented by a neighbor, Lika Sekhniashvili.</figcaption>
-      </figure>
+  <!-- 1 -->
+  <section class="ch" id="ch-1" aria-label="Chapter 1">
+    <div class="wrap v1">
+      <div class="player" data-dur="69.6">
+        <video preload="none" playsinline width="240" height="426" poster="../media/vineyards/vineyards-1-cut-pergola-video-poster.jpg"
+          aria-label="Phone video: a cut-down vine pergola in front of a block">
+          <source src="../media/vineyards/vineyards-1-cut-pergola-video.mp4" type="video/mp4"></video>
+        <button class="big" type="button" aria-label="Play video"><span><svg width="22" height="22" aria-hidden="true"><use href="#i-play"/></svg></span></button>
+      </div>
+      <p class="txt">In March 2023, this video went viral in Georgia. A man had stumbled upon a grapevine pergola, freshly cut down, in front of a Soviet building block in Vake, one of Tbilisi's central neighborhoods.</p>
     </div>
   </section>
 
-  <section>
-    <h2>The restoration</h2>
-    <p>The roots took. Slowly, the vine grew back — first as thin shoots, then as the canopy it is today, shading the same courtyard once again. As one resident put it, the fairy tale has a happy ending: the vine survived, and the association head who cut it down was eventually removed from his post.</p>
-    <div class="media-row">
-      <figure>
-        <img src="images/restored-pergola.jpg" alt="The same pergola, now grown back, shading cars and garages in the courtyard.">
-        <figcaption>The pergola, restored — shading the courtyard once more.</figcaption>
-      </figure>
-      <figure>
-        <video src="video/restoration-canopy.mp4" muted loop playsinline controls poster="images/restored-pergola.jpg"></video>
-        <figcaption>Looking up through the regrown canopy, against the apartment block it shelters.</figcaption>
-      </figure>
+  <!-- 2 -->
+  <section class="ch" id="ch-2" aria-labelledby="h-2">
+    <div class="wrap">
+      <h2 id="h-2">Grapevines as Trees of Life</h2>
+      <div class="book">
+        <div class="pages">
+          <button class="zoom" type="button" data-group="g2" data-cap="cap-2" data-full="../media/vineyards/vineyards-2-metalwork-01.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-2-metalwork-01-1200.jpg" width="1150" height="862" alt="Metal relief: a figure holding a bunch of grapes among vine leaves" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+          <button class="zoom" type="button" data-group="g2" data-cap="cap-2" data-full="../media/vineyards/vineyards-2-metalwork-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-2-metalwork-02-1200.jpg" width="1150" height="862" alt="Copper relief: a kneeling figure tending a young vine with grape clusters" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        </div>
+      </div>
+      <p class="cap group" id="cap-2">Grapevines as trees of life in Georgian metalwork, 2023. Lia Khetaguri archive. Courtesy of the author.</p>
+      <p class="txt">In Georgia, a grapevine is never just a plant. It is a way the nation holds itself together, and when it is cut, something more than wood is severed.</p>
     </div>
   </section>
 
-  <section>
-    <h2>An archive of care</h2>
-    <p>Alongside the restoration, this vine's leaves, grape clusters, and cuttings were pressed and laid out beside a 1950 Soviet manual on decorative gardening — the same tradition that first brought vines into Tbilisi's courtyards. Old instructions for cultivating &ldquo;inside the block greenery,&rdquo; and the quiet, improvised care of a single plant, side by side.</p>
-    <figure>
-      <img src="images/collage.jpg" alt="A collage pairing a page from a 1950 Georgian gardening manual with pressed grapevine leaves and cuttings from the restored vine.">
-      <figcaption>A collage: the 1950 manual <em>Decorative Gardening</em>, pressed leaves, and cuttings from this vine.</figcaption>
-    </figure>
+  <!-- 3 -->
+  <section class="ch" id="ch-3" aria-label="Chapter 3">
+    <div class="wrap">
+      <div class="book">
+        <div class="plates">
+          <figure class="p1"><button class="zoom" type="button" data-group="g3" data-full="../media/vineyards/vineyards-3-pirosmani-painting-01.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-3-pirosmani-painting-01-1200.jpg" width="800" height="518" alt="Painting: two figures carrying baskets of grapes along a vineyard path" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+            <figcaption><b>Image 1.</b> Grape Harvesting, Niko Pirosmani, 1862.</figcaption></figure>
+          <figure class="p2"><button class="zoom" type="button" data-group="g3" data-full="../media/vineyards/vineyards-3-pirosmani-painting-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-3-pirosmani-painting-02-1200.jpg" width="500" height="345" alt="Painting: a harvest scene in an orchard with a cart, oxen and a ladder" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+            <figcaption><b>Image 2.</b> Picking the grapes, Niko Pirosmani, 1862.</figcaption></figure>
+          <figure class="p3"><button class="zoom" type="button" data-group="g3" data-full="../media/vineyards/vineyards-3-book-illustration-03.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-3-book-illustration-03-1200.jpg" srcset="../media/vineyards/vineyards-3-book-illustration-03-1200.jpg 1200w, ../media/vineyards/vineyards-3-book-illustration-03.jpg 2400w" sizes="(min-width: 700px) 24rem, 90vw" width="2400" height="1800" alt="Book diagram: a grapevine trained in four horizontal tiers against a brick wall" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+            <figcaption><b>Image 3.</b> A Four-Tier Grapevine Cordon for Wall Cultivation (From the book <i>Homestead Gardening</i> by A. Kereselidze, Soviet Georgia State Press, Tbilisi, 1960).</figcaption></figure>
+          <figure class="p4"><button class="zoom" type="button" data-group="g3" data-full="../media/vineyards/vineyards-3-book-illustration-04.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-3-book-illustration-04-1200.jpg" srcset="../media/vineyards/vineyards-3-book-illustration-04-1200.jpg 1200w, ../media/vineyards/vineyards-3-book-illustration-04.jpg 2400w" sizes="(min-width: 700px) 34rem, 90vw" width="2400" height="998" alt="Book drawing: a clipped hedge with grapevines trained on posts above it" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+            <figcaption><b>Image 4.</b> An Ornamental Living Hedge of Colchis Boxwood, Decorated with Grapevines Trained on Suitable Supports (From the book <i>Homestead Gardening</i> by A. Kereselidze, Soviet Georgia State Press, Tbilisi, 1960).</figcaption></figure>
+        </div>
+      </div>
+      <p class="txt">Grapevines have long shaped Georgia’s rural landscapes, cultivated through generations of peasant labor for both viticulture and decorative gardening.</p>
+    </div>
   </section>
 
-  <section>
-    <h2>Other vines, other stories</h2>
-    <p>This is one pergola among many. Across Tbilisi's courtyards, similar vines — planted, cut, fought over, replanted — keep quietly reshaping the city's blocks.</p>
-    <figure>
-      <img src="images/other-vine.jpg" alt="Another flourishing grapevine pergola shading a courtyard and parked car elsewhere in Tbilisi.">
-      <figcaption>Another vine, another courtyard — one of many such stories across the city.</figcaption>
-    </figure>
+  <!-- 4 -->
+  <section class="ch" id="ch-4" aria-labelledby="h-4">
+    <div class="wrap">
+      <h2 id="h-4">Grapevines Becoming Urban</h2>
+      <div class="arrive">
+        <figure class="a1"><button class="zoom" type="button" data-group="g4" data-full="../media/vineyards/vineyards-4-caricature-01.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-4-caricature-01-1200.jpg" width="731" height="800" alt="Caricature: a tall block of flats rising out of a field of cut vine stumps" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+          <figcaption><b>Image 1.</b> Caricature by Murtaz Abashidze from the Georgian satirical magazine Niangi, The National Library of Georgia Archive, 1969.</figcaption></figure>
+        <figure class="a2"><button class="zoom" type="button" data-group="g4" data-full="../media/vineyards/vineyards-4-vine-wall-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-4-vine-wall-02-1200.jpg" srcset="../media/vineyards/vineyards-4-vine-wall-02-1200.jpg 1200w, ../media/vineyards/vineyards-4-vine-wall-02.jpg 1800w" sizes="(min-width: 700px) 19rem, 72vw" width="1800" height="2400" alt="A young grapevine growing up a concrete wall from a crack by the pavement" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+          <figcaption><b>Image 2.</b> Tamta Khalvashi’s archive. Tbilisi, Vazha-Pshavela Blocks, 2022.</figcaption></figure>
+        <figure class="a3"><button class="zoom" type="button" data-group="g4" data-full="../media/vineyards/vineyards-4-autumn-vine-03.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-4-autumn-vine-03-1200.jpg" srcset="../media/vineyards/vineyards-4-autumn-vine-03-1200.jpg 1200w, ../media/vineyards/vineyards-4-autumn-vine-03.jpg 1600w" sizes="(min-width: 700px) 28rem, 90vw" width="1600" height="1200" alt="Red and orange autumn vine leaves in front of an apartment block" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+          <figcaption><b>Image 3.</b> Nargiza Arjevanidze archive. Tbilisi, Gldani, 2023. Courtesy of the author.</figcaption></figure>
+        <figure class="a4"><button class="zoom" type="button" data-group="g4" data-full="../media/vineyards/vineyards-4-leaf-alley-04.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-4-leaf-alley-04-1200.jpg" srcset="../media/vineyards/vineyards-4-leaf-alley-04-1200.jpg 1200w, ../media/vineyards/vineyards-4-leaf-alley-04.jpg 1536w" sizes="(min-width: 700px) 24rem, 72vw" width="1536" height="2048" alt="A lane between blocks under an arch of vines, the ground covered in fallen leaves" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+          <figcaption><b>Image 4</b>. Ana Margvelashvili archive. Tbilisi, Vake, 2023. Courtesy of the author.</figcaption></figure>
+      </div>
+      <p class="long">Grapevines followed rural migrants into the city amid Soviet industrialization, finding new ground among the city’s concrete.</p>
+    </div>
   </section>
 
-  <p class="closing">&ldquo;The fairytale has a happy ending&rdquo; — though the vine, like the city around it, keeps needing care to stay that way.</p>
+  <!-- 5 -->
+  <section class="ch" id="ch-5" aria-labelledby="h-5">
+    <div class="wrap"><h2 id="h-5">Creeping Agency of Grapevines</h2></div>
+    <div class="strip" role="region" aria-label="Five photographs, side by side">
+      <div class="strip-sticky">
+        <div class="strip-track" tabindex="0">
+          <figure><button class="zoom" type="button" data-group="g5" data-cap="cap-5" data-full="../media/vineyards/vineyards-5-facade-vine-01.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-5-facade-vine-01-1200.jpg" srcset="../media/vineyards/vineyards-5-facade-vine-01-1200.jpg 1200w, ../media/vineyards/vineyards-5-facade-vine-01.jpg 2400w" sizes="(min-width: 700px) 40rem, 80vw" width="2400" height="1800" alt="Looking up at a tall block with a vine climbing across its balconies" loading="lazy" decoding="async"></button></figure>
+          <figure><button class="zoom" type="button" data-group="g5" data-cap="cap-5" data-full="../media/vineyards/vineyards-5-facade-vine-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-5-facade-vine-02-1200.jpg" srcset="../media/vineyards/vineyards-5-facade-vine-02-1200.jpg 1200w, ../media/vineyards/vineyards-5-facade-vine-02.jpg 2400w" sizes="(min-width: 700px) 40rem, 80vw" width="2400" height="1800" alt="A dense vine covering the lower wall of a block, laundry drying above" loading="lazy" decoding="async"></button></figure>
+          <figure><button class="zoom" type="button" data-group="g5" data-cap="cap-5" data-full="../media/vineyards/vineyards-5-facade-vine-03.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-5-facade-vine-03-1200.jpg" srcset="../media/vineyards/vineyards-5-facade-vine-03-1200.jpg 1200w, ../media/vineyards/vineyards-5-facade-vine-03.jpg 2400w" sizes="(min-width: 700px) 40rem, 80vw" width="2400" height="1800" alt="A vine spreading along a row of concrete balconies" loading="lazy" decoding="async"></button></figure>
+          <figure><button class="zoom" type="button" data-group="g5" data-cap="cap-5" data-full="../media/vineyards/vineyards-5-facade-vine-04.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-5-facade-vine-04-1200.jpg" srcset="../media/vineyards/vineyards-5-facade-vine-04-1200.jpg 1200w, ../media/vineyards/vineyards-5-facade-vine-04.jpg 2400w" sizes="(min-width: 700px) 54rem, 90vw" width="2400" height="1350" alt="Vines hanging over the entrance wall of a block with air-conditioning units" loading="lazy" decoding="async"></button></figure>
+          <figure><button class="zoom" type="button" data-group="g5" data-cap="cap-5" data-full="../media/vineyards/vineyards-5-facade-vine-05.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-5-facade-vine-05-1200.jpg" srcset="../media/vineyards/vineyards-5-facade-vine-05-1200.jpg 1200w, ../media/vineyards/vineyards-5-facade-vine-05.jpg 2400w" sizes="(min-width: 700px) 54rem, 90vw" width="2400" height="1350" alt="A pink five-storey block with a vine trailing along one balcony row" loading="lazy" decoding="async"></button></figure>
+        </div>
+        <div class="strip-foot">
+          <p class="cap" id="cap-5">Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2025</p>
+          <span class="arrows"><button class="arrow s-prev" type="button" aria-label="Previous photograph"><svg width="16" height="16" aria-hidden="true"><use href="#i-l"/></svg></button><button class="arrow s-next" type="button" aria-label="Next photograph"><svg width="16" height="16" aria-hidden="true"><use href="#i-r"/></svg></button></span>
+          <span class="strip-prog" aria-hidden="true"><i></i></span>
+        </div>
+      </div>
+    </div>
+    <div class="wrap"><p class="long">Amid the slow ruination of Soviet mass housing and growing air pollution, grapevines became living infrastructures of care, escaping human intentions and creeping across crumbling facades.</p></div>
+  </section>
 
+  <!-- 6 -->
+  <section class="ch" id="ch-6" aria-labelledby="h-6">
+    <div class="wrap">
+      <h2 id="h-6">Grapevines as Commons</h2>
+      <div class="collage">
+        <button class="zoom c1" type="button" data-group="g6" data-cap="cap-6" data-full="../media/vineyards/vineyards-6-pergola-commons-01.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-6-pergola-commons-01-1200.jpg" srcset="../media/vineyards/vineyards-6-pergola-commons-01-1200.jpg 1200w, ../media/vineyards/vineyards-6-pergola-commons-01.jpg 2400w" sizes="(min-width: 700px) 34rem, 90vw" width="2400" height="1800" alt="A courtyard under a vine pergola with a bench and makeshift seats" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        <button class="zoom c2" type="button" data-group="g6" data-cap="cap-6" data-full="../media/vineyards/vineyards-6-pergola-commons-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-6-pergola-commons-02-1200.jpg" srcset="../media/vineyards/vineyards-6-pergola-commons-02-1200.jpg 1200w, ../media/vineyards/vineyards-6-pergola-commons-02.jpg 2400w" sizes="(min-width: 700px) 24rem, 45vw" width="2400" height="1800" alt="A pavement along a block, shaded by vines, with a person walking away" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        <button class="zoom c3" type="button" data-group="g6" data-cap="cap-6" data-full="../media/vineyards/vineyards-6-pergola-commons-03.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-6-pergola-commons-03-1200.jpg" srcset="../media/vineyards/vineyards-6-pergola-commons-03-1200.jpg 1200w, ../media/vineyards/vineyards-6-pergola-commons-03.jpg 2400w" sizes="(min-width: 700px) 20rem, 45vw" width="2400" height="1350" alt="A vine framing a ground-floor shop front; people on the steps in the evening light" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        <button class="zoom c4" type="button" data-group="g6" data-cap="cap-6" data-full="../media/vineyards/vineyards-6-pergola-commons-04.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-6-pergola-commons-04-1200.jpg" srcset="../media/vineyards/vineyards-6-pergola-commons-04-1200.jpg 1200w, ../media/vineyards/vineyards-6-pergola-commons-04.jpg 2400w" sizes="(min-width: 700px) 29rem, 60vw" width="2400" height="1800" alt="A clipped hedge and a vine pergola in front of a block; someone sitting on a bench" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        <button class="zoom c5" type="button" data-group="g6" data-cap="cap-6" data-full="../media/vineyards/vineyards-6-pergola-commons-05.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-6-pergola-commons-05-1200.jpg" srcset="../media/vineyards/vineyards-6-pergola-commons-05-1200.jpg 1200w, ../media/vineyards/vineyards-6-pergola-commons-05.jpg 2400w" sizes="(min-width: 700px) 29rem, 60vw" width="2400" height="1350" alt="A vine pergola over the path to a building entrance" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+      </div>
+      <p class="cap group" id="cap-6">Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2025</p>
+      <p class="long">Grapevines weave leafy pergolas into shared spaces of shade, rest, and neighborly gatherings. From communal harvests to wine pressed in garages or basements, caring for the vines becomes a way of caring for one another and for the places they inhabit.</p>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="ch" id="ch-7" aria-label="Chapter 7">
+    <div class="wrap seq" role="region" aria-roledescription="sequence" aria-label="Six photographs, one at a time">
+      <div class="seq-stage" tabindex="0" aria-label="Photographs; use the left and right arrow keys">
+        <figure class="cur"><img class="ph" src="../media/vineyards/vineyards-7-private-vine-01-1200.jpg" srcset="../media/vineyards/vineyards-7-private-vine-01-1200.jpg 1200w, ../media/vineyards/vineyards-7-private-vine-01.jpg 1800w" sizes="(min-width: 1000px) 58rem, 100vw" width="1800" height="2400" alt="A fenced, vine-covered plot at the foot of a tall block on a slope" loading="lazy" decoding="async"></figure>
+        <figure><img class="ph" src="../media/vineyards/vineyards-7-private-vine-02-1200.jpg" srcset="../media/vineyards/vineyards-7-private-vine-02-1200.jpg 1200w, ../media/vineyards/vineyards-7-private-vine-02.jpg 2400w" sizes="(min-width: 1000px) 58rem, 100vw" width="2400" height="1800" alt="Vines trained along a ground-floor enclosure of a brick-faced block" loading="lazy" decoding="async"></figure>
+        <figure><img class="ph" src="../media/vineyards/vineyards-7-private-vine-03-1200.jpg" srcset="../media/vineyards/vineyards-7-private-vine-03-1200.jpg 1200w, ../media/vineyards/vineyards-7-private-vine-03.jpg 2400w" sizes="(min-width: 1000px) 58rem, 100vw" width="2400" height="1800" alt="A vine pergola over parked cars behind a fence in front of a long block" loading="lazy" decoding="async"></figure>
+        <figure><img class="ph" src="../media/vineyards/vineyards-7-private-vine-04-1200.jpg" srcset="../media/vineyards/vineyards-7-private-vine-04-1200.jpg 1200w, ../media/vineyards/vineyards-7-private-vine-04.jpg 2400w" sizes="(min-width: 1000px) 58rem, 100vw" width="2400" height="1800" alt="A gated, vine-roofed enclosure in a courtyard" loading="lazy" decoding="async"></figure>
+        <figure><img class="ph" src="../media/vineyards/vineyards-7-private-vine-05-1200.jpg" srcset="../media/vineyards/vineyards-7-private-vine-05-1200.jpg 1200w, ../media/vineyards/vineyards-7-private-vine-05.jpg 2400w" sizes="(min-width: 1000px) 58rem, 100vw" width="2400" height="1600" alt="A narrow passage between two metal garages, trees and vines above" loading="lazy" decoding="async"></figure>
+        <figure><img class="ph" src="../media/vineyards/vineyards-7-private-vine-06-1200.jpg" srcset="../media/vineyards/vineyards-7-private-vine-06-1200.jpg 1200w, ../media/vineyards/vineyards-7-private-vine-06.jpg 2400w" sizes="(min-width: 1000px) 58rem, 100vw" width="2400" height="1600" alt="A vine on a metal frame between two garages with graffiti" loading="lazy" decoding="async"></figure>
+      </div>
+      <div class="seq-bar">
+        <span class="arrows"><button class="arrow q-prev" type="button" aria-label="Previous photograph"><svg width="16" height="16" aria-hidden="true"><use href="#i-l"/></svg></button></span>
+        <span class="seq-count" aria-hidden="true">1 / 6</span>
+        <span class="arrows"><button class="arrow q-next" type="button" aria-label="Next photograph"><svg width="16" height="16" aria-hidden="true"><use href="#i-r"/></svg></button></span>
+        <button class="seq-full" type="button"><svg width="14" height="14" aria-hidden="true"><use href="#i-zoom"/></svg>Full screen</button>
+      </div>
+      <p class="cap seq-cap" aria-live="polite"></p>
+      <template class="seq-caps">
+        <p>Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2026.</p>
+        <p>Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2026.</p>
+        <p>Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2026.</p>
+        <p>Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2026.</p>
+        <p>Irakli Kochlashvili archive. Tbilisi, Sanzona and Gldani, 2023. Courtesy of the author.</p>
+        <p>Irakli Kochlashvili archive. Tbilisi, Sanzona and Gldani, 2023. Courtesy of the author.</p>
+      </template>
+      <noscript><p class="cap">Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2026. — Irakli Kochlashvili archive. Tbilisi, Sanzona and Gldani, 2023. Courtesy of the author.</p></noscript>
+    </div>
+    <div class="wrap"><p class="txt">The vines that gather neighbors beneath their shade also mark the edges of private worlds. Around garages and parked cars, their roots quietly redraw the boundaries of the shared Soviet courtyard, as cultivating greenery becomes cultivating possession.</p></div>
+  </section>
+
+  <!-- 8 -->
+  <section class="ch" id="ch-8" aria-labelledby="h-8">
+    <div class="wrap">
+      <h2 id="h-8">Labyrinths of Unintended Resistance</h2>
+      <div class="lab" aria-hidden="true"></div>
+      <div class="pair">
+        <figure><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-01.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-01-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-01-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-01.jpg 2400w" sizes="(min-width: 700px) 34rem, 90vw" width="2400" height="1350" alt="Autumn vines over garage roofs, apartment blocks behind" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+          <figcaption>Tamta Khalvashi’s archives; Tbilisi, Vazha-Pshavela Blocks, 2025).</figcaption></figure>
+        <figure><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-02-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-02-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-02.jpg 2400w" sizes="(min-width: 700px) 24rem, 90vw" width="2400" height="1600" alt="A lane of garages under a metal pergola overgrown with vines" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+          <figcaption>Irakli Kochlashvili archives. Tbilisi, Gldani, 2023. Courtesy of the author.</figcaption></figure>
+      </div>
+      <p class="txt">Yet the same garages that enclose the commons can also protect them. Draped in sprawling grapevines, they form tangled labyrinths of concrete and greenery, inadvertently resisting the advance of large-scale urban development into the courtyards of Soviet housing.</p>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="ch" id="ch-9" aria-label="Chapter 9">
+    <div class="wrap">
+      <p class="txt big">Against this fragile life of the commons, the anger over a severed grapevine was about more than a plant. Cut down because its dust dirtied a resident’s car, neighbors rescued the vine by placing its roots in water, keeping the possibility of life and a shared world alive.</p>
+      <div class="root" aria-hidden="true"></div>
+      <div class="rescue">
+        <button class="zoom" type="button" data-group="g9" data-cap="cap-9" data-full="../media/vineyards/vineyards-9-rescued-vine-01.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-9-rescued-vine-01-1200.jpg" srcset="../media/vineyards/vineyards-9-rescued-vine-01-1200.jpg 1200w, ../media/vineyards/vineyards-9-rescued-vine-01.jpg 1536w" sizes="(min-width: 700px) 14rem, 45vw" width="1536" height="2048" alt="A cut vine trunk with its end placed in a water bottle" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        <button class="zoom" type="button" data-group="g9" data-cap="cap-9" data-full="../media/vineyards/vineyards-9-rescued-vine-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-9-rescued-vine-02-1200.jpg" srcset="../media/vineyards/vineyards-9-rescued-vine-02-1200.jpg 1200w, ../media/vineyards/vineyards-9-rescued-vine-02.jpg 1536w" sizes="(min-width: 700px) 14rem, 45vw" width="1536" height="2048" alt="Cut vines along a path, each ending in a bottle of water resting on a block" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        <button class="zoom" type="button" data-group="g9" data-cap="cap-9" data-full="../media/vineyards/vineyards-9-rescued-vine-03.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-9-rescued-vine-03-1200.jpg" srcset="../media/vineyards/vineyards-9-rescued-vine-03-1200.jpg 1200w, ../media/vineyards/vineyards-9-rescued-vine-03.jpg 1536w" sizes="(min-width: 700px) 14rem, 45vw" width="1536" height="2048" alt="A cut vine branch taped into a plastic water bottle" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        <button class="zoom" type="button" data-group="g9" data-cap="cap-9" data-full="../media/vineyards/vineyards-9-rescued-vine-04.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-9-rescued-vine-04-1200.jpg" srcset="../media/vineyards/vineyards-9-rescued-vine-04-1200.jpg 1200w, ../media/vineyards/vineyards-9-rescued-vine-04.jpg 1536w" sizes="(min-width: 700px) 14rem, 45vw" width="1536" height="2048" alt="Bottles of water on the cut vines along the path, seen from another angle" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+      </div>
+      <p class="cap group" id="cap-9">Photographs by George (Goga) Sekhniashvili, one of the neighbors who helped save the severed grapevines through collective care and advice from the community. His daughter, Elene Lika Sekhniashvili, generously shared the photographs with me in 2023.</p>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="ch" id="ch-10" aria-labelledby="h-10">
+    <div class="wrap">
+      <h2 id="h-10">Grapevines for Troubling Times</h2>
+      <div class="restore">
+        <button class="zoom r1" type="button" data-group="g10" data-cap="cap-10a" data-full="../media/vineyards/vineyards-10-restored-pergola-01.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-10-restored-pergola-01-1200.jpg" srcset="../media/vineyards/vineyards-10-restored-pergola-01-1200.jpg 1200w, ../media/vineyards/vineyards-10-restored-pergola-01.jpg 1800w" sizes="(min-width: 700px) 24rem, 90vw" width="1800" height="2400" alt="A passage under a dense green vine pergola leading to the street" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        <button class="zoom r2" type="button" data-group="g10" data-cap="cap-10a" data-full="../media/vineyards/vineyards-10-restored-pergola-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-10-restored-pergola-02-1200.jpg" srcset="../media/vineyards/vineyards-10-restored-pergola-02-1200.jpg 1200w, ../media/vineyards/vineyards-10-restored-pergola-02.jpg 2400w" sizes="(min-width: 700px) 34rem, 45vw" width="2400" height="1800" alt="Looking up through vine leaves between blocks, a new tower behind" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        <button class="zoom r3" type="button" data-group="g10" data-cap="cap-10a" data-full="../media/vineyards/vineyards-10-restored-pergola-03.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-10-restored-pergola-03-1200.jpg" srcset="../media/vineyards/vineyards-10-restored-pergola-03-1200.jpg 1200w, ../media/vineyards/vineyards-10-restored-pergola-03.jpg 2400w" sizes="(min-width: 700px) 28rem, 45vw" width="2400" height="1800" alt="Vine shoots in front of a weathered apartment block" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+      </div>
+      <p class="cap group" id="cap-10a">Tamta Khalvashi’s archives. Tbilisi, Vake, 2026.</p>
+      <figure class="restore-4"><button class="zoom" type="button" data-group="g10" data-full="../media/vineyards/vineyards-10-restored-pergola-04.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-10-restored-pergola-04-1200.jpg" srcset="../media/vineyards/vineyards-10-restored-pergola-04-1200.jpg 1200w, ../media/vineyards/vineyards-10-restored-pergola-04.jpg 2400w" sizes="(min-width: 700px) 42rem, 90vw" width="2400" height="1800" alt="A driveway under a vine canopy leading to garages" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        <figcaption>Darya Tsymbalyuk. Tbilisi, Vake, 2025. Courtesy of the author</figcaption></figure>
+      <p class="txt">The grapevines cannot mend the broken city. Yet amid its ruins, they sustain fragile ways of living together, keeping life possible in the uncertain interval before more just and livable urban worlds might emerge.</p>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="ch" id="ch-11" aria-label="Chapter 11">
+    <figure class="still"><img class="ph" src="../media/vineyards/vineyards-11-leaf-collage-01-1200.jpg" srcset="../media/vineyards/vineyards-11-leaf-collage-01-1200.jpg 1200w, ../media/vineyards/vineyards-11-leaf-collage-01.jpg 2400w" sizes="(min-width: 1200px) 72rem, 100vw" width="2400" height="1800" alt="A pressed vine leaf on an open gardening book, a collage of leaves and tendrils on a card, and a bag of dried cuttings" loading="lazy" decoding="async">
+      <figcaption>A collage made from the leaves of the grapevine pergola that was cut down but survived. I planted some of its fallen cuttings in my own garden and gifted the collage to Darya Tsymbalyuk as a symbolic gesture of survival amid the ruins of empire.</figcaption></figure>
+  </section>
+
+  <!-- 12 -->
+  <section class="ch" id="ch-12" aria-label="Chapter 12">
+    <div class="wrap">
+      <figure>
+        <div class="player" data-dur="53.85">
+          <video preload="none" playsinline width="1920" height="1080" poster="../media/vineyards/vineyards-12-vine-shadows-video-poster.jpg"
+            aria-label="Shadows of vine leaves moving on a sunlit wall">
+            <source src="../media/vineyards/vineyards-12-vine-shadows-video.mp4" type="video/mp4"></video>
+          <button class="big" type="button" aria-label="Play video"><span><svg width="22" height="22" aria-hidden="true"><use href="#i-play"/></svg></span></button>
+        </div>
+        <figcaption>Video by Tamta Khalvashi. Vake, Tbilisi, 2026.</figcaption>
+      </figure>
+      <p class="end"><a href="../index.html#/space/vineyard">&larr; Back to the Vineyard</a></p>
+    </div>
+  </section>
 </main>
 
-<footer>
-  <p>Adapted from <em>A City of Vineyards: Multispecies Buildings in the Ruins of Empire</em> by T. Khalvashi.</p>
-  <p>Photographs and video: project archive, with material from Lika Sekhniashvili and Tamta.</p>
-</footer>
+<nav class="cnav away" aria-label="Chapters">
+  <button class="arrow c-prev" type="button" aria-label="Previous chapter"><svg width="16" height="16" aria-hidden="true"><use href="#i-l"/></svg></button>
+  <button class="cnav-cur" type="button" aria-expanded="false" aria-controls="sheet"><span class="sr">Chapter </span><span class="n">1</span> / 12</button>
+  <button class="arrow c-next" type="button" aria-label="Next chapter"><svg width="16" height="16" aria-hidden="true"><use href="#i-r"/></svg></button>
+</nav>
+<div class="sheet" id="sheet" hidden>
+  <ol>
+    <li><a href="#ch-1" aria-label="Chapter 1">1</a></li><li><a href="#ch-2" aria-label="Chapter 2: Grapevines as Trees of Life">2</a></li>
+    <li><a href="#ch-3" aria-label="Chapter 3">3</a></li><li><a href="#ch-4" aria-label="Chapter 4: Grapevines Becoming Urban">4</a></li>
+    <li><a href="#ch-5" aria-label="Chapter 5: Creeping Agency of Grapevines">5</a></li><li><a href="#ch-6" aria-label="Chapter 6: Grapevines as Commons">6</a></li>
+    <li><a href="#ch-7" aria-label="Chapter 7">7</a></li><li><a href="#ch-8" aria-label="Chapter 8: Labyrinths of Unintended Resistance">8</a></li>
+    <li><a href="#ch-9" aria-label="Chapter 9">9</a></li><li><a href="#ch-10" aria-label="Chapter 10: Grapevines for Troubling Times">10</a></li>
+    <li><a href="#ch-11" aria-label="Chapter 11">11</a></li><li><a href="#ch-12" aria-label="Chapter 12">12</a></li>
+  </ol>
+  <div class="row"><a href="#top">&uarr; Grapevines</a><a href="../index.html#/space/vineyard">&larr; Back to the Vineyard</a></div>
+</div>
+
+<dialog class="viewer" aria-label="Larger view">
+  <div class="vw-top">
+    <span class="vw-count" aria-live="polite"></span>
+    <span class="vw-zoom">
+      <button class="vw-btn vw-out" type="button" aria-label="Zoom out">&minus;</button>
+      <button class="vw-btn vw-in" type="button" aria-label="Zoom in">+</button>
+      <button class="vw-btn vw-close" type="button" aria-label="Close"><svg width="16" height="16" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </span>
+  </div>
+  <div class="vw-stage"><img alt=""></div>
+  <button class="vw-btn vw-prev" type="button" aria-label="Previous"><svg width="16" height="16" aria-hidden="true"><use href="#i-l"/></svg></button>
+  <button class="vw-btn vw-next" type="button" aria-label="Next"><svg width="16" height="16" aria-hidden="true"><use href="#i-r"/></svg></button>
+  <div class="vw-cap"></div>
+</dialog>
 
 </body>
 </html>
