@@ -21,6 +21,8 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;overflow-x:hidden}
+/* clip, not hidden, where supported: "hidden" on both makes body a scroll box and breaks the sticky filmstrip */
+@supports (overflow-x:clip){ html,body{overflow-x:clip} }
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
 body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:1.06rem;line-height:1.7;
@@ -39,7 +41,7 @@ img,video{max-width:100%}
 .open video.on{opacity:1}
 .open::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,rgba(232,233,229,.62) 0%,rgba(232,233,229,.28) 38%,rgba(232,233,229,.5) 72%,rgba(232,233,229,.9) 100%)}
-.open > *:not(video){position:relative;z-index:1}
+.open-top,.open-body{position:relative;z-index:1}
 .open-top{padding:.6rem var(--gut) 0;display:flex;align-items:center}
 .back{display:inline-flex;align-items:center;min-height:44px;font-family:var(--sans);font-size:.88rem;color:var(--oil);
   text-decoration:none;border-bottom:1px solid transparent}
@@ -59,7 +61,7 @@ img,video{max-width:100%}
 
 /* ---------- story, vine ---------- */
 .story{position:relative;padding-bottom:4rem}
-.vine{position:absolute;left:0;top:0;width:100%;pointer-events:none;z-index:0;overflow:visible}
+.vine{position:fixed;left:0;top:0;width:100%;height:100vh;pointer-events:none;z-index:0}
 .vine path{fill:none;stroke:var(--vine);stroke-linecap:round;stroke-linejoin:round}
 .vine .stem{stroke-width:1.4;opacity:.75}
 .vine .leaf{stroke-width:1;opacity:0;transition:opacity 1.2s ease}
@@ -129,7 +131,7 @@ figure{margin:0}
   -webkit-overflow-scrolling:touch;scrollbar-width:thin;overscroll-behavior-x:contain}
 .strip-track figure{flex:0 0 auto;scroll-snap-align:center}
 .strip-track .ph{height:min(56vh,30rem);width:auto;max-width:none}
-@media (max-width:699px){ .strip-track .ph{height:min(44vh,17rem)} }
+@media (max-width:699px){ .strip-track .ph{height:min(48vh,22rem)} }
 .strip.run{height:var(--strip-h,300vh)}
 .strip.run .strip-sticky{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;background:var(--paper)}
 .strip.run .strip-track{overflow:visible;scroll-snap-type:none;will-change:transform}
@@ -182,8 +184,9 @@ figure{margin:0}
 
 /* ink drawings: labyrinth (ch 8), root in water (ch 9) */
 .draw{display:block;width:100%;height:auto;overflow:visible}
-.draw path,.draw rect,.draw line,.draw ellipse{fill:none;stroke:var(--ink-soft);stroke-width:1.1;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
-.draw .v{stroke:var(--vine);stroke-width:1.3}
+/* stroke width is set by the script in viewBox units (non-scaling-stroke would break the pathLength dashes) */
+.draw path{fill:none;stroke:var(--ink-soft);stroke-linecap:round;stroke-linejoin:round}
+.draw .v{stroke:var(--vine)}
 .draw .w{stroke:var(--oil-soft)}
 .draw .soft{stroke:var(--line)}
 .draw.pre [pathLength]{stroke-dasharray:1;stroke-dashoffset:1}
@@ -193,10 +196,10 @@ figure{margin:0}
 @media (min-width:700px){ .pair{grid-template-columns:7fr 5fr;gap:2rem;align-items:end} }
 .root{width:min(220px,60%);margin:2.4rem 0 1rem}
 .rescue{display:grid;grid-template-columns:1fr 1fr;gap:clamp(.8rem,2.5vw,1.8rem);margin-top:1rem}
-.rescue figure{transition:opacity 1.4s ease,transform 1.4s cubic-bezier(.2,.7,.3,1)}
-.rescue.pre figure{opacity:0;transform:translateY(24px)}
-.rescue.pre figure.in{opacity:1;transform:none}
-@media (min-width:700px){ .rescue{grid-template-columns:repeat(4,1fr)} .rescue figure:nth-child(even){margin-top:3rem} }
+.rescue > *{transition:opacity 1.4s ease,transform 1.4s cubic-bezier(.2,.7,.3,1)}
+.rescue.pre > *{opacity:0;transform:translateY(24px)}
+.rescue.pre > .in{opacity:1;transform:none}
+@media (min-width:700px){ .rescue{grid-template-columns:repeat(4,1fr)} .rescue > :nth-child(even){margin-top:3rem} }
 
 /* ch 10 */
 .restore{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
@@ -235,7 +238,7 @@ figure{margin:0}
 .seek::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--ink);border:0}
 .ptime{font-family:var(--sans);font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 .v1{display:grid;grid-template-columns:1fr;gap:2rem;align-items:center}
-.v1 .player{width:min(300px,100%)}
+.v1 .player,.v1 .pwrap{width:min(300px,100%)}
 @media (min-width:700px){ .v1{grid-template-columns:auto 1fr;gap:clamp(2rem,6vw,5rem)} .v1 .txt{margin:0} }
 
 .end{padding:6rem 0 3rem}
@@ -286,7 +289,7 @@ figure{margin:0}
 
 @media (prefers-reduced-motion: reduce){
   .open video{display:none}
-  .vine .leaf,.vine .knot,.vine-marks a,.seq-stage figure,.rescue figure,.cnav,.enter .arr{transition:none}
+  .vine .leaf,.vine .knot,.vine-marks a,.seq-stage figure,.rescue > *,.cnav,.enter .arr{transition:none}
 }
 </style>
 </head>
@@ -324,7 +327,7 @@ figure{margin:0}
   <section class="ch" id="ch-1" aria-label="Chapter 1">
     <div class="wrap v1">
       <div class="player" data-dur="69.6">
-        <video preload="none" playsinline width="240" height="426" poster="../media/vineyards/vineyards-1-cut-pergola-video-poster.jpg"
+        <video preload="none" playsinline width="240" height="426" data-poster="../media/vineyards/vineyards-1-cut-pergola-video-poster.jpg"
           aria-label="Phone video: a cut-down vine pergola in front of a block">
           <source src="../media/vineyards/vineyards-1-cut-pergola-video.mp4" type="video/mp4"></video>
         <button class="big" type="button" aria-label="Play video"><span><svg width="22" height="22" aria-hidden="true"><use href="#i-play"/></svg></span></button>
@@ -511,7 +514,7 @@ figure{margin:0}
     <div class="wrap">
       <figure>
         <div class="player" data-dur="53.85">
-          <video preload="none" playsinline width="1920" height="1080" poster="../media/vineyards/vineyards-12-vine-shadows-video-poster.jpg"
+          <video preload="none" playsinline width="1920" height="1080" data-poster="../media/vineyards/vineyards-12-vine-shadows-video-poster.jpg"
             aria-label="Shadows of vine leaves moving on a sunlit wall">
             <source src="../media/vineyards/vineyards-12-vine-shadows-video.mp4" type="video/mp4"></video>
           <button class="big" type="button" aria-label="Play video"><span><svg width="22" height="22" aria-hidden="true"><use href="#i-play"/></svg></span></button>
@@ -554,6 +557,520 @@ figure{margin:0}
   <button class="vw-btn vw-next" type="button" aria-label="Next"><svg width="16" height="16" aria-hidden="true"><use href="#i-r"/></svg></button>
   <div class="vw-cap"></div>
 </dialog>
+<script>
+(function(){
+"use strict";
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const NS = "http://www.w3.org/2000/svg";
+const RM = matchMedia("(prefers-reduced-motion: reduce)");
+let reduced = RM.matches;
+const svgUse = id => `<svg width="16" height="16" aria-hidden="true"><use href="#${id}"/></svg>`;
 
+/* ---------- one media at a time ---------- */
+const media = new Set();
+function claim(v){ media.forEach(o => { if(o !== v && !o.paused) o.pause(); }); }
+
+/* background shadow video: muted, only while the opening is on screen, never under reduced motion */
+const bg = $(".bgv"), bgBtn = $(".bgtoggle"), opening = $("#top");
+let bgUserPaused = false, bgVisible = true;
+function bgSync(){
+  if(reduced || bgUserPaused || !bgVisible || document.hidden || [...media].some(v => v !== bg && !v.paused)){ bg.pause(); return; }
+  if(!bg.src){ bg.src = bg.dataset.src; bg.load(); }
+  bg.play().then(() => bg.classList.add("on")).catch(() => {});
+}
+bgBtn.hidden = reduced;
+bgBtn.addEventListener("click", () => {
+  bgUserPaused = !bgUserPaused;
+  bgBtn.setAttribute("aria-pressed", String(bgUserPaused));
+  bgBtn.setAttribute("aria-label", bgUserPaused ? "Play background video" : "Pause background video");
+  bgBtn.innerHTML = svgUse(bgUserPaused ? "i-play" : "i-pause");
+  bgSync();
+});
+new IntersectionObserver(es => { bgVisible = es[0].isIntersecting; bgSync(); }, {threshold: 0.05}).observe(opening);
+document.addEventListener("visibilitychange", bgSync);
+
+/* ---------- custom video players ---------- */
+const fmt = s => { s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+$$(".player").forEach(p => {
+  const v = $("video", p), big = $(".big", p), total = +p.dataset.dur;
+  media.add(v);
+  /* the poster is fetched only when the player comes near */
+  new IntersectionObserver((es, o) => { if(es[0].isIntersecting){ v.poster = v.dataset.poster; o.disconnect(); } }, {rootMargin: "600px 0px"}).observe(p);
+  const bar = document.createElement("div");
+  bar.className = "pbar";
+  bar.innerHTML = `<button class="pbtn pl" type="button" aria-label="Play">${svgUse("i-play")}</button>` +
+    `<input class="seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Position in the video">` +
+    `<span class="ptime">0:00 / ${fmt(total)}</span>` +
+    `<button class="pbtn mu" type="button" aria-label="Mute" aria-pressed="false">${svgUse("i-sound")}</button>`;
+  /* the bar sits under the picture, in a wrapper so the layout treats both as one */
+  const pw = document.createElement("div"); pw.className = "pwrap";
+  p.before(pw); pw.append(p, bar);
+  const pl = $(".pl", bar), seek = $(".seek", bar), time = $(".ptime", bar), mu = $(".mu", bar);
+  let seeking = false;
+  const toggle = () => { if(v.paused){ claim(v); v.play().catch(() => {}); } else v.pause(); };
+  big.addEventListener("click", () => { toggle(); pl.focus({preventScroll: true}); });
+  pl.addEventListener("click", toggle);
+  v.addEventListener("click", toggle);
+  mu.addEventListener("click", () => {
+    v.muted = !v.muted;
+    mu.setAttribute("aria-pressed", String(v.muted));
+    mu.setAttribute("aria-label", v.muted ? "Unmute" : "Mute");
+    mu.innerHTML = svgUse(v.muted ? "i-mute" : "i-sound");
+  });
+  v.addEventListener("play", () => {
+    claim(v); p.classList.add("playing");
+    pl.innerHTML = svgUse("i-pause"); pl.setAttribute("aria-label", "Pause"); bgSync();
+  });
+  v.addEventListener("pause", () => { pl.innerHTML = svgUse("i-play"); pl.setAttribute("aria-label", "Play"); bgSync(); });
+  v.addEventListener("ended", () => { p.classList.remove("playing"); v.currentTime = 0; });
+  const show = () => {
+    const d = v.duration || total, t = v.currentTime;
+    if(!seeking){ seek.value = Math.round(t / d * 1000) || 0; }
+    seek.style.setProperty("--p", (seek.value / 10) + "%");
+    time.textContent = fmt(t) + " / " + fmt(d);
+  };
+  v.addEventListener("timeupdate", show);
+  v.addEventListener("loadedmetadata", show);
+  seek.addEventListener("input", () => {
+    seeking = true;
+    const d = v.duration || total;
+    const t = seek.value / 1000 * d;
+    if(v.readyState === 0){
+      /* nothing loaded yet: fetch the metadata, then jump */
+      if(v._pending == null){ v.preload = "metadata"; v.addEventListener("loadedmetadata", () => { v.currentTime = v._pending; v._pending = null; }, {once: true}); v.load(); }
+      v._pending = t;
+    } else v.currentTime = t;
+    seek.style.setProperty("--p", (seek.value / 10) + "%");
+    time.textContent = fmt(seek.value / 1000 * d) + " / " + fmt(d);
+  });
+  seek.addEventListener("change", () => { seeking = false; });
+  /* scrolled away: pause */
+  new IntersectionObserver(es => { if(!es[0].isIntersecting && !v.paused) v.pause(); }, {threshold: 0.2}).observe(p);
+  v.addEventListener("keydown", e => { if(e.key === " "){ e.preventDefault(); toggle(); } });
+});
+
+/* ---------- larger view with zoom ---------- */
+const dlg = $(".viewer"), stage = $(".vw-stage", dlg), vimg = $("img", stage), vcap = $(".vw-cap", dlg), vcount = $(".vw-count", dlg);
+const vprev = $(".vw-prev", dlg), vnext = $(".vw-next", dlg);
+let items = [], idx = 0, returnTo = null;
+let z = {s: 1, x: 0, y: 0, base: 1, w: 0, h: 0};
+function fit(){
+  const r = stage.getBoundingClientRect();
+  z.base = Math.min(r.width / z.w, r.height / z.h);
+  z.s = 1; z.x = 0; z.y = 0; apply();
+}
+function clampPan(){
+  const r = stage.getBoundingClientRect(), k = z.base * z.s;
+  const mx = Math.max(0, (z.w * k - r.width) / 2), my = Math.max(0, (z.h * k - r.height) / 2);
+  z.x = Math.min(mx, Math.max(-mx, z.x)); z.y = Math.min(my, Math.max(-my, z.y));
+}
+function apply(){
+  clampPan();
+  const k = z.base * z.s;
+  vimg.style.width = z.w + "px"; vimg.style.height = z.h + "px";
+  vimg.style.transform = `translate(${z.x - z.w * k / 2}px,${z.y - z.h * k / 2}px) scale(${k})`;
+  $(".vw-out", dlg).disabled = z.s <= 1; $(".vw-in", dlg).disabled = z.s >= 6;
+}
+function zoomAt(f, cx, cy){
+  const r = stage.getBoundingClientRect();
+  const ns = Math.min(6, Math.max(1, z.s * f)), q = ns / z.s;
+  const px = (cx ?? r.left + r.width / 2) - (r.left + r.width / 2), py = (cy ?? r.top + r.height / 2) - (r.top + r.height / 2);
+  z.x = px - (px - z.x) * q; z.y = py - (py - z.y) * q; z.s = ns; apply();
+}
+function show(i){
+  idx = (i + items.length) % items.length;
+  const it = items[idx], im = $("img", it.el);
+  z.w = +im.getAttribute("width"); z.h = +im.getAttribute("height");
+  vimg.alt = im.alt;
+  vimg.src = im.currentSrc || im.src;   // the already loaded copy first, then the full one
+  if(it.full && it.full !== vimg.src){ const hi = new Image(); hi.onload = () => { if(items[idx] === it) vimg.src = it.full; }; hi.src = it.full; }
+  vcap.innerHTML = it.cap ? it.cap.innerHTML : "";
+  vcount.textContent = items.length > 1 ? (idx + 1) + " / " + items.length : "";
+  vprev.hidden = vnext.hidden = items.length < 2;
+  fit();
+}
+function openViewer(list, i, from){
+  items = list; returnTo = from || document.activeElement;
+  claim(null); bgSync();
+  dlg.showModal(); document.documentElement.style.overflow = "hidden";
+  show(i);
+  $(".vw-close", dlg).focus();
+}
+dlg.addEventListener("close", () => { document.documentElement.style.overflow = ""; vimg.removeAttribute("src"); if(returnTo) returnTo.focus({preventScroll: true}); });
+$(".vw-close", dlg).addEventListener("click", () => dlg.close());
+vprev.addEventListener("click", () => show(idx - 1));
+vnext.addEventListener("click", () => show(idx + 1));
+$(".vw-in", dlg).addEventListener("click", () => zoomAt(1.6));
+$(".vw-out", dlg).addEventListener("click", () => zoomAt(1 / 1.6));
+dlg.addEventListener("keydown", e => {
+  if(e.key === "ArrowLeft" && items.length > 1){ e.preventDefault(); show(idx - 1); }
+  else if(e.key === "ArrowRight" && items.length > 1){ e.preventDefault(); show(idx + 1); }
+  else if(e.key === "+" || e.key === "="){ zoomAt(1.6); }
+  else if(e.key === "-"){ zoomAt(1 / 1.6); }
+  else if(e.key === "0"){ fit(); }
+});
+stage.addEventListener("wheel", e => { e.preventDefault(); zoomAt(Math.exp(-e.deltaY * 0.0022), e.clientX, e.clientY); }, {passive: false});
+stage.addEventListener("dblclick", e => { if(z.s > 1) fit(); else zoomAt(2.5, e.clientX, e.clientY); });
+/* drag to pan, pinch to zoom, swipe to move on when not zoomed */
+const pts = new Map(); let g = null;
+stage.addEventListener("pointerdown", e => {
+  stage.setPointerCapture(e.pointerId); pts.set(e.pointerId, {x: e.clientX, y: e.clientY});
+  stage.classList.add("drag");
+  const a = [...pts.values()];
+  g = a.length === 2 ? {pinch: true, d: Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y), s: z.s}
+                     : {pinch: false, x0: e.clientX, y0: e.clientY, zx: z.x, zy: z.y, t: Date.now(), last: 0};
+});
+stage.addEventListener("pointermove", e => {
+  if(!pts.has(e.pointerId) || !g) return;
+  pts.set(e.pointerId, {x: e.clientX, y: e.clientY});
+  const a = [...pts.values()];
+  if(g.pinch && a.length === 2){
+    const d = Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y);
+    zoomAt((g.s * d / g.d) / z.s, (a[0].x + a[1].x) / 2, (a[0].y + a[1].y) / 2);
+  } else if(!g.pinch && z.s > 1){
+    z.x = g.zx + e.clientX - g.x0; z.y = g.zy + e.clientY - g.y0; apply();
+  }
+});
+function up(e){
+  if(!pts.has(e.pointerId)) return;
+  pts.delete(e.pointerId);
+  if(g && !g.pinch && z.s === 1 && items.length > 1){
+    const dx = e.clientX - g.x0, dy = e.clientY - g.y0;
+    if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.4) show(idx + (dx < 0 ? 1 : -1));
+  }
+  /* a quick second tap toggles zoom on touch screens */
+  if(g && !g.pinch && e.pointerType === "touch" && Math.hypot(e.clientX - g.x0, e.clientY - g.y0) < 10){
+    const now = Date.now();
+    if(now - (stage._tap || 0) < 320){ if(z.s > 1) fit(); else zoomAt(2.5, e.clientX, e.clientY); stage._tap = 0; } else stage._tap = now;
+  }
+  if(!pts.size){ g = null; stage.classList.remove("drag"); }
+  else g = null;
+}
+stage.addEventListener("pointerup", up); stage.addEventListener("pointercancel", up);
+addEventListener("resize", () => { if(dlg.open) fit(); });
+
+const groups = {};
+$$(".zoom[data-group]").forEach(b => {
+  const fig = b.closest("figure");
+  const it = {el: b, full: b.dataset.full, cap: b.dataset.cap ? document.getElementById(b.dataset.cap) : (fig && $("figcaption", fig))};
+  (groups[b.dataset.group] = groups[b.dataset.group] || []).push(it);
+  b.addEventListener("click", e => {
+    if(b.closest(".strip") && b.closest(".strip")._dragged) return;
+    const list = groups[b.dataset.group]; openViewer(list, list.indexOf(it), b);
+  });
+});
+
+/* ---------- ch 5: filmstrip moved slowly by the page scroll ---------- */
+const strip = $(".strip"), track = $(".strip-track", strip), sp = $(".s-prev", strip), sn = $(".s-next", strip), prog = $(".strip-prog i", strip);
+const shots = $$("figure", track);
+let run = false, span = 0;
+function stripLayout(){
+  run = !reduced;
+  strip.classList.toggle("run", run);
+  track.style.transform = "";
+  if(run){
+    span = Math.max(0, track.scrollWidth - track.clientWidth);
+    strip.style.setProperty("--strip-h", (innerHeight + span * 1.4) + "px");
+  } else strip.style.removeProperty("--strip-h");
+  stripMove();
+}
+function stripP(){
+  if(!run) return span ? track.scrollLeft / span : 0;
+  const r = strip.getBoundingClientRect(), len = strip.offsetHeight - innerHeight;
+  return len > 0 ? Math.min(1, Math.max(0, -r.top / len)) : 0;
+}
+function stripMove(){
+  if(!run) span = Math.max(0, track.scrollWidth - track.clientWidth);
+  const p = stripP();
+  if(run) track.style.transform = `translateX(${-p * span}px)`;
+  prog.style.width = (p * 100) + "%";
+  sp.disabled = p <= 0.001; sn.disabled = p >= 0.999;
+}
+function stripGo(dir){
+  /* move to the next/previous photograph's centre */
+  const mid = track.clientWidth / 2, cur = stripP() * span;
+  const cs = shots.map(f => f.offsetLeft + f.offsetWidth / 2 - mid).map(x => Math.min(span, Math.max(0, x)));
+  let tgt = dir > 0 ? cs.find(x => x > cur + 4) : [...cs].reverse().find(x => x < cur - 4);
+  if(tgt == null) tgt = dir > 0 ? span : 0;
+  if(run){
+    const len = strip.offsetHeight - innerHeight, top = strip.getBoundingClientRect().top + scrollY;
+    scrollTo({top: top + (span ? tgt / span : 0) * len, behavior: reduced ? "auto" : "smooth"});
+  } else track.scrollTo({left: tgt, behavior: reduced ? "auto" : "smooth"});
+}
+sp.addEventListener("click", () => stripGo(-1));
+sn.addEventListener("click", () => stripGo(1));
+track.addEventListener("scroll", stripMove, {passive: true});
+track.addEventListener("keydown", e => {
+  if(e.key === "ArrowRight"){ e.preventDefault(); stripGo(1); }
+  if(e.key === "ArrowLeft"){ e.preventDefault(); stripGo(-1); }
+});
+/* keyboard focus inside the moving strip: bring that photograph to the middle */
+track.addEventListener("focusin", e => {
+  if(!run) return;
+  const f = e.target.closest("figure"); if(!f) return;
+  const tgt = Math.min(span, Math.max(0, f.offsetLeft + f.offsetWidth / 2 - track.clientWidth / 2));
+  const len = strip.offsetHeight - innerHeight, top = strip.getBoundingClientRect().top + scrollY;
+  scrollTo({top: top + (span ? tgt / span : 0) * len});
+});
+
+/* ---------- ch 7: one photograph at a time ---------- */
+const seq = $(".seq"), sstage = $(".seq-stage", seq), sfigs = $$("figure", sstage);
+const scaps = $$("p", $(".seq-caps", seq).content), scap = $(".seq-cap", seq), scount = $(".seq-count", seq);
+let si = 0, seqNear = false;
+new IntersectionObserver((es, o) => { if(es[0].isIntersecting){ seqNear = true; o.disconnect(); seqShow(si); } }, {rootMargin: "800px 0px"}).observe(sstage);
+function seqShow(i){
+  si = Math.min(sfigs.length - 1, Math.max(0, i));
+  sfigs.forEach((f, k) => { f.classList.toggle("cur", k === si); f.setAttribute("aria-hidden", String(k !== si)); });
+  /* once the sequence is near, let the next photograph load before it is needed */
+  if(seqNear) [si, si + 1].forEach(k => { const im = sfigs[k] && $("img", sfigs[k]); if(im) im.loading = "eager"; });
+  scap.textContent = scaps[si].textContent;
+  scount.textContent = (si + 1) + " / " + sfigs.length;
+  $(".q-prev", seq).disabled = si === 0; $(".q-next", seq).disabled = si === sfigs.length - 1;
+  sstage.setAttribute("aria-label", `Photograph ${si + 1} of ${sfigs.length}; use the left and right arrow keys`);
+}
+$(".q-prev", seq).addEventListener("click", () => seqShow(si - 1));
+$(".q-next", seq).addEventListener("click", () => seqShow(si + 1));
+sstage.addEventListener("keydown", e => {
+  if(e.key === "ArrowRight"){ e.preventDefault(); seqShow(si + 1); }
+  else if(e.key === "ArrowLeft"){ e.preventDefault(); seqShow(si - 1); }
+  else if(e.key === "Enter"){ e.preventDefault(); seqFull(); }
+});
+let sx = null;
+sstage.addEventListener("pointerdown", e => { sx = {x: e.clientX, y: e.clientY}; });
+sstage.addEventListener("pointerup", e => {
+  if(!sx) return;
+  const dx = e.clientX - sx.x, dy = e.clientY - sx.y; sx = null;
+  if(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) seqShow(si + (dx < 0 ? 1 : -1));
+  else if(Math.abs(dx) < 8 && Math.abs(dy) < 8) seqFull();
+});
+sstage.addEventListener("pointercancel", () => { sx = null; });
+sstage.style.cursor = "zoom-in";
+const seqItems = sfigs.map((f, k) => {
+  const im = $("img", f), big = (im.getAttribute("srcset") || "").split(",").pop().trim().split(" ")[0] || im.src;
+  const cap = document.createElement("p"); cap.textContent = scaps[k].textContent;
+  return {el: f, full: big, cap};
+});
+function seqFull(){ openViewer(seqItems, si, $(".seq-full", seq)); }
+$(".seq-full", seq).addEventListener("click", seqFull);
+/* follow the viewer: closing it leaves the sequence on the photograph last seen */
+dlg.addEventListener("close", () => { if(items === seqItems) seqShow(idx); });
+seqShow(0);
+
+/* ---------- ink drawings: labyrinth (8) and root in water (9) ---------- */
+function mk(tag, attrs, parent){ const e = document.createElementNS(NS, tag); for(const k in attrs) e.setAttribute(k, attrs[k]); if(parent) parent.appendChild(e); return e; }
+function rnd(seed){ return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
+function labyrinth(){
+  const W = 1000, H = 320, s = mk("svg", {viewBox: `0 0 ${W} ${H}`, class: "draw pre", filter: "url(#ink)", role: "presentation"});
+  const r = rnd(11); let i = 0;
+  const P = (d, cls) => mk("path", {d, class: cls || "", pathLength: 1, style: `--i:${i++}`}, s);
+  /* rows of garages seen from above, lanes between them */
+  const rows = [[24, 70], [128, 76], [238, 62]];
+  rows.forEach(([y, h], ri) => {
+    let x = 16 + r() * 30;
+    while(x < W - 60){
+      const w = 54 + r() * 46;
+      if(r() < .14){ x += 30 + r() * 30; continue; }       // a gap: the way through
+      P(`M${x.toFixed(1)} ${y}h${w.toFixed(1)}v${h}h${(-w).toFixed(1)}z`, ri === 1 ? "" : "soft");
+      if(r() < .5) P(`M${(x + 6).toFixed(1)} ${y + h - 10}h${(w - 12).toFixed(1)}`, "soft");
+      x += w + 4 + r() * 6;
+    }
+  });
+  /* vines wandering along the lanes, over and between the roofs */
+  const vine = (y0, amp, seed) => {
+    const q = rnd(seed); let d = `M0 ${y0}`, x = 0, y = y0;
+    while(x < W){ const nx = x + 60 + q() * 70, ny = y0 + (q() - .5) * amp; d += ` C${(x + 30).toFixed(0)} ${(y + (q() - .5) * amp).toFixed(0)} ${(nx - 30).toFixed(0)} ${(ny + (q() - .5) * amp).toFixed(0)} ${nx.toFixed(0)} ${ny.toFixed(0)}`; x = nx; y = ny; }
+    P(d, "v");
+  };
+  vine(112, 70, 3); vine(222, 80, 5); vine(160, 260, 9);
+  /* small leaves along the vines */
+  for(let k = 0; k < 16; k++){
+    const x = 30 + r() * (W - 60), y = 96 + r() * 140, a = r() * 360;
+    P(`M${x.toFixed(0)} ${y.toFixed(0)} q6 -9 13 -1 q-5 9 -13 1z`, "v").setAttribute("transform", `rotate(${a.toFixed(0)} ${x.toFixed(0)} ${y.toFixed(0)})`);
+  }
+  return s;
+}
+function rootInWater(){
+  const s = mk("svg", {viewBox: "0 0 200 260", class: "draw pre", filter: "url(#ink)", role: "presentation"});
+  let i = 0; const P = (d, cls) => mk("path", {d, class: cls || "", pathLength: 1, style: `--i:${(i++) * 4}`}, s);
+  P("M70 70 C70 60 78 56 78 46 L78 30 L122 30 L122 46 C122 56 130 60 130 70 L136 232 C136 244 126 250 100 250 C74 250 64 244 64 232 Z");  // bottle
+  P("M68 128 C82 122 92 134 104 128 C116 122 124 132 133 127", "w");                                                                      // water line
+  P("M100 6 C102 40 98 80 101 120 C103 150 99 170 100 186", "v");                                                                          // the cut stem
+  P("M94 6 L106 6", "");                                                                                                                    // the cut
+  P("M100 186 C92 200 86 206 80 222 M100 186 C106 202 114 210 118 226 M100 190 C99 206 101 220 98 236 M92 200 C86 202 82 200 78 204 M110 206 C116 206 120 204 124 208", "v"); // new roots
+  return s;
+}
+const lab = $(".lab"), root = $(".root");
+lab.appendChild(labyrinth()); root.appendChild(rootInWater());
+function drawOn(svg){
+  if(reduced){ svg.classList.remove("pre"); return; }
+  new IntersectionObserver((es, o) => { if(es[0].isIntersecting){ svg.classList.add("go"); o.disconnect(); } }, {threshold: .35}).observe(svg);
+}
+$$(".draw").forEach(drawOn);
+/* about 1.1 px on screen whatever the drawing's size */
+function drawWidths(){ $$(".draw").forEach(svg => { const w = svg.clientWidth; if(w) svg.style.strokeWidth = (1.15 * svg.viewBox.baseVal.width / w).toFixed(2); }); }
+
+/* ---------- ch 9: photographs come one by one ---------- */
+const rescue = $(".rescue");
+if(!reduced){
+  rescue.classList.add("pre");
+  const figs = $$(".zoom", rescue);
+  new IntersectionObserver((es, o) => {
+    if(!es[0].isIntersecting) return; o.disconnect();
+    figs.forEach((f, k) => setTimeout(() => f.classList.add("in"), 300 + k * 900));
+  }, {threshold: .25}).observe(rescue);
+}
+
+/* ---------- the vine growing down the page, with a knot at every chapter ---------- */
+const story = $("#story"), vsvg = $(".vine", story), marks = $(".vine-marks", story);
+const chapters = $$(".ch", story);
+let stem = null, stemLen = 0, samples = [], leaves = [], knots = [], vineTop = 0;
+function buildVine(){
+  const H = story.offsetHeight, Wv = document.documentElement.clientWidth;
+  const wrapW = Math.min(Wv, 62 * 16), margin = (Wv - wrapW) / 2;
+  const wide = Wv >= 1100;
+  const cx = wide ? Math.max(28, margin / 2) : 14, amp = wide ? Math.min(26, margin / 5) : 4;
+  vsvg.innerHTML = "";
+  /* the drawing is in page coordinates, but the SVG itself is only as big as the window (fixed) and its
+     viewBox follows the scroll: one SVG as tall as the page stalls painting. No filter for the same reason;
+     the wobble is in the points. */
+  const g = mk("g", {}, vsvg);
+  const r = rnd(5);
+  /* points down the margin; a slow sway, now and then a loop around a chapter knot */
+  const pts = [];
+  for(let y = 0; y <= H; y += 46){ pts.push([cx + Math.sin(y / 260) * amp + (r() - .5) * Math.max(1.6, amp * .35), y + (r() - .5) * 10]); }
+  let d = `M${pts[0][0].toFixed(1)} ${pts[0][1]}`;
+  for(let k = 1; k < pts.length; k++){
+    const p0 = pts[k - 2] || pts[k - 1], p1 = pts[k - 1], p2 = pts[k], p3 = pts[k + 1] || p2;
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+    d += ` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0].toFixed(1)} ${p2[1]}`;
+  }
+  stem = mk("path", {d, class: "stem"}, g);
+  stemLen = stem.getTotalLength();
+  samples = [];
+  for(let L = 0; L <= stemLen; L += 24) samples.push([L, stem.getPointAtLength(L).y]);
+  if(!reduced){ stem.style.strokeDasharray = stemLen + " " + stemLen; }
+  const xAt = y => { const L = lenAt(y); return stem.getPointAtLength(L).x; };
+  /* leaves and tendrils */
+  leaves = [];
+  const step = wide ? 150 : 210;
+  for(let y = 120, side = 1; y < H - 40; y += step * (.75 + r() * .5), side = -side){
+    const x = xAt(y), sc = wide ? 1 : .55, a = side > 0 ? -35 - r() * 30 : 215 + r() * 30;
+    const lf = mk("path", {class: "leaf", transform: `translate(${x.toFixed(1)} ${y.toFixed(0)}) rotate(${a.toFixed(0)}) scale(${sc})`,
+      d: r() < .7 ? "M0 0 C6 -2 10 -8 18 -6 C16 -12 22 -16 26 -12 C30 -16 36 -12 32 -6 C38 -4 38 4 30 4 C30 10 22 12 18 6 C12 8 6 4 0 0 M0 0 L24 -3"
+                  : "M0 0 C8 -4 14 0 14 -6 C14 -12 6 -12 8 -7 C9 -4 12 -5 12 -7"}, g);
+    leaves.push([y, lf]);
+  }
+  /* knots and numerals at the chapters */
+  knots = []; marks.innerHTML = "";
+  const top0 = story.getBoundingClientRect().top + scrollY;
+  vineTop = top0;
+  chapters.forEach((c, k) => {
+    const y = c.offsetTop + 30, x = xAt(y);
+    const kn = mk("circle", {class: "knot", cx: x.toFixed(1), cy: y, r: wide ? 4 : 2.6}, vsvg);
+    let a = null;
+    if(wide){
+      a = document.createElement("a");
+      a.href = "#" + c.id; a.textContent = String(k + 1);
+      const h = $("h2", c); a.setAttribute("aria-label", "Chapter " + (k + 1) + (h ? ": " + h.textContent : ""));
+      a.style.left = (x - 22) + "px"; a.style.top = y + "px";
+      marks.appendChild(a);
+    }
+    knots.push([y, kn, a]);
+  });
+  marks.hidden = !wide;
+  grow();
+}
+function lenAt(y){
+  if(!samples.length) return 0;
+  let lo = 0, hi = samples.length - 1;
+  if(y <= samples[0][1]) return 0;
+  if(y >= samples[hi][1]) return stemLen;
+  while(hi - lo > 1){ const m = (lo + hi) >> 1; if(samples[m][1] < y) lo = m; else hi = m; }
+  const [l0, y0] = samples[lo], [l1, y1] = samples[hi];
+  return l0 + (l1 - l0) * ((y - y0) / ((y1 - y0) || 1));
+}
+function grow(){
+  if(!stem) return;
+  const vw = vsvg.clientWidth, vh = vsvg.clientHeight;
+  vsvg.setAttribute("viewBox", `0 ${(scrollY - vineTop).toFixed(1)} ${vw} ${vh}`);
+  const reach = reduced ? Infinity : scrollY + innerHeight * .72 - vineTop;
+  if(!reduced) stem.style.strokeDashoffset = String(stemLen - lenAt(reach));
+  leaves.forEach(([y, lf]) => lf.classList.toggle("on", y < reach - 30));
+  knots.forEach(([y, kn, a]) => { const on = y < reach; kn.classList.toggle("on", on); if(a) a.classList.toggle("on", on); });
+}
+
+/* ---------- chapter navigation ---------- */
+const cnav = $(".cnav"), cur = $(".cnav-cur", cnav), sheet = $("#sheet"), num = $(".n", cur);
+let ci = -1;
+function setCur(k){
+  if(k === ci) return; ci = k;
+  num.textContent = String(Math.max(1, k + 1));
+  $$("a", sheet).forEach(a => a.removeAttribute("aria-current"));
+  if(k >= 0){ $$("ol a", sheet)[k].setAttribute("aria-current", "true"); }
+  knots.forEach(([, , a], j) => { if(a) a.classList.toggle("cur", j === k); });
+  $(".c-prev", cnav).disabled = k <= 0; $(".c-next", cnav).disabled = k >= chapters.length - 1;
+}
+function whichChapter(){
+  const line = innerHeight * .4;
+  let k = -1;
+  chapters.forEach((c, j) => { if(c.getBoundingClientRect().top <= line) k = j; });
+  return k;
+}
+function go(k){
+  if(k < 0){ scrollTo({top: 0, behavior: reduced ? "auto" : "smooth"}); return; }
+  const c = chapters[Math.min(chapters.length - 1, k)];
+  c.scrollIntoView({behavior: reduced ? "auto" : "smooth", block: "start"});
+  history.replaceState(null, "", "#" + c.id);
+}
+$(".c-prev", cnav).addEventListener("click", () => go(ci - 1));
+$(".c-next", cnav).addEventListener("click", () => go(ci + 1));
+function sheetOpen(o){
+  sheet.hidden = !o; cur.setAttribute("aria-expanded", String(o));
+  if(o){ const a = $("[aria-current]", sheet) || $("a", sheet); a.focus(); }
+}
+cur.addEventListener("click", () => sheetOpen(sheet.hidden));
+sheet.addEventListener("click", e => { if(e.target.closest("a")) sheetOpen(false); });
+document.addEventListener("keydown", e => { if(e.key === "Escape" && !sheet.hidden){ sheetOpen(false); cur.focus(); } });
+document.addEventListener("pointerdown", e => { if(!sheet.hidden && !sheet.contains(e.target) && !cnav.contains(e.target)) sheetOpen(false); });
+
+/* ---------- scroll + resize ---------- */
+let ticking = false;
+function onScroll(){
+  if(ticking) return; ticking = true;
+  requestAnimationFrame(() => {
+    ticking = false;
+    grow(); stripMove();
+    const k = whichChapter(); setCur(k);
+    const ob = opening.getBoundingClientRect().bottom;
+    cnav.classList.toggle("away", ob > innerHeight * .35 && sheet.hidden);
+  });
+}
+addEventListener("scroll", onScroll, {passive: true});
+let rz = 0, lastW = innerWidth;
+function relayout(){ stripLayout(); buildVine(); drawWidths(); onScroll(); }
+addEventListener("resize", () => {
+  /* mobile browsers resize on every toolbar show/hide: only rebuild when the width changes */
+  if(innerWidth === lastW && run) { onScroll(); return; }
+  lastW = innerWidth; clearTimeout(rz); rz = setTimeout(relayout, 180);
+});
+RM.addEventListener("change", e => {
+  reduced = e.matches; bgBtn.hidden = reduced; bgSync();
+  $$(".draw").forEach(s => s.classList.remove("pre"));
+  rescue.classList.remove("pre");
+  relayout();
+});
+/* images above the vine change the page height as they load */
+let ro = 0;
+new ResizeObserver(() => { clearTimeout(ro); ro = setTimeout(() => { if(run) stripLayout(); buildVine(); }, 250); }).observe(story);
+
+relayout();
+setCur(whichChapter());
+if(location.hash && document.getElementById(location.hash.slice(1))){
+  /* after the layout settles (the filmstrip makes chapter 5 tall) */
+  setTimeout(() => document.getElementById(location.hash.slice(1)).scrollIntoView({block: "start"}), 60);
+}
+})();
+</script>
 </body>
 </html>
