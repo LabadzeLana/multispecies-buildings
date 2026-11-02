@@ -1,0 +1,58 @@
+/* Filmstrip carousel + full-screen zoom viewer.
+   Shared implementation of the "chapter 5: Creeping Agency of Grapevines" filmstrip from
+   a-city-of-vineyards/index.html: a slow horizontal strip of photographs pinned to the viewport and
+   moved by the page's own scroll (or, under reduced motion, a plain swipeable row), opening into a
+   full-screen pan/zoom viewer. Every selector is prefixed fs- so this file can be loaded on any page
+   without colliding with that page's own CSS. A host page may set --fs-top (default 0px) on .fs-strip
+   to pin the strip below a fixed header instead of the viewport's very top.
+   Relies on --paper, --ink, --line and --sans custom properties already defined by the host page. */
+
+.fs-strip{position:relative;margin-top:.5rem}
+.fs-sticky{position:relative}
+.fs-track{display:flex;gap:clamp(1rem,3vw,2.2rem);padding:0 clamp(1rem,4vw,3rem);overflow-x:auto;scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;scrollbar-width:thin;overscroll-behavior-x:contain}
+.fs-track figure{margin:0;flex:0 0 auto;scroll-snap-align:center}
+.fs-ph{display:block;height:min(56vh,30rem);width:auto;max-width:none;background:var(--paper-2)}
+@media (max-width:699px){ .fs-ph{height:min(48vh,22rem)} }
+.fs-strip.fs-run{height:var(--fs-h,300vh)}
+.fs-strip.fs-run .fs-sticky{position:sticky;top:var(--fs-top,0px);
+  height:calc(100vh - var(--fs-top,0px));height:calc(100svh - var(--fs-top,0px));
+  display:flex;flex-direction:column;justify-content:center;overflow:hidden;background:var(--paper)}
+.fs-strip.fs-run .fs-track{overflow:visible;scroll-snap-type:none;will-change:transform}
+.fs-foot{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:1rem clamp(1rem,4vw,3rem) 0;max-width:62rem;margin:0 auto;width:100%}
+.fs-foot .fs-cap{margin:0 auto 0 0;font-family:var(--sans);font-size:.82rem;line-height:1.55;color:var(--ink-soft);max-width:60ch}
+.fs-prog{flex-basis:100%;height:1px;background:var(--line);position:relative;margin-top:.4rem}
+.fs-prog i{position:absolute;left:0;top:-1px;height:3px;width:0;background:var(--vine)}
+
+.fs-arrows{display:inline-flex;gap:.4rem}
+.fs-arrow{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;
+  background:var(--paper);color:var(--ink)}
+.fs-arrow:hover{border-color:var(--ink)}
+.fs-arrow:disabled{opacity:.35;cursor:default;border-color:var(--line)}
+
+/* zoom affordance: the whole photograph is clickable, no badge */
+.fs-zoom{position:relative;display:block;width:100%;height:100%;padding:0;margin:0;border:0;background:none;cursor:zoom-in;text-align:left}
+.fs-zoom:focus-visible{outline-offset:4px}
+
+/* full-screen pan/zoom viewer */
+.fs-viewer{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;
+  background:#141816;color:#E8E9E5;overflow:hidden}
+.fs-viewer::backdrop{background:#141816}
+.fs-viewer[open]{display:flex;flex-direction:column}
+.fs-vw-stage{position:relative;flex:1;overflow:hidden;touch-action:none;cursor:grab}
+.fs-vw-stage.drag{cursor:grabbing}
+.fs-vw-stage img{position:absolute;left:50%;top:50%;max-width:none;transform-origin:0 0;user-select:none;-webkit-user-drag:none;background:transparent}
+.fs-vw-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:.4rem .5rem;z-index:2;
+  font-family:var(--sans);font-size:.82rem}
+.fs-vw-count{padding-left:.6rem;color:rgba(232,233,229,.8)}
+.fs-vw-btn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#E8E9E5;background:rgba(20,24,22,.45);border:0}
+.fs-vw-btn:hover{background:rgba(232,233,229,.15)}
+.fs-vw-btn:disabled{opacity:.3;cursor:default}
+.fs-vw-btn:focus-visible{outline-color:#E8E9E5}
+.fs-vw-prev,.fs-vw-next{position:absolute;top:50%;transform:translateY(-50%);z-index:2}
+.fs-vw-prev{left:.5rem}.fs-vw-next{right:.5rem}
+.fs-vw-zoom{display:flex;gap:.3rem}
+.fs-vw-cap{font-family:var(--sans);font-size:.82rem;line-height:1.5;color:rgba(232,233,229,.85);padding:.7rem 1rem calc(.8rem + env(safe-area-inset-bottom));max-width:60rem;margin:0 auto;width:100%;max-height:30vh;overflow:auto}
+.fs-vw-cap:empty{display:none}
+
+@media (prefers-reduced-motion: reduce){ .fs-arrow,.fs-vw-btn{transition:none} }
