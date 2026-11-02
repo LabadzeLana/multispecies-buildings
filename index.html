@@ -540,23 +540,7 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
   .st-gallery .hi{align-self:start;margin-top:2.5rem}
   .st-gallery .w7r{grid-column:6 / span 7}
 }
-.st-listen{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;margin:0 0 .4rem}
-.st-sound{display:inline-flex;align-items:center;gap:.6rem;min-height:44px;padding:.55rem 1.1rem;
-  font-family:var(--sans);font-size:.9rem;border:1px solid var(--ink);border-radius:999px}
-.st-sound:hover{background:var(--paper-2)}
-.st-sound[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
-.st-sound .ico,.st-withsound .ico{width:0;height:0;border-left:9px solid currentColor;border-top:6px solid transparent;border-bottom:6px solid transparent}
-.st-sound[aria-pressed="true"] .ico{width:9px;height:11px;border:0;border-left:3px solid currentColor;border-right:3px solid currentColor}
-.st-on{display:none;align-items:flex-end;gap:2px;height:14px;font-family:var(--sans);font-size:.78rem;color:var(--oil)}
-.st-on.show{display:inline-flex}
-.st-on i{display:block;width:3px;height:100%;background:var(--oil);transform-origin:bottom}
-.st-on span{margin-left:.45rem;line-height:14px}
-@media (prefers-reduced-motion: no-preference){
-  .st-on i{animation:stbar 1.1s ease-in-out infinite}
-  .st-on i:nth-child(2){animation-delay:-.35s}
-  .st-on i:nth-child(3){animation-delay:-.7s}
-}
-@keyframes stbar{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+.st-withsound .ico{width:0;height:0;border-left:9px solid currentColor;border-top:6px solid transparent;border-bottom:6px solid transparent}
 .st-video{position:relative}
 .st-withsound{display:inline-flex;align-items:center;gap:.55rem;min-height:44px;margin-top:.8rem;padding:.55rem 1.1rem;
   font-family:var(--sans);font-size:.9rem;border:1px solid var(--ink);border-radius:999px}
@@ -567,6 +551,8 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
 .st-close-line{padding:5rem 0 7rem}
 .st-close-line a{display:inline-flex;align-items:center;min-height:44px;font-size:1.1rem;text-decoration:none;border-bottom:1px solid var(--oil);color:var(--ink)}
 .st-close-line a:hover{color:var(--oil)}
+.st-close-photo-wrap{margin-top:4rem}
+.st-poster-fig{max-width:24rem;margin:0 auto}
 .story-link{margin-top:2rem}
 .story-link a{display:inline-flex;align-items:center;min-height:44px;font-family:var(--sans);font-size:.92rem;color:var(--oil);text-decoration:none;border-bottom:1px solid var(--oil)}
 
@@ -1829,15 +1815,6 @@ const DOGS_STORY = {
     contLabel:"Continue to the story",
     caption:null, credit:null
   },
-  street: {
-    title: "On the street",
-    lede: "",
-    listen: "Listen to the ambient sound",
-    media: [
-      {type:"audio", src:"media/dogs/street.m4a",
-       alt:"Street ambience recorded outdoors, with dogs barking.", caption:null, credit:null}
-    ]
-  },
   /* full-screen carousel. keep = normalised box [x0,y0,x1,y1] that must stay visible (dogs and any
      writing); a slide fills the screen with object-fit: cover only when that box fits, otherwise the
      whole photograph is shown over a blurred, darkened copy of itself. */
@@ -1854,7 +1831,11 @@ const DOGS_STORY = {
       {type:"photo", src:"media/dogs/carousel/2.jpg", small:"media/dogs/carousel/2-1200.jpg", w:2400, h:1800, keep:[.40,.62,.55,.80],
        alt:"A dog with a dark brown and tan coat lies curled on bare earth beside a paved path under trees, with wooden benches behind it and a green building in the background.", caption:null, credit:null},
       {type:"photo", src:"media/dogs/carousel/7.jpg", small:"media/dogs/carousel/7-1200.jpg", w:2400, h:1800, keep:[.36,.66,.62,.84],
-       alt:"A black dog with white patches sleeps on the pavement in front of a pale green picket fence, under a flowering pink oleander; behind the fence are the barred windows of a building.", caption:null, credit:null}
+       alt:"A black dog with white patches sleeps on the pavement in front of a pale green picket fence, under a flowering pink oleander; behind the fence are the barred windows of a building.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/carousel/13.jpg", small:"media/dogs/carousel/13-1200.jpg", w:2400, h:1350, keep:[.55,.55,.97,1],
+       alt:"A pale dog sleeps curled against a graffiti-covered wall in a dim underpass, beside a bucket and a torn poster; parked cars and trees are visible through the opening ahead.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/carousel/14.jpg", small:"media/dogs/carousel/14-1200.jpg", w:2400, h:1800, keep:[.30,.45,.65,.85],
+       alt:"A black-and-white dog stands among pine trees on bare earth and grass, beside an old tyre, with an apartment block and parked cars visible through iron railings beyond.", caption:null, credit:null}
     ]
   },
   notAllowed: {
@@ -1878,7 +1859,17 @@ const DOGS_STORY = {
       {type:"photo", src:"media/dogs/9.jpg", thumb:"media/dogs/thumb/9.jpg", w:1600, h:1200,
        alt:"Two small wooden dog houses, one with a cushion on its roof, stand on the pavement in front of a pharmacy window under a sign reading \u201cIBERIPHARMA\u201d and \u201cA PHARMACY YOU TRUST\u201d. An electric scooter is parked beside them, in front of advertising posters showing children.", caption:null, credit:null},
       {type:"photo", src:"media/dogs/3.jpg", thumb:"media/dogs/thumb/3.jpg", w:1600, h:1200,
-       alt:"A grey apartment block with enclosed balconies and metal garage doors. A small dog house with a red roof stands under the balconies; a white dog with dark ears stands in the open asphalt yard. Bare trees and parked cars behind.", caption:null, credit:null}
+       alt:"A grey apartment block with enclosed balconies and metal garage doors. A small dog house with a red roof stands under the balconies; a white dog with dark ears stands in the open asphalt yard. Bare trees and parked cars behind.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/19.jpg", thumb:"media/dogs/thumb/19.jpg", w:1600, h:1200,
+       alt:"A path between a leafy hedge and a locked iron gate leads to a small wooden shelter with a pitched roof, set against a fenced yard under trees.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/20.jpg", thumb:"media/dogs/thumb/20.jpg", w:1600, h:900,
+       alt:"A small wooden shelter with a sloped roof stands at the base of a large tree in a courtyard, with apartment blocks and a bench-lined path behind.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/21.jpg", thumb:"media/dogs/thumb/21.jpg", w:1600, h:1200,
+       alt:"A plywood shelter sits in long grass beside a fenced path, with high-rise apartment blocks and parked cars behind.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/22.jpg", thumb:"media/dogs/thumb/22.jpg", w:1600, h:900,
+       alt:"A cluttered walled yard holds several doghouses made from crates and roofing tiles under a tarpaulin canopy, with a wheelie bin and scrap wood beside them.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/23.jpg", thumb:"media/dogs/thumb/23.jpg", w:1600, h:1200,
+       alt:"A small wooden shelter with a corrugated roof stands against a sports court's wire fence, with a basketball hoop visible through the mesh.", caption:null, credit:null}
     ]
   },
   stairwell: {
@@ -1889,10 +1880,38 @@ const DOGS_STORY = {
       {type:"video", src:"media/dogs/stairwell.mp4", poster:"media/dogs/stairwell-poster.jpg", w:1280, h:720,
        alt:"A dim stairwell landing in an apartment block, seen past pink-painted metal railings: a dark metal apartment door, a lift and peeling walls lit by a caged lamp. A dark dog with a white chest sits on a mat beside the door. At the end the light goes out.", caption:null, credit:null},
       {type:"photo", src:"media/dogs/4.jpg", thumb:"media/dogs/thumb/4.jpg", w:1600, h:1200,
-       alt:"Two pale dogs sleep on the speckled stone floor of a dim hallway, one stretched out on its side, the other curled on a mat against the wall, with a band of daylight falling between them.", caption:null, credit:null}
+       alt:"Two pale dogs sleep on the speckled stone floor of a dim hallway, one stretched out on its side, the other curled on a mat against the wall, with a band of daylight falling between them.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/14.jpg", thumb:"media/dogs/thumb/14.jpg", w:1600, h:1200,
+       alt:"A stairwell landing with a glass-paned door open to a tree and a parked car outside; a short handwritten Georgian sign is taped to the door, and a pale dog lies in shadow on a striped mattress to the right.", caption:null, credit:null}
     ]
   },
-  closing: {text:"Explore the other inhabitants", href:"#/inhabitants"}
+  storyOfPuppies: {
+    title: "The story of puppies",
+    lede: "",
+    media: [
+      {type:"photo", src:"media/dogs/15.jpg", thumb:"media/dogs/thumb/15.jpg", w:1600, h:900,
+       alt:"A tree trunk thick with ivy stands at the edge of a street, an apartment block with balconies rising behind it.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/16.jpg", thumb:"media/dogs/thumb/16.jpg", w:1600, h:900,
+       alt:"Looking through ivy and tree branches toward a plastered apartment building with barred windows and a chain-link fence.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/17.jpg", thumb:"media/dogs/thumb/17.jpg", w:1600, h:900,
+       alt:"Seen through a wire fence, a bare-earth yard scattered with litter holds a wooden table and a small shelter; two pale puppies stand in the middle distance.", caption:null, credit:null},
+      {type:"photo", src:"media/dogs/18.jpg", thumb:"media/dogs/thumb/18.jpg", w:1600, h:1200,
+       alt:"Through a wire fence, three puppies — tan, cream and black-and-white — cross a littered yard near a wooden table and a small shelter.", caption:null, credit:null}
+    ]
+  },
+  sovietPoster: {
+    title: "Soviet poster",
+    lede: "",
+    media: [
+      {type:"photo", src:"media/dogs/25.jpg", thumb:"media/dogs/thumb/25.jpg", w:1129, h:1600,
+       alt:"A Soviet-era illustrated poster, yellowed with age: a grey wolf-like dog leaps baring its teeth above a small illustration of a man with a dog, with red and black Georgian text and a car silhouette.", caption:null, credit:null}
+    ]
+  },
+  closing: {
+    text:"Explore the other inhabitants", href:"#/inhabitants",
+    photo: {type:"photo", src:"media/dogs/24.jpg", thumb:"media/dogs/thumb/24.jpg", w:1600, h:1200,
+      alt:"In the same bare-earth yard as the opening photograph, three puppies — pale, tan and black-and-white — cross the litter-strewn ground near the tree and its small wooden shelter.", caption:null, credit:null}
+  }
 };
 
 const dogsStory = {active:false, cleanup:[]};
@@ -1927,81 +1946,6 @@ function stImg(m, sizes, eager){
   img.loading = eager ? "eager" : "lazy";
   img.addEventListener("error", ()=>{ if(img.isConnected) img.replaceWith(stPending("photo", m.alt)); }, {once:true});
   return img;
-}
-
-/* soft looping street sound: Web Audio gain for the fades (iOS ignores media.volume) */
-function stStreetSound(m, btn, ind, host){
-  const audio = new Audio();
-  audio.preload = "none"; audio.loop = true; audio.src = m.src;
-  let ctx = null, gain = null, raf = 0, rampEnd = 0, on = false;
-  const LEVEL = 1, FADE = 600;
-  /* Web Audio gives smooth fades on iOS, but a page opened straight from disk (file://) gets only
-     silence out of it (cross-origin rule), so there the plain element volume is used instead. */
-  const webAudio = /^https?:$/.test(location.protocol);
-  function setLevel(v){
-    if(gain){ gain.gain.cancelScheduledValues(ctx.currentTime); gain.gain.setValueAtTime(v, ctx.currentTime); }
-    else audio.volume = Math.max(0, Math.min(1, v));
-  }
-  function getLevel(){ return gain ? gain.gain.value : audio.volume; }
-  /* fades run on the audio clock (or a timer), never on screen redraws, so they also finish
-     when the page is not being painted */
-  function ramp(to, done){
-    clearInterval(raf); clearTimeout(rampEnd);
-    if(gain){
-      const t = ctx.currentTime, g = gain.gain;
-      g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.linearRampToValueAtTime(to, t + FADE/1000);
-    } else {
-      const from = getLevel(), t0 = performance.now();
-      raf = setInterval(()=>{
-        const k = Math.min(1, (performance.now() - t0) / FADE);
-        setLevel(from + (to - from) * k);
-        if(k >= 1) clearInterval(raf);
-      }, 30);
-    }
-    rampEnd = setTimeout(()=>{ if(!gain) setLevel(to); if(done) done(); }, FADE + 20);
-  }
-  function ui(){ btn.setAttribute("aria-pressed", String(on)); ind.classList.toggle("show", on); }
-  function start(){
-    if(on) return;
-    try{
-      if(!ctx && webAudio){
-        const AC = window.AudioContext || window.webkitAudioContext;
-        if(AC){ ctx = new AC(); gain = ctx.createGain(); gain.gain.value = 0;
-          ctx.createMediaElementSource(audio).connect(gain); gain.connect(ctx.destination); }
-      }
-      if(ctx && ctx.state === "suspended") ctx.resume();
-    }catch(e){ ctx = null; gain = null; }
-    on = true; ui(); setLevel(0); watch();
-    dogsStory.onSound && dogsStory.onSound("street");
-    const p = audio.play();
-    if(p && p.catch) p.catch(()=>{ on = false; ui(); });
-    ramp(LEVEL);
-  }
-  function stop(instant){
-    if(!on) return;
-    on = false; ui();
-    if(instant){ clearInterval(raf); clearTimeout(rampEnd); audio.pause(); setLevel(0); return; }
-    ramp(0, ()=>{ if(!on) audio.pause(); });
-  }
-  audio.addEventListener("error", ()=>{
-    stop(true);
-    if(host.isConnected) host.replaceWith(stPending("audio", m.alt));
-  });
-  btn.onclick = ()=> on ? stop() : start();
-  /* stop when neither the street section nor the street carousel after it is on screen */
-  let io = null;
-  function watch(){
-    if(io || !("IntersectionObserver" in window)) return;
-    const seen = new Set();
-    io = new IntersectionObserver(es=>{
-      es.forEach(e=>{ if(e.isIntersecting) seen.add(e.target); else seen.delete(e.target); });
-      if(!seen.size) stop();
-    }, {threshold:0});
-    [host.closest(".st-sec"), document.getElementById("street-carousel")].filter(Boolean).forEach(t=>{ seen.add(t); io.observe(t); });
-  }
-  dogsStory.cleanup.push(()=>{ if(io) io.disconnect(); });
-  dogsStory.cleanup.push(()=>{ stop(true); audio.removeAttribute("src"); audio.load(); if(ctx && ctx.close) ctx.close().catch(()=>{}); });
-  return {start, stop, isOn:()=>on};
 }
 
 /* full-screen photo viewer: Esc, arrows, swipe */
@@ -2247,7 +2191,7 @@ function stRuler(v, secs){
   const nav = el("nav","ink-ruler"); nav.setAttribute("aria-label","Sections");
   /* each section keeps one real level mark of the drawing (index into its left level column):
      21.65, 16.015, 11.015, 8.015, 2.615 from the top of the page down */
-  const LEVEL = [[".st-street",0], ["#street-carousel",2], ["#not-allowed",4], ["#homes",5], [".st-stairwell",7]];
+  const LEVEL = [["#street-carousel",0], [".st-stairwell",2], [".st-storyOfPuppies",3], ["#homes",5], [".st-sovietPoster",6], ["#not-allowed",7]];
   const levelOf = sec => { const m = LEVEL.find(([sel])=>sec.matches(sel)); return m ? m[1] : 0; };
   const ticks = secs.map(sec=>{
     const h = sec.querySelector(":scope > .st-wrap > h3");
@@ -2915,94 +2859,14 @@ function openDogsStory(){
   v.appendChild(stDeepZoom(D.hero, ht, {unlock:()=>stLock(false, true)}));
   if(D.intro){ const iw = el("div","st-wrap"); iw.appendChild(el("p","st-intro",D.intro)); v.appendChild(iw); }
 
-  let street = null, video = null;
-  const stopVideoSound = ()=>{ if(video && !video.muted && !video.paused) video.pause(); };
-  dogsStory.onSound = who => { if(who === "street") stopVideoSound(); else if(street) street.stop(); };
+  let video = null;
 
-  /* 2 — on the street */
-  const st = stSection("street");
-  const photos = st.s.media.filter(photo), sound = st.s.media.find(m=>m.type==="audio");
-  if(photos.length || sound){
-    if(sound){
-      const row = el("div","st-listen");
-      if(sound.src){
-        const btn = el("button","st-sound"); btn.setAttribute("aria-pressed","false");
-        btn.setAttribute("aria-label", st.s.listen + ". " + sound.alt);
-        btn.appendChild(el("span","ico")); btn.appendChild(el("span",null,st.s.listen));
-        const ind = el("span","st-on"); ind.setAttribute("aria-live","polite");
-        ind.appendChild(el("i")); ind.appendChild(el("i")); ind.appendChild(el("i")); ind.appendChild(el("span",null,"Sound on"));
-        row.appendChild(btn); row.appendChild(ind);
-        st.wrap.appendChild(row);
-        street = stStreetSound(sound, btn, ind, row);
-      } else st.wrap.appendChild(stPending("audio", sound.alt));
-      const sc = stCaption(sound); if(sc){ const f = el("figure","st-fig"); f.appendChild(sc); st.wrap.appendChild(f); }
-    }
-    const lb = photos.length ? stLightbox(photos) : null;
-    const grid = el("div","st-gallery");
-    const slots = ["w7 lo","w5 lo","w5 hi","w7 hi"];
-    photos.forEach((m,n)=>{
-      const fig = el("figure","st-fig " + slots[n % 4]);
-      const b = el("button","st-open"); b.setAttribute("aria-label","Open full screen: " + m.alt);
-      b.appendChild(stImg(m, "(min-width:769px) 40vw, 100vw"));
-      b.onclick = ()=>{ if(b.querySelector("img")) lb.open(n, b); };
-      fig.appendChild(b);
-      const c = stCaption(m); if(c) fig.appendChild(c);
-      grid.appendChild(fig);
-    });
-    if(photos.length) st.wrap.appendChild(grid);
-    v.appendChild(st.sec);
-  }
-
-  /* 2b — full-screen carousel */
+  /* 2 — full-screen carousel */
   if(D.streetCarousel && D.streetCarousel.media.some(photo)){
     v.appendChild(stCarousel({...D.streetCarousel, media:D.streetCarousel.media.filter(photo)}));
   }
 
-  /* 3 — sometimes they are not allowed: a pair of photographs, same viewer as the street */
-  const na = stSection("notAllowed");
-  const naPhotos = na.s.media.filter(photo);
-  if(naPhotos.length){
-    if(na.s.id) na.sec.id = na.s.id;
-    const lb2 = stLightbox(naPhotos);
-    const pair = el("div","st-pair");
-    naPhotos.forEach((m,n)=>{
-      const fig = el("figure","st-fig");
-      fig.style.flexGrow = (m.w / m.h).toFixed(4);   /* widths in proportion to aspect ratio = equal heights */
-      const b = el("button","st-open"); b.setAttribute("aria-label","Open full screen: " + m.alt);
-      b.appendChild(stImg(m, "(min-width:769px) 32rem, 100vw"));
-      b.onclick = ()=>{ if(b.querySelector("img")) lb2.open(n, b); };
-      fig.appendChild(b);
-      const c = stCaption(m); if(c) fig.appendChild(c);
-      pair.appendChild(fig);
-    });
-    na.wrap.appendChild(pair);
-    v.appendChild(na.sec);
-  }
-
-  /* 4 — homes: text, then a gallery with the same viewer as the other photos */
-  const hm = stSection("homes");
-  const hmPhotos = hm.s.media.filter(photo);
-  if(hm.s.title || hm.s.lede || hmPhotos.length){
-    if(hm.s.id) hm.sec.id = hm.s.id;
-    if(hmPhotos.length){
-      const lb3 = stLightbox(hmPhotos);
-      const grid = el("div","st-gallery");
-      const slots = ["w7 lo","w5 lo","w7r hi"];
-      hmPhotos.forEach((m,n)=>{
-        const fig = el("figure","st-fig " + slots[n % slots.length]);
-        const b = el("button","st-open"); b.setAttribute("aria-label","Open full screen: " + m.alt);
-        b.appendChild(stImg(m, "(min-width:769px) 40vw, 100vw"));
-        b.onclick = ()=>{ if(b.querySelector("img")) lb3.open(n, b); };
-        fig.appendChild(b);
-        const c = stCaption(m); if(c) fig.appendChild(c);
-        grid.appendChild(fig);
-      });
-      hm.wrap.appendChild(grid);
-    }
-    v.appendChild(hm.sec);
-  }
-
-  /* 5 — in the stairwell */
+  /* 3 — in the stairwell */
   const sw = stSection("stairwell");
   const vm = sw.s.media.find(m=>m.type==="video");
   const rest = sw.s.media.filter(photo);
@@ -3019,7 +2883,6 @@ function openDogsStory(){
         const ws = el("button","st-withsound");
         ws.appendChild(el("span","ico")); ws.appendChild(el("span",null,sw.s.withSound));
         const playWithSound = ()=>{
-          dogsStory.onSound("video");
           video.muted = false; video.loop = false;
           if(preview){ video.currentTime = 0; preview = false; }
           video.play().catch(()=>{});
@@ -3027,8 +2890,7 @@ function openDogsStory(){
         };
         ws.onclick = playWithSound;
         let preview = false;
-        video.addEventListener("volumechange", ()=>{ if(!video.muted){ preview = false; video.loop = false; ws.hidden = true; dogsStory.onSound("video"); } });
-        video.addEventListener("play", ()=>{ if(!video.muted) dogsStory.onSound("video"); });
+        video.addEventListener("volumechange", ()=>{ if(!video.muted){ preview = false; video.loop = false; ws.hidden = true; } });
         video.addEventListener("error", ()=>{ if(fig.isConnected){ fig.replaceChildren(stPending("video", vm.alt)); } });
         /* muted preview only when motion is welcome; pause it whenever it leaves the screen */
         if(!stReduced() && "IntersectionObserver" in window){
@@ -3059,14 +2921,103 @@ function openDogsStory(){
     v.appendChild(sw.sec);
   }
 
+  /* 4 — the story of puppies: a gallery with the same viewer as the other photos */
+  const sp = stSection("storyOfPuppies");
+  const spPhotos = sp.s.media.filter(photo);
+  if(sp.s.title || sp.s.lede || spPhotos.length){
+    if(spPhotos.length){
+      const lb4 = stLightbox(spPhotos);
+      const grid = el("div","st-gallery");
+      const slots = ["w7 lo","w5 lo","w7r hi"];
+      spPhotos.forEach((m,n)=>{
+        const fig = el("figure","st-fig " + slots[n % slots.length]);
+        const b = el("button","st-open"); b.setAttribute("aria-label","Open full screen: " + m.alt);
+        b.appendChild(stImg(m, "(min-width:769px) 40vw, 100vw"));
+        b.onclick = ()=>{ if(b.querySelector("img")) lb4.open(n, b); };
+        fig.appendChild(b);
+        const c = stCaption(m); if(c) fig.appendChild(c);
+        grid.appendChild(fig);
+      });
+      sp.wrap.appendChild(grid);
+    }
+    v.appendChild(sp.sec);
+  }
+
+  /* 5 — homes: text, then a gallery with the same viewer as the other photos */
+  const hm = stSection("homes");
+  const hmPhotos = hm.s.media.filter(photo);
+  if(hm.s.title || hm.s.lede || hmPhotos.length){
+    if(hm.s.id) hm.sec.id = hm.s.id;
+    if(hmPhotos.length){
+      const lb3 = stLightbox(hmPhotos);
+      const grid = el("div","st-gallery");
+      const slots = ["w7 lo","w5 lo","w7r hi"];
+      hmPhotos.forEach((m,n)=>{
+        const fig = el("figure","st-fig " + slots[n % slots.length]);
+        const b = el("button","st-open"); b.setAttribute("aria-label","Open full screen: " + m.alt);
+        b.appendChild(stImg(m, "(min-width:769px) 40vw, 100vw"));
+        b.onclick = ()=>{ if(b.querySelector("img")) lb3.open(n, b); };
+        fig.appendChild(b);
+        const c = stCaption(m); if(c) fig.appendChild(c);
+        grid.appendChild(fig);
+      });
+      hm.wrap.appendChild(grid);
+    }
+    v.appendChild(hm.sec);
+  }
+
+  /* 6 — soviet poster: a single, centred photograph with the same viewer as the other photos */
+  const sv = stSection("sovietPoster");
+  const svPhotos = sv.s.media.filter(photo);
+  if(svPhotos.length){
+    const lb5 = stLightbox(svPhotos);
+    svPhotos.forEach((m,n)=>{
+      const fig = el("figure","st-fig st-poster-fig");
+      const b = el("button","st-open"); b.setAttribute("aria-label","Open full screen: " + m.alt);
+      b.appendChild(stImg(m, "(min-width:769px) 24rem, 100vw"));
+      b.onclick = ()=>{ if(b.querySelector("img")) lb5.open(n, b); };
+      fig.appendChild(b);
+      const c = stCaption(m); if(c) fig.appendChild(c);
+      sv.wrap.appendChild(fig);
+    });
+    v.appendChild(sv.sec);
+  }
+
+  /* 7 — sometimes they are not allowed: a pair of photographs, same viewer as the other photos */
+  const na = stSection("notAllowed");
+  const naPhotos = na.s.media.filter(photo);
+  if(naPhotos.length){
+    if(na.s.id) na.sec.id = na.s.id;
+    const lb2 = stLightbox(naPhotos);
+    const pair = el("div","st-pair");
+    naPhotos.forEach((m,n)=>{
+      const fig = el("figure","st-fig");
+      fig.style.flexGrow = (m.w / m.h).toFixed(4);   /* widths in proportion to aspect ratio = equal heights */
+      const b = el("button","st-open"); b.setAttribute("aria-label","Open full screen: " + m.alt);
+      b.appendChild(stImg(m, "(min-width:769px) 32rem, 100vw"));
+      b.onclick = ()=>{ if(b.querySelector("img")) lb2.open(n, b); };
+      fig.appendChild(b);
+      const c = stCaption(m); if(c) fig.appendChild(c);
+      pair.appendChild(fig);
+    });
+    na.wrap.appendChild(pair);
+    v.appendChild(na.sec);
+  }
+
   /* ink accents: drawn dividers, a section ruler, one photograph that develops */
   stInk(v);
 
-  /* 6 — closing */
+  /* 8 — closing */
+  if(D.closing.photo){
+    const cw = el("div","st-wrap st-close-photo-wrap"), cf = el("figure","st-fig");
+    cf.appendChild(stImg(D.closing.photo, "(min-width:769px) 36rem, 100vw"));
+    const cc = stCaption(D.closing.photo); if(cc) cf.appendChild(cc);
+    cw.appendChild(cf); v.appendChild(cw);
+  }
   const cl = el("div","st-wrap st-close-line"), a = el("a",null,D.closing.text);
   a.href = D.closing.href; cl.appendChild(a); v.appendChild(cl);
 
-  const onHide = ()=>{ if(document.hidden){ if(street) street.stop(true); if(video) video.pause(); } };
+  const onHide = ()=>{ if(document.hidden){ if(video) video.pause(); } };
   document.addEventListener("visibilitychange", onHide);
   window.addEventListener("pagehide", onHide);
   dogsStory.cleanup.push(()=>{ document.removeEventListener("visibilitychange", onHide); window.removeEventListener("pagehide", onHide); });
@@ -3081,7 +3032,6 @@ function leaveDogsStory(){
   if(!dogsStory.active) return;
   dogsStory.active = false;
   dogsStory.cleanup.splice(0).forEach(f=>{ try{ f(); }catch(e){} });
-  dogsStory.onSound = null;
   document.body.classList.remove("story-page","st-lock");
   stLock(false);
 }
