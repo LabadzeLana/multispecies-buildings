@@ -22,7 +22,22 @@
    ],
    "credit": "Grapevines as trees of life in Georgian metalwork, 2023. Lia Khetaguri archive. Courtesy of the author.",
    "alt": "Metal relief: a figure holding a bunch of grapes among vine leaves",
-   "description": "Embossed metal panel with a grapevine motif, mounted on a brick wall."
+   "description": "Embossed metal panel with a grapevine motif, mounted on a brick wall.",
+   "relief": {
+    "strength": 2.4,
+    "files": [
+     {
+      "file": "vineyards-02-relief-01-1150.webp",
+      "px": "1150x862",
+      "bytes": 302914
+     },
+     {
+      "file": "vineyards-02-relief-01-900.webp",
+      "px": "900x675",
+      "bytes": 294032
+     }
+    ]
+   }
   },
   {
    "chapter": 2,
@@ -44,7 +59,22 @@
    ],
    "credit": "Grapevines as trees of life in Georgian metalwork, 2023. Lia Khetaguri archive. Courtesy of the author.",
    "alt": "Copper relief: a kneeling figure tending a young vine with grape clusters",
-   "description": "Embossed copper panel with a grapevine motif, mounted on a brick wall."
+   "description": "Embossed copper panel with a grapevine motif, mounted on a brick wall.",
+   "relief": {
+    "strength": 2.2,
+    "files": [
+     {
+      "file": "vineyards-02-relief-02-1150.webp",
+      "px": "1150x862",
+      "bytes": 308050
+     },
+     {
+      "file": "vineyards-02-relief-02-900.webp",
+      "px": "900x675",
+      "bytes": 300964
+     }
+    ]
+   }
   },
   {
    "chapter": 3,

@@ -104,6 +104,37 @@ figure{margin:0}
 .book .pages{display:grid;grid-template-columns:1fr;gap:2rem}
 @media (min-width:700px){ .book .pages{grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem)} }
 @media (max-width:699px){ .book::before{display:none} }
+
+/* ---------- ch 2: full-size stacked photographs, revealed from an embossed relief ----------
+   Full-bleed: these two figures sit outside .wrap (edge to edge), unlike every other chapter's
+   images, which is why they get their own block instead of reusing .book/.pages or .ph. Both
+   source photographs share the same 1150x862 frame (see media/vineyards/manifest.json — there is
+   no larger original for either), so one fixed aspect-ratio covers both and reserves their full
+   height up front: no layout shift while the real photograph is still lazy-loading. */
+.ch2-photos{display:flex;flex-direction:column;gap:clamp(.6rem,1.8vw,1.1rem);margin:clamp(1.6rem,4vw,3rem) 0}
+.ch2-fig{margin:0}
+.ch2-zoom{position:relative;display:block;width:100%;max-width:1800px;margin:0 auto;cursor:zoom-in;background:var(--paper-2)}
+.ch2-zoom .badge{z-index:4}
+.ch2-stack{position:relative;z-index:1;display:block;width:100%;aspect-ratio:1150/862;overflow:hidden}
+.ch2-relief,.ch2-photo{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+.ch2-relief{z-index:2;pointer-events:none;transition:opacity .8s cubic-bezier(.22,.61,.36,1)}
+.ch2-photo{z-index:1;opacity:0;filter:blur(14px);
+  transition:opacity .8s cubic-bezier(.22,.61,.36,1), filter .8s cubic-bezier(.22,.61,.36,1)}
+.ch2-sheen{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;mix-blend-mode:soft-light;
+  background:radial-gradient(circle at var(--mx,30%) var(--my,25%),rgba(255,255,255,.55),transparent 55%);
+  transition:opacity .4s ease}
+/* light-follows-pointer: desktop only (a real mouse, not touch), and only a soft, cheap,
+   compositor-only overlay — never recomputed per scroll frame, never shown on mobile */
+@media (hover:hover) and (pointer:fine){ .ch2-zoom:hover .ch2-sheen{opacity:1} }
+@media (prefers-reduced-motion: reduce){
+  .ch2-relief{display:none}
+  .ch2-photo{position:relative;opacity:1;filter:none;transition:none}
+  .ch2-sheen{display:none}
+}
+/* if the relief image itself fails to load/decode, show the real photograph plainly rather than
+   an empty box (set by JS on the relief's error event) */
+.ch2-stack.ch2-fallback .ch2-relief{display:none}
+.ch2-stack.ch2-fallback .ch2-photo{opacity:1;filter:none}
 .plates{display:grid;grid-template-columns:1fr;gap:2.2rem 2rem}
 @media (min-width:700px){
   .plates{grid-template-columns:repeat(12,1fr);align-items:start}
@@ -338,14 +369,31 @@ figure{margin:0}
 
   <!-- 2 -->
   <section class="ch" id="ch-2" aria-labelledby="h-2">
+    <div class="wrap"><h2 id="h-2">Grapevines as Trees of Life</h2></div>
+    <noscript><style>.ch2-relief{display:none}.ch2-photo{opacity:1!important;filter:none!important}</style></noscript>
+    <div class="ch2-photos">
+      <figure class="ch2-fig">
+        <button class="zoom ch2-zoom" type="button" data-group="g2" data-cap="cap-2" data-full="../media/vineyards/vineyards-2-metalwork-01.jpg" aria-label="Open larger view">
+          <span class="ch2-stack">
+            <img class="ch2-relief" src="../media/vineyards/vineyards-02-relief-01-900.webp" srcset="../media/vineyards/vineyards-02-relief-01-900.webp 900w, ../media/vineyards/vineyards-02-relief-01-1150.webp 1150w" sizes="(min-width: 1000px) 1800px, 100vw" width="1150" height="862" alt="" aria-hidden="true" decoding="async">
+            <img class="ch2-photo" src="../media/vineyards/vineyards-2-metalwork-01-1200.jpg" width="1150" height="862" alt="Metal relief: a figure holding a bunch of grapes among vine leaves" loading="lazy" decoding="async">
+          </span>
+          <span class="ch2-sheen" aria-hidden="true"></span>
+          <span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span>
+        </button>
+      </figure>
+      <figure class="ch2-fig">
+        <button class="zoom ch2-zoom" type="button" data-group="g2" data-cap="cap-2" data-full="../media/vineyards/vineyards-2-metalwork-02.jpg" aria-label="Open larger view">
+          <span class="ch2-stack">
+            <img class="ch2-relief" src="../media/vineyards/vineyards-02-relief-02-900.webp" srcset="../media/vineyards/vineyards-02-relief-02-900.webp 900w, ../media/vineyards/vineyards-02-relief-02-1150.webp 1150w" sizes="(min-width: 1000px) 1800px, 100vw" width="1150" height="862" alt="" aria-hidden="true" decoding="async">
+            <img class="ch2-photo" src="../media/vineyards/vineyards-2-metalwork-02-1200.jpg" width="1150" height="862" alt="Copper relief: a kneeling figure tending a young vine with grape clusters" loading="lazy" decoding="async">
+          </span>
+          <span class="ch2-sheen" aria-hidden="true"></span>
+          <span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span>
+        </button>
+      </figure>
+    </div>
     <div class="wrap">
-      <h2 id="h-2">Grapevines as Trees of Life</h2>
-      <div class="book">
-        <div class="pages">
-          <button class="zoom" type="button" data-group="g2" data-cap="cap-2" data-full="../media/vineyards/vineyards-2-metalwork-01.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-2-metalwork-01-1200.jpg" width="1150" height="862" alt="Metal relief: a figure holding a bunch of grapes among vine leaves" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
-          <button class="zoom" type="button" data-group="g2" data-cap="cap-2" data-full="../media/vineyards/vineyards-2-metalwork-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-2-metalwork-02-1200.jpg" width="1150" height="862" alt="Copper relief: a kneeling figure tending a young vine with grape clusters" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
-        </div>
-      </div>
       <p class="cap group" id="cap-2">Grapevines as trees of life in Georgian metalwork, 2023. Lia Khetaguri archive. Courtesy of the author.</p>
       <p class="txt">In Georgia, a grapevine is never just a plant. It is a way the nation holds itself together, and when it is cut, something more than wood is severed.</p>
     </div>
@@ -760,6 +808,97 @@ $$(".zoom[data-group]").forEach(b => {
     const list = groups[b.dataset.group]; openViewer(list, list.indexOf(it), b);
   });
 });
+
+/* ---------- ch 2: embossed-relief reveal for the two full-size photographs ----------
+   Each figure starts as a pre-rendered relief overlay (tools/vineyards/make_relief.py) sitting
+   over the real photograph. The real photograph is a plain <img loading="lazy">, so it loads
+   itself, with no JS involved, exactly the same way every other photograph on this page does —
+   this script only cross-dissolves it in from blurred-and-transparent to sharp-and-opaque as the
+   reader scrolls it toward the viewport's centre. Progress is a pure function of scroll position,
+   recomputed only for figures the IntersectionObserver below marks as nearby, on one shared
+   rAF-throttled scroll/resize handler — no per-frame layout work, transform/opacity/filter only.
+   If this script never runs at all (JS disabled), the <noscript> rule above the figures hides the
+   relief and shows the plain photograph; see also the prefers-reduced-motion rule above, and the
+   .ch2-fallback rule for a relief image that fails to load. */
+(function(){
+  const REVEAL_CENTER = 0.5;   // viewport fraction the photo's centre reaches at progress 1
+  const BLUR_MAX = 14;         // px of blur at progress 0 (must match the CSS starting filter)
+  const figs = $$(".ch2-fig");
+  if(!figs.length) return;
+
+  const state = figs.map(fig => ({
+    fig, stack: $(".ch2-stack", fig), photo: $(".ch2-photo", fig), relief: $(".ch2-relief", fig), sheen: $(".ch2-sheen", fig),
+    watching: false, p: -1
+  }));
+  state.forEach(s => {
+    s.relief.addEventListener("error", () => { s.stack.classList.add("ch2-fallback"); }, {once:true});
+  });
+
+  function applyStatic(s){ s.photo.style.opacity = 1; s.photo.style.filter = "none"; s.relief.style.opacity = 0; }
+  function setProgress(s, p){
+    if(Math.abs(p - s.p) < 0.002) return;
+    s.p = p;
+    s.relief.style.opacity = String(1 - p);
+    s.photo.style.opacity = String(p);
+    s.photo.style.filter = p >= 0.999 ? "none" : `blur(${(1 - p) * BLUR_MAX}px)`;
+  }
+  function progressFor(s){
+    const r = s.fig.getBoundingClientRect();
+    const vh = innerHeight || document.documentElement.clientHeight;
+    const startTop = vh;                                  // photo's top at the viewport's bottom edge
+    const endTop = vh * REVEAL_CENTER - r.height / 2;      // top when the centre is at REVEAL_CENTER
+    const span = startTop - endTop;
+    if(span <= 0) return r.top <= endTop ? 1 : 0;
+    return Math.min(1, Math.max(0, (startTop - r.top) / span));
+  }
+
+  let raf = 0;
+  function tick(){
+    raf = 0;
+    state.forEach(s => { if(s.watching) setProgress(s, progressFor(s)); });
+  }
+  function queue(){ if(!raf) raf = requestAnimationFrame(tick); }
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      const s = state.find(x => x.fig === e.target);
+      if(!s) return;
+      s.watching = e.isIntersecting;
+      if(s.watching) queue();
+    });
+  }, {rootMargin: "60% 0px 60% 0px"});
+
+  function goStatic(){
+    io.disconnect();
+    removeEventListener("scroll", queue); removeEventListener("resize", queue);
+    state.forEach(applyStatic);
+  }
+  function goAnimated(){
+    state.forEach(s => { s.p = -1; s.photo.style.opacity = ""; s.photo.style.filter = ""; s.relief.style.opacity = ""; io.observe(s.fig); });
+    addEventListener("scroll", queue, {passive:true});
+    addEventListener("resize", queue);
+    queue();
+  }
+
+  if(reduced) goStatic(); else goAnimated();
+  RM.addEventListener("change", e => (e.matches ? goStatic : goAnimated)());
+
+  /* optional: a soft, cheap sheen that follows the pointer, desktop only (a real mouse, not
+     touch) — CSS only shows it on hover for hover-capable fine-pointer devices; this just feeds
+     it a position. Skipped entirely elsewhere: no listener is attached on touch devices. */
+  if(matchMedia("(hover:hover) and (pointer:fine)").matches){
+    state.forEach(s => {
+      let sraf = 0, lastX = 30, lastY = 25;
+      s.fig.querySelector(".ch2-zoom").addEventListener("pointermove", e => {
+        const r = s.stack.getBoundingClientRect();
+        lastX = (e.clientX - r.left) / r.width * 100; lastY = (e.clientY - r.top) / r.height * 100;
+        if(!sraf) sraf = requestAnimationFrame(() => {
+          sraf = 0; s.sheen.style.setProperty("--mx", lastX + "%"); s.sheen.style.setProperty("--my", lastY + "%");
+        });
+      }, {passive:true});
+    });
+  }
+})();
 
 /* ---------- ch 5: filmstrip moved slowly by the page scroll ---------- */
 const strip = $(".strip"), track = $(".strip-track", strip), sp = $(".s-prev", strip), sn = $(".s-next", strip), prog = $(".strip-prog i", strip);
