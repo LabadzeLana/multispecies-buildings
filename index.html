@@ -248,6 +248,8 @@ html[data-season="winter"] .rust{stroke-width:2.4}
 #cap h2{margin:0;font-weight:400;font-size:clamp(1.35rem,3vw,1.9rem);line-height:1.15}
 #cap .sub{margin:0;font-family:var(--sans);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--oil)}
 #cap p{margin:.2rem 0 0;max-width:62ch;color:var(--ink-soft);font-size:1rem;line-height:1.5}
+#cap p.credit{font-family:var(--sans);font-size:.78rem;color:var(--muted);margin-top:.3rem}
+#cap p.credit:empty{display:none}
 #cap .back{align-self:flex-start;margin-top:.35rem;font-family:var(--sans);font-size:.84rem;color:var(--oil);border-bottom:1px solid var(--oil);padding:.35rem 0 1px;min-height:32px}
 @media (max-width:700px){#cap p{font-size:.94rem}}
 @media (prefers-reduced-motion: reduce){#cap,.mk .lab,#hint,#hoverbox{transition:none}}
@@ -736,7 +738,7 @@ body.st-lock{overflow:hidden}
         <button id="cmpbtn" type="button" class="wide" aria-pressed="false">Compare</button>
       </div>
       <div id="hint">Scroll or pinch to zoom &nbsp;&middot;&nbsp; drag to move &nbsp;&middot;&nbsp; click a dot to step in</div>
-      <aside id="cap" aria-live="polite"><div class="sub"></div><h2></h2><p></p><button class="back" type="button" tabindex="-1">Enter the space &rarr;</button></aside>
+      <aside id="cap" aria-live="polite"><div class="sub"></div><h2></h2><p></p><p class="credit"></p><button class="back" type="button" tabindex="-1">Enter the space &rarr;</button></aside>
     </div>
     <div class="stage-caption">
       <span>Front elevation · redrawn after a Soviet design sheet</span>
@@ -1162,7 +1164,8 @@ const BUILDING_ZONES = [
   {id:"facade",    x:307, y:355, w:253, h:430, hx:472, hy:421, photo:"facade.jpg",    pos:"50% 52%"},
   {id:"elevator",  x:560, y:140, w:345, h:645, hx:686, hy:364, photo:"elevator.jpg",  pos:"58% 40%"},
   {id:"courtyard", x:307, y:630, w:140, h:155, hx:326, hy:700, photo:"courtyard.jpg", pos:"50% 62%"},   /* the left tree; inside Façade's lower-left corner */
-  {id:"vineyard",  x:905, y:250, w:92,  h:560, hx:952, hy:700, photo:"vineyard.jpg",  pos:"4% 50%"},    /* the right-hand strip: the vine-covered pergola posts */
+  {id:"vineyard",  x:905, y:250, w:92,  h:560, hx:952, hy:700, photo:"building-grapevines-01.jpg",  pos:"48% 50%",
+   credit:"Nargiza Arjevanidze archive. Tbilisi, Gldani, 2023. Courtesy of the author."},    /* the right-hand strip: the vine-covered pergola posts */
   {id:"basement",  x:50,  y:790, w:390, h:66,  hx:130, hy:824, photo:"basement.jpg",  pos:"50% 88%"},
   {id:"pipes",     x:440, y:790, w:465, h:66,  hx:560, hy:822, photo:"pipes.jpg",     pos:"30% 92%"}
 ];
@@ -1298,6 +1301,7 @@ const buildingView = (function(){
       capEl.querySelector(".sub").replaceChildren(withDogLinks(z.space.suben));
       capEl.querySelector("h2").textContent = nameOf(z);
       capEl.querySelector("p").replaceChildren(withDogLinks(z.space.lede));
+      capEl.querySelector("p.credit").textContent = z.credit || "";
       capId = id;
     }
     capEl.classList.add("show"); capEl.querySelector(".back").tabIndex = 0;
