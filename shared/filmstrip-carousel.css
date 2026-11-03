@@ -56,3 +56,25 @@
 .fs-vw-cap:empty{display:none}
 
 @media (prefers-reduced-motion: reduce){ .fs-arrow,.fs-vw-btn{transition:none} }
+
+/* ---------- "one at a time" mode: a fixed box, one slide per view, never pinned ----------
+   A thin-line frame (no fill, no shadow) holding a plain horizontally-scrollable, scroll-snap row
+   where each slide is the full width of the box — so only one photograph is visible at a time —
+   with its own caption moving with it. Every slide shares one box size: with no explicit height
+   anywhere, the flex row's cross-size (height) is simply the tallest slide's own content height
+   (its image at the box's width, plus its own caption), and every other slide is stretched to
+   match (the flexbox default), so the frame never changes size as you move between slides, and an
+   image that doesn't fill its slide's height is centred by object-fit, never cropped or cut off.
+   No background anywhere in the chain: the page's own paper colour shows through. */
+/* touch-action:pan-y on the frame (not the scrollable track) so a drag starting on the frame's own
+   padding/border always scrolls the page vertically, with no risk of trapping it — the track below
+   is left at its default touch-action so its own native overflow-x handles horizontal swipe, and a
+   vertical drag that starts there still chains up to the page since the track has no vertical
+   overflow of its own to capture it with. */
+.fs-strip.fs-one{position:relative;border:1px solid var(--line);padding:clamp(1rem,3.5vw,2.2rem);margin:1.6rem 0;background:transparent;touch-action:pan-y}
+.fs-strip.fs-one .fs-track{padding:0;gap:0;background:transparent}
+.fs-strip.fs-one .fs-track figure{width:100%;flex:0 0 100%;scroll-snap-align:start;display:flex;flex-direction:column}
+.fs-strip.fs-one .fs-zoom{flex:1;min-height:0;display:flex}
+.fs-strip.fs-one .fs-ph{display:block;width:100%;height:100%;max-width:none;object-fit:contain;background:transparent}
+.fs-strip.fs-one figcaption{flex:0 0 auto;padding-top:1rem;font-family:var(--sans);font-size:.82rem;line-height:1.55;color:var(--ink-soft)}
+.fs-strip.fs-one .fs-foot{padding:1rem 0 0;max-width:none;margin:0;width:auto}

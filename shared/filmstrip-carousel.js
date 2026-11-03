@@ -328,5 +328,88 @@
     };
   }
 
-  global.FilmstripCarousel = { createFilmstrip: createFilmstrip, createViewer: createViewer };
+  /* ---------- "one at a time" mode: progressively enhance an existing static .fs-strip.fs-one ----------
+     Unlike createFilmstrip, this builds no DOM: the figures/images/captions are written directly on
+     the host page (see a-city-of-vineyards/index.html chapter 3), so the component already works
+     with no JS at all and under prefers-reduced-motion — a plain native horizontally-scrollable,
+     scroll-snap row, same markup either way. This only adds the extras: the progress line, working
+     arrow buttons, keyboard arrow-key navigation, and the full-screen zoom viewer. It never pins to
+     the viewport and never changes the page's height — the host page scrolls past it normally. */
+  function enhanceOneAtATime(strip, opts){
+    if(!strip) return null;
+    opts = opts || {};
+    const track = strip.querySelector(".fs-track");
+    const figs = Array.prototype.slice.call(track.querySelectorAll(":scope > figure"));
+    const prevBtn = strip.querySelector(".fs-prev"), nextBtn = strip.querySelector(".fs-next");
+    const progI = strip.querySelector(".fs-prog i");
+    const vw = opts.viewer || createViewer();
+    const ownsViewer = !opts.viewer;
+
+    const list = figs.map(function(fig){
+      const btn2 = fig.querySelector(".fs-zoom"), img = fig.querySelector("img.fs-ph");
+      const capEl = fig.querySelector("figcaption");
+      return {
+        full: (btn2 && btn2.dataset.full) || (img && img.currentSrc) || (img && img.src),
+        previewSrc: img && (img.currentSrc || img.src),
+        w: img ? (img.naturalWidth || img.width) : 0, h: img ? (img.naturalHeight || img.height) : 0,
+        alt: img ? img.alt : "", caption: capEl ? capEl.textContent : ""
+      };
+    });
+    figs.forEach(function(fig, i){
+      const btn2 = fig.querySelector(".fs-zoom");
+      if(btn2) btn2.addEventListener("click", function(){ vw.open(list, i, btn2); });
+    });
+
+    function span(){ return Math.max(0, track.scrollWidth - track.clientWidth); }
+    function progress(){ const s = span(); return s ? track.scrollLeft / s : 0; }
+    /* figure.offsetLeft is relative to whichever ancestor is actually positioned, which isn't
+       necessarily .fs-track itself (e.g. in "one at a time" mode .fs-track has no position of its
+       own, so offsetLeft would land relative to .fs-strip and pick up its padding) — measuring via
+       getBoundingClientRect instead is unambiguous regardless of the surrounding markup. */
+    function leftIn(fig){
+      return fig.getBoundingClientRect().left - track.getBoundingClientRect().left + track.scrollLeft;
+    }
+    let raf = 0;
+    function move(){
+      raf = 0;
+      const p = progress();
+      if(progI) progI.style.width = (p * 100) + "%";
+      if(prevBtn) prevBtn.disabled = p <= 0.001;
+      if(nextBtn) nextBtn.disabled = p >= 0.999;
+    }
+    function queue(){ if(!raf) raf = requestAnimationFrame(move); }
+    function go(dir){
+      const mid = track.clientWidth / 2, cur = progress() * span();
+      const centers = figs.map(function(f){ return Math.min(span(), Math.max(0, leftIn(f) + f.offsetWidth/2 - mid)); });
+      let tgt = dir > 0 ? centers.find(function(x){ return x > cur + 4; })
+                         : centers.slice().reverse().find(function(x){ return x < cur - 4; });
+      if(tgt == null) tgt = dir > 0 ? span() : 0;
+      track.scrollTo({left: tgt, behavior: reducedQuery() ? "auto" : "smooth"});
+    }
+    if(prevBtn) prevBtn.addEventListener("click", function(){ go(-1); });
+    if(nextBtn) nextBtn.addEventListener("click", function(){ go(1); });
+    track.addEventListener("scroll", queue, {passive: true});
+    track.addEventListener("keydown", function(e){
+      if(e.key === "ArrowRight"){ e.preventDefault(); go(1); }
+      if(e.key === "ArrowLeft"){ e.preventDefault(); go(-1); }
+    });
+    track.addEventListener("focusin", function(e){
+      const f = e.target.closest("figure"); if(!f) return;
+      const tgt = Math.min(span(), Math.max(0, leftIn(f) + f.offsetWidth/2 - track.clientWidth/2));
+      track.scrollTo({left: tgt});
+    });
+    addEventListener("resize", queue);
+    move();
+
+    return {
+      el: strip,
+      destroy: function(){
+        if(raf) cancelAnimationFrame(raf);
+        removeEventListener("resize", queue);
+        if(ownsViewer) vw.destroy();
+      }
+    };
+  }
+
+  global.FilmstripCarousel = { createFilmstrip: createFilmstrip, createViewer: createViewer, enhanceOneAtATime: enhanceOneAtATime };
 })(window);
