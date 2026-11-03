@@ -21,6 +21,11 @@
   var SRC_OGG = "media/dogs/dogs-ambience.ogg";
   var SESSION_KEY = "msb.dogsAmbience.off";
 
+  /* Test switch: index.html?noaudio=1#/story/dogs makes this whole module inert (no AudioContext,
+     no fetch, no listeners at all) so the rest of the page can be tested with the ambience ruled
+     out. Harmless to leave in permanently. */
+  var NOAUDIO = /(?:^|[?&])noaudio=1(?:&|$)/.test(location.search);
+
   /* ---- route detection: passive, mirrors the page's own hash format without touching its router ---- */
   function onDogsRoute(){
     var h = location.hash.replace(/^#\/?/, "");
@@ -292,8 +297,10 @@
   }
 
   /* ---- wire up: passive listeners only ---- */
-  window.addEventListener("hashchange", checkRoute);
-  document.addEventListener("visibilitychange", onVisibility);
-  window.addEventListener("pagehide", function(){ if (active) { silence(LEAVE_FADE_S, true); } });
-  checkRoute();
+  if (!NOAUDIO) {
+    window.addEventListener("hashchange", checkRoute);
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", function(){ if (active) { silence(LEAVE_FADE_S, true); } });
+    checkRoute();
+  }
 })();

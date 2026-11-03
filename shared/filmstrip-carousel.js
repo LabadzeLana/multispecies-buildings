@@ -220,7 +220,7 @@
     strip.appendChild(sticky);
 
     let reduced = reducedQuery();
-    let run = false, span = 0, topPx = 0;
+    let run = false, span = 0, topPx = 0, moveRaf = 0;
     /* Native position:sticky would normally pin .fs-sticky here, exactly as in chapter 5 — but on a
        page where an ancestor (here, <body>) has only overflow-x restricted, some browsers still treat
        it as that element's nearest scroll container, which starves position:sticky of the viewport it
@@ -273,7 +273,16 @@
     }
     prevBtn.addEventListener("click", function(){ stripGo(-1); });
     nextBtn.addEventListener("click", function(){ stripGo(1); });
-    track.addEventListener("scroll", stripMove, {passive:true});
+    /* Scroll fires far more often than the display can paint (especially during trackpad/mouse-wheel
+       momentum), and stripMove()/pinSticky() both read layout (getBoundingClientRect) and then write
+       it (inline styles) — doing that on every raw scroll event forces a synchronous layout on each
+       one. Collapsing same-frame calls into one with requestAnimationFrame keeps the same visible
+       result (still updates every frame) without the redundant layout work between frames. */
+    function queueMove(){
+      if(moveRaf) return;
+      moveRaf = requestAnimationFrame(function(){ moveRaf = 0; stripMove(); });
+    }
+    track.addEventListener("scroll", queueMove, {passive:true});
     track.addEventListener("keydown", function(e){
       if(e.key === "ArrowRight"){ e.preventDefault(); stripGo(1); }
       if(e.key === "ArrowLeft"){ e.preventDefault(); stripGo(-1); }
@@ -286,7 +295,7 @@
       scrollTo({top: top + (span ? tgt/span : 0) * len});
     });
 
-    const onScroll = function(){ stripMove(); };
+    const onScroll = queueMove;
     addEventListener("scroll", onScroll, {passive:true});
     let lastW = innerWidth, rz = 0;
     const onResize = function(){
@@ -309,6 +318,7 @@
       el: strip,
       relayout: stripLayout,
       destroy: function(){
+        if(moveRaf) cancelAnimationFrame(moveRaf);
         removeEventListener("scroll", onScroll);
         removeEventListener("resize", onResize);
         if(observer) observer.disconnect();
