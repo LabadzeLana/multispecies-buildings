@@ -24,20 +24,49 @@
    "alt": "Metal relief: a figure holding a bunch of grapes among vine leaves",
    "description": "Embossed metal panel with a grapevine motif, mounted on a brick wall.",
    "relief": {
-    "strength": 2.4,
+    "params": {
+     "gain": 3.6,
+     "ds": 5.0,
+     "blur_s": 1.2,
+     "big": 20.0,
+     "edge": 0.9,
+     "mid": 0.7,
+     "box": [
+      0.15,
+      0.02,
+      0.92,
+      0.86
+     ],
+     "outside": 0.4,
+     "feather": 14,
+     "highlight_factor": 0.62,
+     "shadow_max": 0.8
+    },
     "files": [
      {
-      "file": "vineyards-02-relief-01-1150.webp",
-      "px": "1150x862",
-      "bytes": 302914
+      "file": "vineyards-02-relief-01-1000.webp",
+      "px": "1000x750",
+      "bytes": 544994
      },
      {
-      "file": "vineyards-02-relief-01-900.webp",
-      "px": "900x675",
-      "bytes": 294032
+      "file": "vineyards-02-relief-01-700.webp",
+      "px": "700x525",
+      "bytes": 333580
      }
     ]
-   }
+   },
+   "chapter2_photo_copies": [
+    {
+     "file": "vineyards-02-photo-01.webp",
+     "px": "1150x862",
+     "bytes": 211278
+    },
+    {
+     "file": "vineyards-02-photo-01.jpg",
+     "px": "1150x862",
+     "bytes": 250343
+    }
+   ]
   },
   {
    "chapter": 2,
@@ -61,20 +90,49 @@
    "alt": "Copper relief: a kneeling figure tending a young vine with grape clusters",
    "description": "Embossed copper panel with a grapevine motif, mounted on a brick wall.",
    "relief": {
-    "strength": 2.2,
+    "params": {
+     "gain": 3.6,
+     "ds": 5.0,
+     "blur_s": 1.2,
+     "big": 20.0,
+     "edge": 0.9,
+     "mid": 0.9,
+     "box": [
+      0.13,
+      0.13,
+      0.85,
+      0.92
+     ],
+     "outside": 0.4,
+     "feather": 14,
+     "highlight_factor": 0.62,
+     "shadow_max": 0.8
+    },
     "files": [
      {
-      "file": "vineyards-02-relief-02-1150.webp",
-      "px": "1150x862",
-      "bytes": 308050
+      "file": "vineyards-02-relief-02-1000.webp",
+      "px": "1000x750",
+      "bytes": 526364
      },
      {
-      "file": "vineyards-02-relief-02-900.webp",
-      "px": "900x675",
-      "bytes": 300964
+      "file": "vineyards-02-relief-02-700.webp",
+      "px": "700x525",
+      "bytes": 327662
      }
     ]
-   }
+   },
+   "chapter2_photo_copies": [
+    {
+     "file": "vineyards-02-photo-02.webp",
+     "px": "1150x862",
+     "bytes": 186514
+    },
+    {
+     "file": "vineyards-02-photo-02.jpg",
+     "px": "1150x862",
+     "bytes": 227359
+    }
+   ]
   },
   {
    "chapter": 3,
