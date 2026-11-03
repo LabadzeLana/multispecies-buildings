@@ -1,0 +1,17 @@
+/* Dogs page: continuous breathing ambient sound — on/off control only.
+   Scoped entirely to .amb-toggle; never touches the hero/opening's own CSS. */
+.amb-toggle{
+  position:fixed; right:max(1rem, env(safe-area-inset-right)); bottom:max(1rem, env(safe-area-inset-bottom));
+  z-index:25; width:44px; height:44px; display:flex; align-items:center; justify-content:center;
+  border-radius:50%; border:1px solid var(--line); background:var(--paper); color:var(--ink-soft);
+  opacity:0; transform:translateY(6px); pointer-events:none;
+  transition:opacity .35s ease, transform .35s ease, border-color .2s ease, color .2s ease;
+}
+.amb-toggle.amb-show{opacity:1; transform:translateY(0); pointer-events:auto}
+.amb-toggle:hover{border-color:var(--ink); color:var(--ink)}
+.amb-toggle:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
+.amb-toggle .amb-off-mark{opacity:0; transition:opacity .2s ease}
+.amb-toggle .amb-waves{transition:opacity .2s ease}
+.amb-toggle[aria-pressed="false"] .amb-waves{opacity:.35}
+.amb-toggle[aria-pressed="false"] .amb-off-mark{opacity:1}
+@media (prefers-reduced-motion: reduce){ .amb-toggle{transition:opacity .2s linear} }
