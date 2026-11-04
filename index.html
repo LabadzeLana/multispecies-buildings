@@ -311,6 +311,7 @@ body.panel-open #panel{display:block}
 .slot{border:1px solid var(--line);margin:1.1rem 0;background:var(--paper-2)}
 .slot .frame{display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line)}
 .slot .frame.photo{height:216px;padding:10px;background:var(--paper)}
+.slot .frame.photo picture{display:block;width:100%;height:100%}
 .slot .frame.photo img{width:100%;height:100%;object-fit:cover;display:block;border:1px solid var(--line)}
 .slot .frame.audio{padding:1rem 1rem;background:var(--paper)}
 .slot .frame.audio audio{width:100%;display:block;accent-color:var(--oil)}
@@ -326,6 +327,7 @@ body.panel-open #panel{display:block}
 .slot .cap .kind{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--oil)}
 .slot.pending .cap .kind{color:var(--muted)}
 .slot .cap .desc{font-family:var(--serif);font-style:italic;font-size:.92rem;color:var(--ink-soft)}
+.slot .cap .credit{font-family:var(--sans);font-size:.78rem;color:var(--muted)}
 .tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:1.1rem 0}
 .tag{font-family:var(--sans);font-size:.8rem;border:1px solid var(--line);padding:.45rem .7rem;border-radius:2px;color:var(--ink-soft)}
 .tag:hover{border-color:var(--oil);color:var(--oil)}
@@ -897,7 +899,7 @@ const T = {
       bka:["სახურავი შენობის ყველაზე ნაკლებად კერძო და ყველაზე ნაკლებად მოვლილი ზედაპირია. ბიტუმის ფენა ზაფხულში დნება და ფეხქვეშ ჩაზნექილ კვალს ინახავს, ზამთარში კი სკდება — და სწორედ ეს ბზარები ხდის მეხუთე სართულის ჭერს სველს.","მიტოვებული ანტენების ტყე გადაიქცა საჯდომად: მტრედები აქ ღამის საცხოვრებელს პოულობენ, ხოლო ბუდეები — სავენტილაციო ჭაბურღილის შესასვლელში."],
       ben:["The roof is the least private and least maintained surface of the building. In summer the bitumen softens and keeps the imprint of every footstep; in winter it cracks — and those cracks are why the fifth-floor ceiling is damp.","A forest of abandoned antennas has become a perch. Pigeons roost here at night, and nest just inside the mouth of the ventilation shaft."],
       inh:["pigeon"], sen:["texture","light"],
-      media:[{t:"photo",src:IMG.roof,ka:"სახურავის დამაკავშირებელი ხიდი ორ კორპუსს შორის",en:"A rooftop walkway connecting two blocks"},{t:"audio",ka:"ანტენების ვიბრაცია ქარში, 3 წთ",en:"Antennas vibrating in wind, 3 min"}] },
+      media:[{t:"audio",ka:"ანტენების ვიბრაცია ქარში, 3 წთ",en:"Antennas vibrating in wind, 3 min"}] },
 
     { id:"facade", x:472, y:421, lx:20, ly:-18, anchor:"start",
       ka:"ფასადი", en:"Façade",
@@ -933,7 +935,7 @@ const T = {
       bka:["ლიფტი სართულებს შორის გაჩერდა 2019 წელს. კაბინა კვლავ შახტაშია, მაგრამ ძრავის ნაწილი უკვე აღარ არის — ჯართის ბაზრობაზე გაყიდული ლითონი ქალაქის სხვა ინფრასტრუქტურაში დაბრუნდა.","კარზე გაკრული განცხადებები ერთმანეთს ფენებად ედება: შეკეთების გრაფიკი, შემოწირულობის თხოვნა, გარდაცვალების უწყება. ლიფტის კარი შენობის სამზეო დაფაა."],
       ben:["The lift stopped between floors in 2019. The cabin is still in the shaft, but part of the motor is not — metal sold at the scrap market has returned into some other infrastructure of the city.","Notices layer on the door: a repair schedule, a request for contributions, a death announcement. The lift door is the building's noticeboard."],
       inh:["rat"], sen:["sound","texture"],
-      media:[{t:"photo",ka:"კარზე გაკრული განცხადებების ფენები",en:"Layers of notices on the door"},{t:"archive",ka:"ლიფტის ტექნიკური პასპორტი, 1979",en:"Lift technical passport, 1979"}] },
+      media:[{t:"archive",ka:"ლიფტის ტექნიკური პასპორტი, 1979",en:"Lift technical passport, 1979"}] },
 
     { id:"apartment", x:421, y:243, lx:-14, ly:-18, anchor:"end",
       ka:"ბინა", en:"Apartment",
@@ -978,7 +980,7 @@ const T = {
       bka:["ეზო შენობის გაგრძელებაა და არა მისი გარემო. აქ წყდება, ვინ სად ზის, სად ჩერდება მანქანა, რომელი ხე რჩება და რომელი იჭრება ახალი პარკირებისთვის.","ძაღლები ეზოს ერთ-ერთი ყველაზე სტაბილური მოსახლეობაა: მათ იციან, რომელი სადარბაზო რჩება ღია ღამით და რომელ ფანჯარაში ჩნდება საჭმელი. ზაფხულში ისინი ხის ჩრდილში გადადიან, ზამთარში — შიგნით."],
       ben:["The courtyard is a continuation of the building, not its surroundings. Here it is decided who sits where, where a car stops, which tree stays and which is cut for new parking.","Dogs are among the courtyard's most stable population: they know which entrance stays open at night and which window food appears in. In summer they move into the shade of the tree; in winter, inside."],
       inh:["dog","grapevine","pigeon"], sen:["sound","smell","light"],
-      media:[{t:"photo",src:IMG.courtyard,ka:"ეზოს ძაღლები გზაზე, დასვენების პოზაში",en:"Courtyard dogs resting on the road"},{t:"video",ka:"ეზო ერთი დღის განმავლობაში, ფიქსირებული კადრი, 4 წთ",en:"The courtyard over one day, fixed frame, 4 min"},{t:"audio",src:"ZOOM0254_LR.WAV",ka:"საღამოს ეზო, 19:00, 9 წთ",en:"Courtyard in the evening, 19:00, 9 min"}] },
+      media:[{t:"photo",base:"panel-courtyard-resting-dog-01",w:1200,h:645,ka:"ეზოს ძაღლები გზაზე, დასვენების პოზაში",en:"Courtyard dogs resting on the road",alt:{ka:"შავი ძაღლი წევს ტროტუარზე მწვანე ღობესთან, ყვავილოვანი ბუჩქისა და საცხოვრებელი კორპუსის ფონზე",en:"A black dog resting on the pavement beside a green picket fence, with a flowering oleander bush and an apartment building behind"}},{t:"video",ka:"ეზო ერთი დღის განმავლობაში, ფიქსირებული კადრი, 4 წთ",en:"The courtyard over one day, fixed frame, 4 min"},{t:"audio",src:"ZOOM0254_LR.WAV",ka:"საღამოს ეზო, 19:00, 9 წთ",en:"Courtyard in the evening, 19:00, 9 min"}] },
 
     { id:"vineyard", x:952, y:700, lx:0, ly:-70, anchor:"middle",
       ka:"ვენახი", en:"Grapevines",
@@ -987,7 +989,7 @@ const T = {
       bka:["შენობის მეორე მხარეს, ეზოს ხის საპირისპიროდ, ვაზის ჩარდახი იმავე საქმეს აკეთებს — ჩრდილს აძლევს მანქანებს, სკამებს და მოსაუბრეებს. ზოგჯერ ვინმეს ის მანქანაზე მტვერს აყრის, ზოგჯერ კი — მთელი უბნის ერთადერთი საერთო სახურავია.","ასეთი ჩარდახები ქალაქის ბევრ ეზოშია — დარგული, მოჭრილი და ისევ აღდგენილი. თითოეული მათგანი თავისი ისტორიაა, მაგრამ ყველა ერთ კანონს იმეორებს: ვაზი, რომელსაც მზრუნველობა სჭირდება, ბოლოს ისევ იზრდება."],
       ben:["On the building's other side, opposite the courtyard tree, a vine pergola does the same work — shading cars, benches and conversations. To one neighbour it drops dust on a windshield; to the block, it is the only shared roof outdoors.","Pergolas like this one are everywhere in the city's courtyards — planted, cut down, and grown back again. Each has its own story, but they all repeat the same rule: a vine that is cared for eventually grows back."],
       inh:["grapevine","dog"], sen:["smell","light"],
-      media:[{t:"photo",src:"a-city-of-vineyards/images/restored-pergola.jpg",ka:"აღდგენილი ვაზის ჩარდახი ეზოში, ჩრდილავს მანქანებს",en:"A restored vine pergola shading cars in a courtyard"}] }
+      media:[{t:"photo",base:"panel-grapevines-autumn-vine-01",w:1200,h:645,ka:"აღდგენილი ვაზის ჩარდახი ეზოში, ჩრდილავს მანქანებს",en:"A restored vine pergola shading cars in a courtyard",alt:{ka:"წითელი და ნარინჯისფერი ვაზის ფოთლები საცხოვრებელი კორპუსის წინ, შემოდგომაზე",en:"Red and orange autumn vine leaves in front of an apartment block"},credit:"Nargiza Arjevanidze archive. Tbilisi, Gldani, 2023. Courtesy of the author."}] }
   ],
 
   inhabitants:{
@@ -1621,7 +1623,7 @@ function openSpace(id){
 }
 
 function mediaSlot(m){
-  const pending = !m.src;
+  const pending = !m.src && !m.base;
   const w = el("div","slot" + (pending?" pending":""));
   let f;
   if(m.t==="audio" && !pending){
@@ -1633,7 +1635,27 @@ function mediaSlot(m){
     f.appendChild(aud);
   } else {
     f = el("div","frame" + (pending?" pending":" photo"));
-    if(!pending){
+    if(m.base){
+      /* responsive <picture>: webp srcset + jpg fallback, sized 480/800/1200, loaded only when the panel opens */
+      const sizes = "(max-width:900px) 86vw, 410px";
+      const widths = [480,800,1200];
+      const pic = document.createElement("picture");
+      const srcWebp = document.createElement("source");
+      srcWebp.type = "image/webp";
+      srcWebp.srcset = widths.map(w2=>`media/${m.base}-${w2}.webp ${w2}w`).join(", ");
+      srcWebp.sizes = sizes;
+      pic.appendChild(srcWebp);
+      const img = document.createElement("img");
+      img.src = `media/${m.base}-800.jpg`;
+      img.srcset = widths.map(w2=>`media/${m.base}-${w2}.jpg ${w2}w`).join(", ");
+      img.sizes = sizes;
+      if(m.w) img.width = m.w;
+      if(m.h) img.height = m.h;
+      img.loading = "lazy"; img.decoding = "async";
+      img.alt = m.alt ? (L()==="ka"?m.alt.ka:m.alt.en) : (L()==="ka"?m.ka:m.en);
+      pic.appendChild(img);
+      f.appendChild(pic);
+    } else if(!pending){
       const img = document.createElement("img"); img.src = m.src; img.alt = L()==="ka"?m.ka:m.en;
       f.appendChild(img);
     } else {
@@ -1645,6 +1667,7 @@ function mediaSlot(m){
   const kindLabel = (L()==="ka"?slotName[m.t].ka:slotName[m.t].en) + (pending ? (L()==="ka"?" \u00b7 ჩასაწერია":" \u00b7 not yet recorded") : "");
   cap.appendChild(el("div","kind", kindLabel));
   cap.appendChild(elDogs("div","desc", L()==="ka"?m.ka:m.en));
+  if(m.credit) cap.appendChild(el("div","credit", m.credit));
   w.appendChild(cap);
   return w;
 }
