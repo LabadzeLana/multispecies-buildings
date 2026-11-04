@@ -581,6 +581,53 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
 .st-close-line a{display:inline-flex;align-items:center;min-height:44px;font-size:1.1rem;text-decoration:none;border-bottom:1px solid var(--oil);color:var(--ink)}
 .st-close-line a:hover{color:var(--oil)}
 .st-close-photo-wrap{margin-top:4rem}
+
+/* The site-wide html,body{overflow-x:hidden} rule above forces the unspecified overflow-y to
+   compute as "auto" (the CSS rule that only one axis may be "visible" at a time), which turns
+   <body> into a scroll-container ancestor that position:sticky resolves against — and since body
+   itself never actually scrolls (it isn't height-constrained), a sticky descendant never moves at
+   all. Scoped to the Dogs story only, where there is no wide content to clip horizontally. */
+body.story-page{overflow:visible}
+
+/* ---------- closing photo: cartoon-to-photo scroll reveal ----------
+   Baseline (no JS, reduced motion, or a layer failing to load): .st-cartoon
+   and its children are plain, static, in-flow elements, and only .photo is
+   ever shown — the figure behaves exactly like a normal .st-fig photo.
+   JS adds the "is-active" class only once it has confirmed motion is
+   wanted AND every layer has loaded; these rules are the enhancement and
+   never the only way to see the photograph. --pin-h / --pin-h-mobile are
+   named, tunable constants: how tall the pinned scroll distance is. */
+.st-cartoon{--pin-h:340dvh;--pin-h-mobile:300dvh}
+.st-cartoon.is-active{position:relative;height:var(--pin-h)}
+@media (max-width:700px){ .st-cartoon.is-active{height:var(--pin-h-mobile)} }
+.st-cartoon.is-active .st-cartoon-pin{position:sticky;top:0;height:100dvh;height:100svh;
+  display:flex;align-items:center;justify-content:center;padding:3vh 0}
+.st-cartoon.is-active .st-cartoon-frame{position:relative;width:100%;
+  aspect-ratio:var(--cartoon-ar,4/3);max-height:calc(100dvh - 3rem);max-height:calc(100svh - 3rem);
+  border-radius:3px;overflow:hidden;background:var(--paper);box-shadow:0 0 0 1px var(--line-soft)}
+.st-cartoon.is-active .st-cartoon-frame img{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block}
+.st-cartoon.is-active .st-cartoon-frame .photo{opacity:0}
+/* The reveal radius is animated via mask-size/mask-position (set every frame from JS), not via a
+   CSS custom property read inside the gradient function: recomputing a radial-gradient()'s own
+   stop positions every animation frame reliably stops the element painting in some engines, while
+   animating mask-size/mask-position (ordinary box-geometry properties) does not. The gradient's
+   own stops stay fixed (72% solid, fading to transparent at the 100%/closest-side edge); mask-size
+   sets the circle's current diameter and mask-position keeps it centred on the focal point. */
+.st-cartoon.is-active .st-cartoon-frame .color,
+.st-cartoon.is-active .st-cartoon-frame .ln{
+  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; -webkit-mask-size:0 0; mask-size:0 0;
+  -webkit-mask-image:radial-gradient(circle closest-side at 50% 50%,#000 72%,transparent 100%);
+  mask-image:radial-gradient(circle closest-side at 50% 50%,#000 72%,transparent 100%)}
+.st-cartoon.is-active .st-cartoon-frame .color{opacity:1}
+.st-cartoon.is-active .st-cartoon-frame .ln{opacity:0}
+@media (prefers-reduced-motion:reduce){
+  .st-cartoon.is-active{height:auto}
+  .st-cartoon.is-active .st-cartoon-pin{position:static;height:auto;padding:0}
+  .st-cartoon.is-active .st-cartoon-frame{max-height:none}
+  .st-cartoon.is-active .st-cartoon-frame .photo{opacity:1}
+  .st-cartoon.is-active .st-cartoon-frame .color,.st-cartoon.is-active .st-cartoon-frame .ln{display:none}
+}
 .st-poster-fig{max-width:24rem;margin:0 auto}
 .story-link{margin-top:2rem}
 .story-link a{display:inline-flex;align-items:center;min-height:44px;font-family:var(--sans);font-size:.92rem;color:var(--oil);text-decoration:none;border-bottom:1px solid var(--oil)}
@@ -1991,6 +2038,147 @@ function stImg(m, sizes, eager){
   return img;
 }
 
+/* ---------- closing photo: cartoon-to-photo scroll reveal ----------
+   Ink lines -> flat painted colour -> the real photograph, as the reader scrolls past a
+   long (340vh desktop / 300vh mobile) sticky-pinned section. Spec and look: media/dogs/
+   Last Image/cartoon-reveal-sample.html (open it and scroll slowly); layers made by
+   tools/make_cartoon.py. Baseline (no JS / reduced motion / a layer failing to load) is
+   always just the plain real photograph in normal flow — see the CSS above .st-cartoon.
+   All constants below are named so they're easy to tune. */
+const CARTOON_BASE = "media/dogs/dogs-final-cartoon";
+const CARTOON_FOCUS_X = .5, CARTOON_FOCUS_Y = .62;          // the reveal grows outward from here
+const CARTOON_LINES_FROM = 0,   CARTOON_LINES_TO = .42;     // ink lines drawn outward from the puppies
+const CARTOON_COLOR_FROM = .22, CARTOON_COLOR_TO = .68;     // flat painted colours follow
+const CARTOON_PHOTO_FROM = .62, CARTOON_PHOTO_TO = 1;       // the real photograph dissolves in
+const CARTOON_LINES_OUT_FROM = .78;                         // lines fade away at the end
+const CARTOON_BOIL_MS = 110;      // line "boil": a new line frame every 110 ms
+const CARTOON_TAU = .7;           // exponential smoothing time constant, seconds
+const CARTOON_LAZY_MARGIN = "150% 0px";   // start loading / animating ~1.5 screens out
+
+function stCartoonSS(a,b,x){ x=Math.max(0,Math.min(1,(x-a)/(b-a))); return x*x*(3-2*x); }
+
+function stCartoonFigure(m){
+  const fig = el("figure","st-fig st-cartoon-fig");
+  const cartoon = el("div","st-cartoon");
+  const pin = el("div","st-cartoon-pin");
+  const frameEl = el("div","st-cartoon-frame");
+  frameEl.style.setProperty("--cartoon-ar", m.w + "/" + m.h);
+  const photo = stImg(m, "(min-width:769px) 36rem, 100vw");
+  photo.classList.add("photo");
+  frameEl.appendChild(photo);
+  pin.appendChild(frameEl);
+  cartoon.appendChild(pin);
+  fig.appendChild(cartoon);
+  const cc = stCaption(m); if(cc) fig.appendChild(cc);
+
+  if(stReduced()) return fig;   /* baseline only: the real photo, no pinning, no animation */
+
+  let disposed = false, armed = false, raf = null, cur = 0, primed = false, last = 0;
+  let lineEls = [];
+
+  function probe(src){
+    return new Promise(res=>{
+      const img = new Image();
+      img.onload = ()=>res(true); img.onerror = ()=>res(false);
+      img.src = src;
+    });
+  }
+  function srcset(name, ext){ return `${CARTOON_BASE}-${name}-700.${ext} 700w, ${CARTOON_BASE}-${name}-1100.${ext} 1100w`; }
+
+  async function arm(){
+    if(armed) return; armed = true;
+    const names = ["color","lines-01","lines-02","lines-03"];
+    const ok = await Promise.all(names.map(n=>probe(`${CARTOON_BASE}-${n}-1100.webp`)));
+    if(disposed || ok.some(o=>!o)) return;   /* a layer failed to load: stay on the plain photo */
+
+    const colorPic = document.createElement("picture");
+    const colorSrc = document.createElement("source");
+    colorSrc.type = "image/webp"; colorSrc.srcset = srcset("color","webp");
+    colorSrc.sizes = "(min-width:769px) 36rem, 100vw";
+    colorPic.appendChild(colorSrc);
+    const colorImg = document.createElement("img");
+    colorImg.className = "color"; colorImg.alt = ""; colorImg.setAttribute("aria-hidden","true");
+    colorImg.src = `${CARTOON_BASE}-color-1100.jpg`; colorImg.srcset = srcset("color","jpg");
+    colorImg.sizes = "(min-width:769px) 36rem, 100vw";
+    colorImg.loading = "lazy"; colorImg.decoding = "async";
+    colorPic.appendChild(colorImg);
+    frameEl.appendChild(colorPic);
+    colorEl = colorImg;
+
+    lineEls = ["lines-01","lines-02","lines-03"].map(n=>{
+      const li = document.createElement("img");
+      li.className = "ln"; li.alt = ""; li.setAttribute("aria-hidden","true");
+      li.src = `${CARTOON_BASE}-${n}-1100.webp`; li.srcset = srcset(n,"webp");
+      li.sizes = "(min-width:769px) 36rem, 100vw";
+      li.loading = "lazy"; li.decoding = "async";
+      frameEl.appendChild(li);
+      return li;
+    });
+
+    /* let the newly-inserted images finish decoding and the layout/first paint settle before the
+       mask starts updating every frame — starting continuous mask-image writes immediately after
+       insertion is a reliable way to end up with a layer that never paints in some engines */
+    const toDecode = [colorImg, ...lineEls];
+    await Promise.all(toDecode.map(im => im.decode ? im.decode().catch(()=>{}) : Promise.resolve()));
+    await new Promise(res => requestAnimationFrame(()=>requestAnimationFrame(res)));
+    if(disposed) return;
+    cartoon.classList.add("is-active");
+    raf = requestAnimationFrame(tick);
+  }
+
+  function target(){
+    const r = cartoon.getBoundingClientRect(), vh = innerHeight;
+    const total = r.height - vh;
+    if(total <= 0) return 1;
+    return Math.max(0, Math.min(1, -r.top / total));
+  }
+  function setReveal(elx, r, cx, cy){
+    if(r<=0){ elx.style.maskSize = "0px 0px"; elx.style.webkitMaskSize = "0px 0px"; return; }
+    const d = (r*2).toFixed(1)+"px";
+    elx.style.maskSize = d+" "+d; elx.style.webkitMaskSize = d+" "+d;
+    const pos = (cx-r).toFixed(1)+"px "+(cy-r).toFixed(1)+"px";
+    elx.style.maskPosition = pos; elx.style.webkitMaskPosition = pos;
+  }
+  let colorEl = null, lastWrite = 0;
+  const CARTOON_WRITE_MS = 33;   // throttle DOM writes to ~30fps; cur/tg are still smoothed every frame
+  function tick(t){
+    const dt = Math.min(.1, (t-last)/1000); last = t;
+    const tg = target(), k = 1 - Math.exp(-dt/CARTOON_TAU);
+    cur = primed ? cur + (tg-cur)*k : tg; primed = true;
+    if(Math.abs(tg-cur) < .001) cur = tg;
+    if(t - lastWrite >= CARTOON_WRITE_MS){
+      lastWrite = t;
+      const fw = frameEl.clientWidth, fh = frameEl.clientHeight;
+      const maxR = Math.hypot(fw, fh) * .8;
+      const cx = fw*CARTOON_FOCUS_X, cy = fh*CARTOON_FOCUS_Y;
+      const lr = stCartoonSS(CARTOON_LINES_FROM, CARTOON_LINES_TO, cur) * maxR;
+      const cr = stCartoonSS(CARTOON_COLOR_FROM, CARTOON_COLOR_TO, cur) * maxR;
+      const lop = 1 - stCartoonSS(CARTOON_LINES_OUT_FROM, 1, cur);
+      const activeLine = Math.floor(t / CARTOON_BOIL_MS) % lineEls.length;
+      if(colorEl) setReveal(colorEl, cr, cx, cy);
+      photo.style.opacity = stCartoonSS(CARTOON_PHOTO_FROM, CARTOON_PHOTO_TO, cur).toFixed(3);
+      /* only the one currently-visible line frame gets its mask touched this tick — animating the
+         mask on more than one image at a time is what triggers the engines where this breaks */
+      lineEls.forEach((lnEl,i)=>{
+        if(i===activeLine && cur>0.005){ setReveal(lnEl, lr, cx, cy); lnEl.style.opacity = lop.toFixed(3); }
+        else if(lnEl.style.opacity !== "0") lnEl.style.opacity = 0;
+      });
+    }
+    raf = disposed ? null : requestAnimationFrame(tick);
+  }
+
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){ arm(); if(cartoon.classList.contains("is-active") && !raf){ last = performance.now(); raf = requestAnimationFrame(tick); } }
+      else if(raf){ cancelAnimationFrame(raf); raf = null; }
+    });
+  }, {rootMargin: CARTOON_LAZY_MARGIN});
+  io.observe(cartoon);
+  dogsStory.cleanup.push(()=>{ disposed = true; io.disconnect(); if(raf) cancelAnimationFrame(raf); });
+
+  return fig;
+}
+
 /* full-screen photo viewer: Esc, arrows, swipe */
 function stLightbox(items){
   const lb = el("div","st-lb"); lb.hidden = true;
@@ -2949,12 +3137,12 @@ function openDogsStory(){
   /* ink accents: drawn dividers, a section ruler, one photograph that develops */
   stInk(v);
 
-  /* 8 — closing */
+  /* 8 — closing: the last photograph, drawn as a cartoon that resolves into itself while
+     the reader scrolls (stCartoonFigure) */
   if(D.closing.photo){
-    const cw = el("div","st-wrap st-close-photo-wrap"), cf = el("figure","st-fig");
-    cf.appendChild(stImg(D.closing.photo, "(min-width:769px) 36rem, 100vw"));
-    const cc = stCaption(D.closing.photo); if(cc) cf.appendChild(cc);
-    cw.appendChild(cf); v.appendChild(cw);
+    const cw = el("div","st-wrap st-close-photo-wrap");
+    cw.appendChild(stCartoonFigure(D.closing.photo));
+    v.appendChild(cw);
   }
   const cl = el("div","st-wrap st-close-line"), a = el("a",null,D.closing.text);
   a.href = D.closing.href; cl.appendChild(a); v.appendChild(cl);

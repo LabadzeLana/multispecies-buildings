@@ -7,3 +7,7 @@
 /a-city-of-vineyards/reference-neumorphism.jpg
 /a-city-of-vineyards/emboss-reveal-sample.html
 /a-city-of-vineyards/relief-sample.py
+
+# source folder for the Dogs-page cartoon-reveal task: original photo + reference
+# sample/script, kept on disk only, never committed (generated files live in media/dogs/)
+/media/dogs/Last Image/
