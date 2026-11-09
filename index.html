@@ -410,10 +410,6 @@ body.view-open main,body.view-open .seasons{display:none}
 .essay .email a{color:inherit;text-decoration:underline;text-decoration-color:var(--oil);text-decoration-thickness:1px;text-underline-offset:.16em;
   overflow-wrap:anywhere;display:inline-flex;align-items:center;min-height:44px}
 .essay .email a:hover,.essay .email a:focus-visible{color:var(--oil);text-decoration-thickness:2px}
-.essay .privacy p{font-family:var(--sans);font-size:.85rem;color:var(--muted);line-height:1.6;margin:.6rem 0 0}
-.essay .privacy p strong{color:var(--ink-soft);font-weight:500}
-.essay .privacy a{color:inherit;text-decoration:underline;text-decoration-color:var(--oil);text-decoration-thickness:1px;text-underline-offset:.16em;overflow-wrap:anywhere}
-.essay .privacy a:hover,.essay .privacy a:focus-visible{color:var(--oil);text-decoration-thickness:2px}
 /* About: portrait beside the text (desktop), above it (mobile) */
 .essay.person.has-photo{display:grid;grid-template-columns:240px minmax(0,64ch);grid-template-rows:auto auto 1fr;column-gap:1.8rem;max-width:none}
 .essay.person.has-photo > .portrait{grid-column:1;grid-row:1 / span 3;align-self:start;margin-top:1.8rem}
@@ -1059,15 +1055,7 @@ const T = {
       {role:"Multimodal storyteller", name:"Tamta Khalvashi", photo:{src:"media/about/tamta-khalvashi.jpg", small:"media/about/tamta-khalvashi-400.jpg", w:800, h:1000}, email:["tamta.khalvashi","iliauni.edu.ge"], bio:"Tamta Khalvashi is Professor of Anthropology and founding director of the PhD Program in Social and Cultural Anthropology at Ilia State University in Tbilisi. She holds a PhD from the University of Copenhagen. Her work explores the intersections of infrastructure, affect, and everyday life on the edges of empire. For Multispecies Buildings, she brings together long-term ethnographic research, writing, photography, sound, and video to explore the multispecies afterlife of Soviet mass housing in Georgia. Through experiments in multimodal storytelling, she traces how care, repair, and coexistence continually reshape these shared habitats."},
       {role:"Visual Curator", name:"Mariam Menteshashvili", photo:{src:"media/about/mariam-menteshashvili.jpg", small:"media/about/mariam-menteshashvili-400.jpg", w:800, h:1000}, email:["mariamm.menteshashvili","gmail.com"], bio:"Mariam Menteshashvili is a Tbilisi-based researcher, documentary photographer, and artist, and a Fellow at the Memory and Anxiety Research Lab, Free University of Tbilisi. Her work on infrastructural anxiety approaches the city as a meshwork, not a fixed network of nodes and connections but something alive, unfinished, and always in motion. She holds an MA in Social Anthropology from Goldsmiths and trained in photography at Central Saint Martins. Her work has been exhibited at Copeland Gallery, Leica Centre, and Art Forward Gallery, London."},
       {role:"Website Concept & Development", name:"Lana Labadze", photo:{src:"media/about/lana-labadze.jpg", small:"media/about/lana-labadze-400.jpg", w:606, h:758}, email:["lana","geolab.edu.ge"], bio:"Lana Labadze is an innovative and human-centered education and technology leader with 10+ years of experience at the intersection of education, technology, and impact. As CEO of GeoLab, she leads strategic and operational management, cross-functional teams, international partnerships, and multi-year, donor-funded initiatives. Lana actively applies AI-based approaches, including vibe coding, to develop websites, mini-applications, and workflow automations. For Multispecies Buildings, Lana works on the website’s concept and development, building it through vibe coding: describing, testing, and refining the site in dialogue with AI rather than writing code by hand."}
-    ],
-    privacy:{
-      heading:"Privacy and photographs",
-      paras:[
-        {lead:"No data collection.", rest:"This website does not collect or store personal data from its visitors. The site is hosted on GitHub Pages, which may process technical data, such as IP addresses, under its own privacy policy."},
-        {lead:"Photographs.", rest:"Most of the photographs show buildings and shared courtyards in Tbilisi. Some of them may include vehicles, windows, laundry or other details that could make a place or a person recognisable. We have tried to keep such details to a minimum."},
-        {lead:"Your choice.", before:"If you recognise yourself, your home or your vehicle, or if you simply do not wish a photograph to appear on this site, please write to us at ", email:["multispecies.buildings","gmail.com"], after:". We will remove, blur or crop the photograph as soon as possible. The same applies to any other concern about the project."}
-      ]
-    }
+    ]
   }
 };
 
@@ -1849,33 +1837,6 @@ function openView(kind, arg){
       }
       v.appendChild(e);
     });
-    if(T.about.privacy){
-      const pv = T.about.privacy;
-      const sec = el("div","essay privacy");
-      sec.appendChild(el("h3",null,pv.heading));
-      pv.paras.forEach(pa=>{
-        const p = document.createElement("p");
-        p.appendChild(el("strong",null,pa.lead));
-        if(pa.email){
-          p.appendChild(document.createTextNode(" " + pa.before));
-          /* email assembled from two parts at render time, same anti-scraping convention as the
-             people emails above; if this fails for any reason the rest of the paragraph still renders. */
-          try{
-            const addr = pa.email[0] + "@" + pa.email[1];
-            const a = document.createElement("a");
-            a.href = "mailto:" + addr;
-            a.textContent = addr;
-            a.setAttribute("aria-label", "Email about privacy and photographs");
-            p.appendChild(a);
-          }catch(err){}
-          p.appendChild(document.createTextNode(pa.after));
-        }else{
-          p.appendChild(document.createTextNode(" " + pa.rest));
-        }
-        sec.appendChild(p);
-      });
-      v.appendChild(sec);
-    }
   }
   v.focus();
   window.scrollTo(0,0);
