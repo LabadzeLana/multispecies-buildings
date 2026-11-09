@@ -1023,7 +1023,7 @@ const T = {
       bka:["შენობის მეორე მხარეს, ეზოს ხის საპირისპიროდ, ვაზის ჩარდახი იმავე საქმეს აკეთებს — ჩრდილს აძლევს მანქანებს, სკამებს და მოსაუბრეებს. ზოგჯერ ვინმეს ის მანქანაზე მტვერს აყრის, ზოგჯერ კი — მთელი უბნის ერთადერთი საერთო სახურავია.","ასეთი ჩარდახები ქალაქის ბევრ ეზოშია — დარგული, მოჭრილი და ისევ აღდგენილი. თითოეული მათგანი თავისი ისტორიაა, მაგრამ ყველა ერთ კანონს იმეორებს: ვაზი, რომელსაც მზრუნველობა სჭირდება, ბოლოს ისევ იზრდება."],
       ben:["On the building's other side, opposite the courtyard tree, a vine pergola does the same work — shading cars, benches and conversations. To one neighbour it drops dust on a windshield; to the block, it is the only shared roof outdoors.","Pergolas like this one are everywhere in the city's courtyards — planted, cut down, and grown back again. Each has its own story, but they all repeat the same rule: a vine that is cared for eventually grows back."],
       inh:["grapevine","dog"], sen:["smell","light"],
-      media:[{t:"photo",base:"panel-grapevines-autumn-vine-01",w:1200,h:645,ka:"აღდგენილი ვაზის ჩარდახი ეზოში, ჩრდილავს მანქანებს",en:"A restored vine pergola shading cars in a courtyard",alt:{ka:"წითელი და ნარინჯისფერი ვაზის ფოთლები საცხოვრებელი კორპუსის წინ, შემოდგომაზე",en:"Red and orange autumn vine leaves in front of an apartment block"},credit:"Nargiza Arjevanidze archive. Tbilisi, Gldani, 2023. Courtesy of the author."}] }
+      media:[{t:"photo",base:"panel-grapevines-overhead-vine-01",w:1200,h:645,alt:{ka:"ვაზი, რომელიც ორ საცხოვრებელ კორპუსს შორის მავთულებზე გადაჭიმულა, შორეულ ხეებს მიღმა მაღალი შენობა ჩანს",en:"A grapevine growing across wires between two apartment buildings, with a taller building visible beyond the trees"},credit:"Tamta Khalvashi archive. Tbilisi, Vake, 2026"}] }
   ],
 
   inhabitants:{
@@ -1702,7 +1702,7 @@ function mediaSlot(m){
   const cap = el("div","cap");
   const kindLabel = (L()==="ka"?slotName[m.t].ka:slotName[m.t].en) + (pending ? (L()==="ka"?" \u00b7 ჩასაწერია":" \u00b7 not yet recorded") : "");
   cap.appendChild(el("div","kind", kindLabel));
-  cap.appendChild(elDogs("div","desc", L()==="ka"?m.ka:m.en));
+  if(m.ka || m.en) cap.appendChild(elDogs("div","desc", L()==="ka"?m.ka:m.en));
   if(m.credit) cap.appendChild(el("div","credit", m.credit));
   w.appendChild(cap);
   return w;

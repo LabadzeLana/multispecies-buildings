@@ -11,3 +11,8 @@
 # source folder for the Dogs-page cartoon-reveal task: original photo + reference
 # sample/script, kept on disk only, never committed (generated files live in media/dogs/)
 /media/dogs/Last Image/
+
+# source photo for the Grapevines panel photograph: kept on disk only, never committed
+# (generated web copies live flat in media/, e.g. panel-grapevines-*; the rest of
+# media/building/ holds unrelated, already-tracked Compare-mode photos)
+/media/building/1.jpeg
