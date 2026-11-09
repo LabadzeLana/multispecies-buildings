@@ -139,6 +139,22 @@ figure{margin:0}
 .ch2-fig.ch2-fallback .ch2-relief{display:none}
 .ch2-fig.ch2-fallback .ch2-photo{opacity:1;filter:none}
 .ch2-fig.ch2-fallback{--plate:.15}
+
+/* book page (ch 3) */
+.book{position:relative;background:#EFEEE8;padding:clamp(1rem,3.5vw,2.6rem);
+  box-shadow:0 1px 0 var(--line-soft),0 18px 40px -28px rgba(27,33,31,.45);border:1px solid var(--line-soft)}
+.book::before{content:"";position:absolute;top:6%;bottom:6%;left:50%;width:1px;
+  background:linear-gradient(180deg,transparent,var(--line) 20%,var(--line) 80%,transparent)}
+@media (max-width:699px){ .book::before{display:none} }
+.plates{display:grid;grid-template-columns:1fr;gap:2.2rem 2rem}
+@media (min-width:700px){
+  .plates{grid-template-columns:repeat(12,1fr);align-items:start}
+  .plates .p1{grid-column:1 / span 6}
+  .plates .p2{grid-column:8 / span 5;margin-top:3rem}
+  .plates .p3{grid-column:1 / span 5}
+  .plates .p4{grid-column:6 / span 7;align-self:end}
+}
+
 /* ch 4: staggered arrival */
 .arrive{display:grid;grid-template-columns:1fr;gap:2.4rem}
 @media (min-width:700px){
@@ -318,7 +334,6 @@ figure{margin:0}
   .vine .leaf,.vine .knot,.vine-marks a,.seq-stage figure,.rescue > *,.cnav,.enter .arr{transition:none}
 }
 </style>
-<link rel="stylesheet" href="../shared/filmstrip-carousel.css">
 </head>
 <body>
 <svg class="defs" aria-hidden="true" focusable="false"><defs>
@@ -397,20 +412,16 @@ figure{margin:0}
   <!-- 3 -->
   <section class="ch" id="ch-3" aria-label="Chapter 3">
     <div class="wrap">
-      <div class="fs-strip fs-one" role="region" aria-label="Four photographs, one at a time">
-        <div class="fs-track" tabindex="0">
-          <figure><button class="fs-zoom" type="button" data-group="g3" data-full="../media/vineyards/vineyards-3-pirosmani-painting-01.jpg" aria-label="Open larger view"><img class="fs-ph" src="../media/vineyards/vineyards-3-pirosmani-painting-01-1200.jpg" width="800" height="518" alt="Painting: two figures carrying baskets of grapes along a grapevine path" loading="lazy" decoding="async"></button>
+      <div class="book">
+        <div class="plates">
+          <figure class="p1"><button class="zoom" type="button" data-group="g3" data-full="../media/vineyards/vineyards-3-pirosmani-painting-01.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-3-pirosmani-painting-01-1200.jpg" width="800" height="518" alt="Painting: two figures carrying baskets of grapes along a grapevine path" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
             <figcaption><b>Image 1.</b> Grape Harvesting, Niko Pirosmani, 1862.</figcaption></figure>
-          <figure><button class="fs-zoom" type="button" data-group="g3" data-full="../media/vineyards/vineyards-3-pirosmani-painting-02.jpg" aria-label="Open larger view"><img class="fs-ph" src="../media/vineyards/vineyards-3-pirosmani-painting-02-1200.jpg" width="500" height="345" alt="Painting: a harvest scene in an orchard with a cart, oxen and a ladder" loading="lazy" decoding="async"></button>
+          <figure class="p2"><button class="zoom" type="button" data-group="g3" data-full="../media/vineyards/vineyards-3-pirosmani-painting-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-3-pirosmani-painting-02-1200.jpg" width="500" height="345" alt="Painting: a harvest scene in an orchard with a cart, oxen and a ladder" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
             <figcaption><b>Image 2.</b> Picking the grapes, Niko Pirosmani, 1862.</figcaption></figure>
-          <figure><button class="fs-zoom" type="button" data-group="g3" data-full="../media/vineyards/vineyards-3-book-illustration-03.jpg" aria-label="Open larger view"><img class="fs-ph" src="../media/vineyards/vineyards-3-book-illustration-03-1200.jpg" srcset="../media/vineyards/vineyards-3-book-illustration-03-1200.jpg 1200w, ../media/vineyards/vineyards-3-book-illustration-03.jpg 2400w" sizes="(min-width: 700px) 38rem, 90vw" width="2400" height="1800" alt="Book diagram: a grapevine trained in four horizontal tiers against a brick wall" loading="lazy" decoding="async"></button>
+          <figure class="p3"><button class="zoom" type="button" data-group="g3" data-full="../media/vineyards/vineyards-3-book-illustration-03.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-3-book-illustration-03-1200.jpg" srcset="../media/vineyards/vineyards-3-book-illustration-03-1200.jpg 1200w, ../media/vineyards/vineyards-3-book-illustration-03.jpg 2400w" sizes="(min-width: 700px) 24rem, 90vw" width="2400" height="1800" alt="Book diagram: a grapevine trained in four horizontal tiers against a brick wall" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
             <figcaption><b>Image 3.</b> A Four-Tier Grapevine Cordon for Wall Cultivation (From the book <i>Homestead Gardening</i> by A. Kereselidze, Soviet Georgia State Press, Tbilisi, 1960).</figcaption></figure>
-          <figure><button class="fs-zoom" type="button" data-group="g3" data-full="../media/vineyards/vineyards-3-book-illustration-04.jpg" aria-label="Open larger view"><img class="fs-ph" src="../media/vineyards/vineyards-3-book-illustration-04-1200.jpg" srcset="../media/vineyards/vineyards-3-book-illustration-04-1200.jpg 1200w, ../media/vineyards/vineyards-3-book-illustration-04.jpg 2400w" sizes="(min-width: 700px) 38rem, 90vw" width="2400" height="998" alt="Book drawing: a clipped hedge with grapevines trained on posts above it" loading="lazy" decoding="async"></button>
+          <figure class="p4"><button class="zoom" type="button" data-group="g3" data-full="../media/vineyards/vineyards-3-book-illustration-04.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-3-book-illustration-04-1200.jpg" srcset="../media/vineyards/vineyards-3-book-illustration-04-1200.jpg 1200w, ../media/vineyards/vineyards-3-book-illustration-04.jpg 2400w" sizes="(min-width: 700px) 34rem, 90vw" width="2400" height="998" alt="Book drawing: a clipped hedge with grapevines trained on posts above it" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
             <figcaption><b>Image 4.</b> An Ornamental Living Hedge of Colchis Boxwood, Decorated with Grapevines Trained on Suitable Supports (From the book <i>Homestead Gardening</i> by A. Kereselidze, Soviet Georgia State Press, Tbilisi, 1960).</figcaption></figure>
-        </div>
-        <div class="fs-foot">
-          <span class="fs-arrows"><button class="fs-arrow fs-prev" type="button" aria-label="Previous photograph"><svg width="16" height="16" aria-hidden="true"><use href="#i-l"/></svg></button><button class="fs-arrow fs-next" type="button" aria-label="Next photograph"><svg width="16" height="16" aria-hidden="true"><use href="#i-r"/></svg></button></span>
-          <span class="fs-prog" aria-hidden="true"><i></i></span>
         </div>
       </div>
       <p class="txt">Grapevines have long shaped Georgia’s rural landscapes, cultivated through generations of peasant labor for both viticulture and decorative gardening.</p>
@@ -604,7 +615,6 @@ figure{margin:0}
   <button class="vw-btn vw-next" type="button" aria-label="Next"><svg width="16" height="16" aria-hidden="true"><use href="#i-r"/></svg></button>
   <div class="vw-cap"></div>
 </dialog>
-<script src="../shared/filmstrip-carousel.js"></script>
 <script>
 (function(){
 "use strict";
@@ -891,14 +901,6 @@ $$(".zoom[data-group]").forEach(b => {
   if(reduced) goStatic(); else goAnimated();
   RM.addEventListener("change", e => (e.matches ? goStatic : goAnimated)());
 })();
-
-/* ---------- ch 3: four photographs, one at a time, horizontal scroll-snap ----------
-   shared/filmstrip-carousel.js's "one at a time" mode: the markup above is static HTML, so it
-   already works with no JS at all, and under prefers-reduced-motion, as a plain swipeable
-   scroll-snap row — this only adds the progress line, working arrow buttons, keyboard, and the
-   full-screen zoom viewer on top of it. Never pins to the viewport; the page scrolls past it
-   normally, same as before. */
-FilmstripCarousel.enhanceOneAtATime($(".fs-strip.fs-one"));
 
 /* ---------- ch 5: filmstrip moved slowly by the page scroll ---------- */
 const strip = $(".strip"), track = $(".strip-track", strip), sp = $(".s-prev", strip), sn = $(".s-next", strip), prog = $(".strip-prog i", strip);
