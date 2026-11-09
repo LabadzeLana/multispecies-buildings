@@ -306,6 +306,7 @@ body.panel-open #panel{display:block}
 .panel p{max-width:58ch}
 .sub{color:var(--ink-soft);font-size:.95rem;margin:.2rem 0 1.3rem}
 .lede-text{font-size:1.05rem;margin:0 0 1.2rem}
+.panel-head + .lede-text{margin-top:1rem}
 .slot{border:1px solid var(--line);margin:1.1rem 0;background:var(--paper-2)}
 .slot .frame{display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line)}
 .slot .frame.photo{height:216px;padding:10px;background:var(--paper)}
@@ -1606,7 +1607,9 @@ function openSpace(id){
   close.onclick = ()=> location.hash = "#/";
   head.appendChild(close);
   p.appendChild(head);
-  p.appendChild(elDogs("div","sub", s.suben));
+  /* Grapevines panel: subtitle intentionally omitted here (the #cap zoom-caption preview,
+     shown before this panel opens, still carries it — see showCap()). */
+  if(id!=="vineyard") p.appendChild(elDogs("div","sub", s.suben));
   p.appendChild(elDogs("p","lede-text", s.lede));
 
   if(id==="vineyard"){
