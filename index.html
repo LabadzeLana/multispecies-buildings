@@ -333,6 +333,7 @@ body.panel-open #panel{display:block}
 /* links to the Dogs story: labels keep their own look, words in running text get the site's thin oil underline */
 a.tag{display:inline-block;text-decoration:none;position:relative}
 a.dog-tag::after{content:"";position:absolute;left:0;right:0;top:-6px;bottom:-6px}   /* 44px touch target, no visual change */
+a.vine-tag::after{content:"";position:absolute;left:0;right:0;top:-6px;bottom:-6px}   /* 44px touch target, no visual change */
 a.dog-label{text-decoration:none;color:inherit}
 a.dog-label:hover,a.dog-label:focus-visible{color:var(--oil)}
 a.dog-link{color:inherit;text-decoration:underline;text-decoration-color:var(--oil);text-decoration-thickness:1px;text-underline-offset:.16em}
@@ -1068,6 +1069,10 @@ const tr = (o,k) => o[k + (L()==="ka"?"ka":"en")] ?? o[L()==="ka"?"ka":"en"];
 /* the dog inhabitant: wherever it is named it reads "Dogs", and every mention links to the Dogs story */
 const DOGS_HREF = "#/story/dogs";
 function dogLink(text, cls){ const a = el("a", cls || "dog-link", text); a.href = DOGS_HREF; return a; }
+/* the grapevine inhabitant tag: clicking it leaves the Building page for the separate
+   A City of Vineyards story page (same relative URL form as the panel's own "full story" link) */
+const VINE_HREF = "a-city-of-vineyards/index.html";
+function vineLink(text, cls){ const a = el("a", cls || "tag vine-tag", text); a.href = VINE_HREF; return a; }
 /* wraps each whole word dog / dogs in a link; the sentence itself stays exactly as written */
 function withDogLinks(text){
   text = String(text == null ? "" : text);
@@ -1627,6 +1632,7 @@ function openSpace(id){
   const tags = el("div","tags");
   s.inh.forEach(k=>{
     if(k==="dog"){ tags.appendChild(dogLink("Dogs","tag dog-tag")); return; }
+    if(k==="grapevine"){ tags.appendChild(vineLink(L()==="ka"?T.inhabitants.grapevine.ka:T.inhabitants.grapevine.en, "tag vine-tag")); return; }
     const b = el("button","tag", L()==="ka"?T.inhabitants[k].ka:T.inhabitants[k].en);
     b.onclick = ()=> location.hash="#/inhabitant/"+k; tags.appendChild(b);
   });
