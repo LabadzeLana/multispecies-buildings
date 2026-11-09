@@ -135,13 +135,13 @@ body.panel-open main{grid-template-columns:minmax(0,1fr) minmax(320px,30rem)}
 @media (max-width:900px){body.panel-open main{grid-template-columns:minmax(0,1fr)}}
 
 /* the Building view fills the screen between the sticky header and the season bar */
-#stage{position:relative;padding:0;
+#stage{position:relative;padding:0;display:flex;flex-direction:column;
   height:calc(100vh - var(--bar-h,52px) - var(--seasons-h,48px));height:calc(100dvh - var(--bar-h,52px) - var(--seasons-h,48px));min-height:300px}
-.stage-caption{position:absolute;left:clamp(.8rem,2vw,1.4rem);top:.7rem;z-index:7;pointer-events:none;
-  display:flex;flex-direction:column;gap:.1rem;
-  font-family:var(--sans);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.stage-caption{flex:0 0 auto;padding:.6rem clamp(1rem,4vw,2.4rem) .7rem;border-top:1px solid var(--line-soft);
+  display:flex;flex-direction:column;gap:.2rem;font-family:var(--sans)}
+.stage-caption .ln1{font-size:clamp(.8rem,.74rem + .3vw,.88rem);line-height:1.5;color:var(--ink-soft);max-width:66ch;text-wrap:pretty}
+.stage-caption .ln2{font-size:clamp(.76rem,.72rem + .2vw,.8rem);line-height:1.4;color:var(--ink-soft);max-width:66ch}
 #stage.zoomed .stage-caption{opacity:0}
-@media (max-width:700px){.stage-caption{display:none}}
 
 /* ---------- the drawing ---------- */
 .plate-frame{fill:none;stroke:var(--line-soft);stroke-width:.75}
@@ -200,7 +200,7 @@ html[data-season="winter"] .snow{opacity:1}
 html[data-season="winter"] .rust{stroke-width:2.4}
 
 /* ---------- building viewer: the drawing as a map that develops into photographs ---------- */
-#viewer{position:absolute;inset:0;overflow:hidden;touch-action:none;overscroll-behavior:contain;cursor:grab;
+#viewer{position:relative;flex:1 1 auto;min-height:0;overflow:hidden;touch-action:none;overscroll-behavior:contain;cursor:grab;
   user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;outline:none;background:var(--paper);--capH:140px}
 #viewer:focus-visible{box-shadow:inset 0 0 0 2px var(--oil)}
 #viewer.drag{cursor:grabbing}
@@ -797,8 +797,8 @@ body.st-lock{overflow:hidden}
       <aside id="cap" aria-live="polite"><div class="sub"></div><h2></h2><p></p><p class="credit"></p><button class="back" type="button" tabindex="-1">Enter the space &rarr;</button></aside>
     </div>
     <div class="stage-caption">
-      <span>Front elevation · redrawn after a Soviet design sheet</span>
-      <span>Tbilisi · 8 levels shown</span>
+      <span class="ln1">Front elevation of the eight-story, 48-apartment residential building developed in 1950-1960s * redrawn after Kavlashvili and Chachanidze design.</span>
+      <span class="ln2">Source: National Archives of Georgia, Tbilisi.</span>
     </div>
   </section>
 
