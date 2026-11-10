@@ -240,7 +240,11 @@ figure{margin:0}
 .draw .soft{stroke:var(--line)}
 .draw.pre [pathLength]{stroke-dasharray:1;stroke-dashoffset:1}
 .draw.go [pathLength]{stroke-dashoffset:0;transition:stroke-dashoffset 2.4s cubic-bezier(.3,.6,.3,1) calc(var(--i,0)*70ms)}
-.lab{margin:0 0 1.6rem}
+/* compact band: keeps the full drawing visible at its native 1000:320 proportions
+   (no stretch, no crop), just smaller, so it no longer pushes the photographs far
+   down the page; same SVG, same IntersectionObserver scroll-reveal as before */
+.lab{margin:0 0 1.6rem;height:100px;display:flex;justify-content:center;overflow:hidden}
+.lab .draw{width:auto;height:100%}
 .pair{display:grid;grid-template-columns:1fr;gap:2.4rem}
 @media (min-width:700px){ .pair{grid-template-columns:7fr 5fr;gap:2rem;align-items:end} }
 .root{width:min(220px,60%);margin:2.4rem 0 1rem}
@@ -1057,6 +1061,18 @@ function drawOn(svg){
 $$(".draw").forEach(drawOn);
 /* about 1.1 px on screen whatever the drawing's size */
 function drawWidths(){ $$(".draw").forEach(svg => { const w = svg.clientWidth; if(w) svg.style.strokeWidth = (1.15 * svg.viewBox.baseVal.width / w).toFixed(2); }); }
+/* ch 8's labyrinth drawing only: drawOn() above adds "go" but never removes "pre", and with
+   both classes present the shared .draw.pre / .draw.go rules are tied in CSS specificity, so
+   the cascade keeps the hidden stroke-dashoffset:1 and the reveal never actually plays —
+   pre-existing, not caused by the chapter's layout change. Fixing it here with a second,
+   independent observer on this one element (rather than editing drawOn(), which also runs
+   the vine-down-the-margin and root-in-water drawings elsewhere on the page) sidesteps the
+   tie by leaving only "go" once revealed. */
+(function(){
+  const labSvg = $(".lab .draw");
+  if(!labSvg || reduced) return;
+  new IntersectionObserver((es, o) => { if(es[0].isIntersecting){ labSvg.classList.remove("pre"); o.disconnect(); } }, {threshold: .35}).observe(labSvg);
+})();
 
 /* ---------- ch 9: photographs come one by one ---------- */
 const rescue = $(".rescue");
