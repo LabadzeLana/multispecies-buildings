@@ -162,14 +162,16 @@ figure{margin:0}
   .plates .p4{grid-column:6 / span 7;align-self:end}
 }
 
-/* ch 4: staggered arrival */
+/* ch 4: staggered arrival. a2/a4 use only positive margin-top so they add to their row's
+   auto-computed height instead of pulling out of it — a negative margin-top here previously
+   let a4 overlap a2's caption, since it reached higher than the row-gap below made room for. */
 .arrive{display:grid;grid-template-columns:1fr;gap:2.4rem}
 @media (min-width:700px){
   .arrive{grid-template-columns:repeat(12,1fr);gap:3rem 2rem;align-items:start}
   .arrive .a1{grid-column:1 / span 5}
   .arrive .a2{grid-column:7 / span 4;margin-top:5rem}
   .arrive .a3{grid-column:2 / span 6}
-  .arrive .a4{grid-column:8 / span 5;margin-top:-4rem}
+  .arrive .a4{grid-column:8 / span 5;margin-top:2rem}
 }
 @media (max-width:699px){ .arrive .a2,.arrive .a4{width:78%;margin-left:auto} }
 
@@ -197,7 +199,8 @@ figure{margin:0}
 .arrow:hover{border-color:var(--ink)}
 .arrow:disabled{opacity:.35;cursor:default;border-color:var(--line)}
 
-/* ch 6: collage */
+/* ch 6: collage. c3's desktop margin-top must stay >=0: a negative value here previously
+   pulled it up into c1's row, the same overlap bug fixed in ch 4's .arrive above. */
 .collage{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem}
 .collage .c1{grid-column:1 / -1}
 .collage .c2{grid-column:1 / span 3}
@@ -208,7 +211,7 @@ figure{margin:0}
   .collage{grid-template-columns:repeat(12,1fr);gap:2rem}
   .collage .c1{grid-column:1 / span 7}
   .collage .c2{grid-column:8 / span 5;margin-top:6rem}
-  .collage .c3{grid-column:2 / span 4;margin-top:-3rem}
+  .collage .c3{grid-column:2 / span 4}
   .collage .c4{grid-column:6 / span 6;margin-top:1rem}
   .collage .c5{grid-column:4 / span 6}
 }
