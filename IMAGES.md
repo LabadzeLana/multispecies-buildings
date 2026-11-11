@@ -38,3 +38,36 @@ Regenerate with:
 ```
 python3 tools/make_panel_photo.py
 ```
+
+# Grapevines story page: Creeping Agency strip photographs
+
+`media/vineyards/` holds the web copies for `a-city-of-vineyards/index.html`; the batch
+pipeline and its full file list live in `tools/vineyards/` (`plan.json` + `build.py` +
+`encode.swift`, run as `swiftc -O tools/vineyards/encode.swift -o /tmp/encode && python3
+tools/vineyards/build.py /tmp/encode`) and in `media/vineyards/manifest.json`.
+
+- `vineyards-5-facade-vine-06.jpg` / `-06-1200.jpg` and `vineyards-5-facade-vine-07.jpg` /
+  `-07-1200.jpg` — two added frames at the end of chapter 5's "Creeping Agency of
+  Grapevines" filmstrip, cropped from `media/vineyards/2.jpeg` and `3.jpeg`. Those two
+  source photos are kept on disk only and never committed (see `.gitignore`) — unlike the
+  rest of this chapter's originals, they live directly in `media/vineyards/` rather than
+  the gitignored per-chapter originals folder, because that is where they were supplied.
+  sRGB (colour-managed from the source's Display P3 profile, not just stripped), all
+  EXIF/GPS metadata removed, long edge 2400px/1200px, never upscaled.
+  **Captions for these two frames are still empty** — no credit, place or date was
+  supplied; search the page for "caption to be added" before publishing.
+
+Regenerate with (`swiftc` toolchain working):
+
+```
+swiftc -O tools/vineyards/encode.swift -o /tmp/encode
+python3 tools/vineyards/build.py /tmp/encode
+```
+
+If `swiftc` fails to build on this machine (SDK/toolchain mismatch), use the Pillow
+fallback instead, which produces byte-identical output to the spec above:
+
+```
+python3 tools/make_vineyards_photo.py media/vineyards/2.jpeg media/vineyards vineyards-5-facade-vine-06
+python3 tools/make_vineyards_photo.py media/vineyards/3.jpeg media/vineyards vineyards-5-facade-vine-07
+```

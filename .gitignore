@@ -16,3 +16,10 @@
 # (generated web copies live flat in media/, e.g. panel-grapevines-*; the rest of
 # media/building/ holds unrelated, already-tracked Compare-mode photos)
 /media/building/1.jpeg
+
+# source photos for the two added Creeping Agency strip frames: kept on disk only,
+# never committed (generated web copies are the tracked vineyards-5-facade-vine-06/-07
+# files alongside them; the rest of media/vineyards/ holds unrelated, already-tracked
+# web copies)
+/media/vineyards/2.jpeg
+/media/vineyards/3.jpeg

@@ -1,6 +1,6 @@
 {
  "note": "Web copies for a-city-of-vineyards/index.html. Credits and captions exactly as in 'Visual story of grapevine.docx'. Chapter 0 = opening background.",
- "total_bytes": 76017327,
+ "total_bytes": 77207061,
  "items": [
   {
    "chapter": 2,
@@ -419,6 +419,50 @@
    "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2025",
    "alt": "A pink five-storey block with a vine trailing along one balcony row",
    "description": "Vine along a balcony level."
+  },
+  {
+   "chapter": 5,
+   "type": "photo",
+   "original": "2.jpeg",
+   "original_px": "4032x2268",
+   "original_bytes": 3224282,
+   "files": [
+    {
+     "file": "vineyards-5-facade-vine-06.jpg",
+     "px": "2400x1350",
+     "bytes": 615723
+    },
+    {
+     "file": "vineyards-5-facade-vine-06-1200.jpg",
+     "px": "1200x675",
+     "bytes": 171583
+    }
+   ],
+   "credit": "",
+   "alt": "A grapevine climbing the side of an apartment block, with a car parked in the lane below and a building under construction in the background",
+   "description": "Grapevine on an apartment block wall above a parked car, caption to be added."
+  },
+  {
+   "chapter": 5,
+   "type": "photo",
+   "original": "3.jpeg",
+   "original_px": "4032x2268",
+   "original_bytes": 1556230,
+   "files": [
+    {
+     "file": "vineyards-5-facade-vine-07.jpg",
+     "px": "2400x1350",
+     "bytes": 307433
+    },
+    {
+     "file": "vineyards-5-facade-vine-07-1200.jpg",
+     "px": "1200x675",
+     "bytes": 94995
+    }
+   ],
+   "credit": "",
+   "alt": "A night view of city lights and hills seen beneath a grapevine pergola",
+   "description": "Night cityscape framed by vine leaves, caption to be added."
   },
   {
    "chapter": 6,
