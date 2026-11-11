@@ -34,6 +34,12 @@
     {"ch": 4, "src": "4. ვაზის ქალაქში ჩამოსვლა/4.jpg", "name": "vineyards-4-leaf-alley-04",
      "credit": "**Image 4**. Ana Margvelashvili archive. Tbilisi, Vake, 2023. Courtesy of the author.",
      "alt": "A lane between blocks under an arch of vines, the ground covered in fallen leaves", "desc": "Vine canopy spanning a lane, with parked cars."},
+    {"ch": 4, "src": "../../media/vineyards/4.jpeg", "name": "vineyards-4-garage-trellis-05",
+     "credit": "",
+     "alt": "A bare grapevine trained on a trellis over a garage roof, an apartment block and parked cars behind", "desc": "Winter grapevine on a garage-roof trellis, caption to be added."},
+    {"ch": 4, "src": "../../media/vineyards/5.jpg", "name": "vineyards-4-tower-vine-06",
+     "credit": "",
+     "alt": "A tall apartment tower seen from below, with a bare grapevine trellis over garages in the foreground", "desc": "Apartment tower behind a garage-roof vine trellis, caption to be added."},
 
     {"ch": 5, "src": "5. ვაზის მცოცავი აგენტობა/1.heic", "name": "vineyards-5-facade-vine-01",
      "credit": "Tamta Khalvashi’s archives. Tbilisi, Saburtalo, 2022-2025",

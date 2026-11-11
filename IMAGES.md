@@ -71,3 +71,23 @@ fallback instead, which produces byte-identical output to the spec above:
 python3 tools/make_vineyards_photo.py media/vineyards/2.jpeg media/vineyards vineyards-5-facade-vine-06
 python3 tools/make_vineyards_photo.py media/vineyards/3.jpeg media/vineyards vineyards-5-facade-vine-07
 ```
+
+# Grapevines story page: Grapevines Becoming Urban (ch4) figures
+
+- `vineyards-4-garage-trellis-05.jpg` / `-05-1200.jpg` and `vineyards-4-tower-vine-06.jpg` /
+  `-06-1200.jpg` — two added figures appended to chapter 4's "Grapevines Becoming Urban"
+  staggered collage, cropped from `media/vineyards/4.jpeg` and `5.jpg` (note the different
+  extensions). Those two source photos are kept on disk only and never committed (see
+  `.gitignore`), same arrangement as `2.jpeg`/`3.jpeg` above. sRGB (colour-managed from the
+  source's Display P3 profile), all EXIF/GPS metadata removed, long edge 2400px/1200px,
+  never upscaled.
+  **Captions for these two figures are still empty** — no credit, place or date was
+  supplied; search the page for "caption to be added" before publishing.
+
+Regenerate the same way as the Creeping Agency frames above, substituting the source file
+and output name:
+
+```
+python3 tools/make_vineyards_photo.py media/vineyards/4.jpeg media/vineyards vineyards-4-garage-trellis-05
+python3 tools/make_vineyards_photo.py media/vineyards/5.jpg media/vineyards vineyards-4-tower-vine-06
+```

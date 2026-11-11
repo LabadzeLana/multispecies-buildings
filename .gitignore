@@ -23,3 +23,9 @@
 # web copies)
 /media/vineyards/2.jpeg
 /media/vineyards/3.jpeg
+
+# source photos for the two added Grapevines Becoming Urban (ch4) figures: kept on disk
+# only, never committed (generated web copies are the tracked
+# vineyards-4-garage-trellis-05 / vineyards-4-tower-vine-06 files alongside them)
+/media/vineyards/4.jpeg
+/media/vineyards/5.jpg
