@@ -1932,7 +1932,7 @@ const DOGS_STORY = {
   },
   notAllowed: {
     id: "not-allowed",
-    title: "Sometimes they are not allowed",
+    title: "Bonds of care and affection for dogs sometimes spark tensions over shared spaces. Yet even where coexistence is contested, exclusion rarely turns into violence.",
     lede: "",
     media: [
       {type:"photo", src:"media/dogs/5.jpg", thumb:"media/dogs/thumb/5.jpg", w:900, h:1600,
@@ -1993,7 +1993,7 @@ const DOGS_STORY = {
   },
   sovietPoster: {
     title: "Soviet poster",
-    lede: "",
+    lede: "For Tbilisi's street dogs, the state has always had an authoritarian face. Soviet campaigns of extermination have found unsettling echoes in post-Soviet practices of capturing and killing dogs.",
     media: [
       {type:"photo", src:"media/dogs/25.jpg", thumb:"media/dogs/thumb/25.jpg", w:1129, h:1600,
        alt:"A Soviet-era illustrated poster, yellowed with age: a grey wolf-like dog leaps baring its teeth above a small illustration of a man with a dog, with red and black Georgian text and a car silhouette.", caption:null, credit:null}
@@ -2001,6 +2001,7 @@ const DOGS_STORY = {
   },
   closing: {
     text:"Explore the other inhabitants", href:"#/inhabitants",
+    lede:"Taken in the early 2000s, amid the ruins of TbilZNIIEP, a Soviet-era architectural research and design institute. In a place once devoted to designing human habitats, dogs found their own ways of inhabiting the ruins of Soviet modernity.",
     photo: {type:"photo", base:"media/dogs/dogs-last-photo", widths:[1200,2400,3200], w:3200, h:2133,
       alt:"A long, cracked concrete prefab wall recedes diagonally into the distance under grey light; a small dog walks near its base, with a gate and a tree visible beyond.", caption:null, credit:null}
   }
@@ -3095,6 +3096,11 @@ function openDogsStory(){
   stInk(v);
 
   /* 8 — closing: the last photograph, with a scroll-driven zoom-in/zoom-out (stZoomFigure) */
+  if(D.closing.lede){
+    const lw = el("div","st-wrap");
+    lw.appendChild(el("p","st-lede",D.closing.lede));
+    v.appendChild(lw);
+  }
   if(D.closing.photo){
     const cw = el("div","st-close-photo-wrap");
     cw.appendChild(stZoomFigure(D.closing.photo));
