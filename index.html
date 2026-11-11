@@ -581,7 +581,10 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
 .st-close-line{padding:5rem 0 7rem}
 .st-close-line a{display:inline-flex;align-items:center;min-height:44px;font-size:1.1rem;text-decoration:none;border-bottom:1px solid var(--oil);color:var(--ink)}
 .st-close-line a:hover{color:var(--oil)}
-.st-close-photo-wrap{margin-top:4rem}
+/* Full-screen section: breaks out of #view's centered max-width/padding (and of .st-wrap,
+   which this element deliberately isn't) to span the full viewport width, so the pinned
+   photo beneath it can fill the whole screen rather than sit in a boxed-in card. */
+.st-close-photo-wrap{margin-top:4rem;width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw}
 
 /* The site-wide html,body{overflow-x:hidden} rule above forces the unspecified overflow-y to
    compute as "auto" (the CSS rule that only one axis may be "visible" at a time), which turns
@@ -605,17 +608,13 @@ body.story-page{overflow:visible}
 .st-zoom{--pin-h:280dvh;--pin-h-mobile:230dvh}
 .st-zoom.is-active{position:relative;height:var(--pin-h)}
 @media (max-width:700px){ .st-zoom.is-active{height:var(--pin-h-mobile)} }
-.st-zoom.is-active .st-zoom-pin{position:sticky;top:0;height:100dvh;height:100svh;
-  display:flex;align-items:center;justify-content:center;padding:3vh 0}
-.st-zoom.is-active .st-zoom-frame{position:relative;width:100%;
-  aspect-ratio:var(--zoom-ar,3/2);max-height:calc(100dvh - 3rem);max-height:calc(100svh - 3rem);
-  border-radius:3px;overflow:hidden;background:var(--paper);box-shadow:0 0 0 1px var(--line-soft)}
+.st-zoom.is-active .st-zoom-pin{position:sticky;top:0;width:100%;height:100dvh;height:100svh}
+.st-zoom.is-active .st-zoom-frame{position:relative;width:100%;height:100%;overflow:hidden;background:var(--paper)}
 .st-zoom.is-active .st-zoom-frame picture{position:absolute;inset:0;width:100%;height:100%;display:block}
 .st-zoom.is-active .st-zoom-frame picture img{width:100%;height:100%;object-fit:cover;display:block}
 @media (prefers-reduced-motion:reduce){
   .st-zoom.is-active{height:auto}
-  .st-zoom.is-active .st-zoom-pin{position:static;height:auto;padding:0}
-  .st-zoom.is-active .st-zoom-frame{max-height:none}
+  .st-zoom.is-active .st-zoom-pin{position:static;height:auto}
   .st-zoom.is-active .st-zoom-frame picture{transform:none !important}
 }
 .st-poster-fig{max-width:24rem;margin:0 auto}
@@ -2088,7 +2087,6 @@ function stZoomFigure(m){
   const zoom = el("div","st-zoom");
   const pin = el("div","st-zoom-pin");
   const frameEl = el("div","st-zoom-frame");
-  frameEl.style.setProperty("--zoom-ar", m.w + "/" + m.h);
   const photo = stZoomImg(m, "100vw");
   photo.classList.add("photo");
   photo.style.transformOrigin = (LASTDOG_FOCUS_X*100).toFixed(1) + "% " + (LASTDOG_FOCUS_Y*100).toFixed(1) + "%";
@@ -3098,7 +3096,7 @@ function openDogsStory(){
 
   /* 8 — closing: the last photograph, with a scroll-driven zoom-in/zoom-out (stZoomFigure) */
   if(D.closing.photo){
-    const cw = el("div","st-wrap st-close-photo-wrap");
+    const cw = el("div","st-close-photo-wrap");
     cw.appendChild(stZoomFigure(D.closing.photo));
     v.appendChild(cw);
   }
