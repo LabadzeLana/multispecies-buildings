@@ -549,6 +549,7 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
   padding-top:.8rem;border-top:1px solid var(--line)}
 .st-sec .st-lede{color:var(--ink-soft);max-width:60ch;margin:0 0 1.6rem}
 .st-fig{margin:0}
+.st-fig picture{display:block}
 .st-fig img,.st-fig video{display:block;width:100%;height:auto;background:var(--paper-2)}
 .st-fig figcaption{font-family:var(--sans);font-size:.82rem;color:var(--ink-soft);margin-top:.5rem;max-width:60ch}
 .st-fig figcaption .cr{color:var(--muted)}
@@ -589,32 +590,33 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
    all. Scoped to the Dogs story only, where there is no wide content to clip horizontally. */
 body.story-page{overflow:visible}
 
-/* ---------- closing photo: cartoon-to-photo scroll reveal ----------
-   Baseline (no JS, reduced motion, or a layer failing to load): .st-cartoon
-   and its children are plain, static, in-flow elements, and only .photo is
-   ever shown — the figure behaves exactly like a normal .st-fig photo.
-   JS adds the "is-active" class only once it has confirmed motion is
-   wanted AND every layer has loaded; these rules are the enhancement and
-   never the only way to see the photograph. --pin-h / --pin-h-mobile are
-   named, tunable constants: how tall the pinned scroll distance is. */
-.st-cartoon{--pin-h:340dvh;--pin-h-mobile:300dvh}
-.st-cartoon.is-active{position:relative;height:var(--pin-h)}
-@media (max-width:700px){ .st-cartoon.is-active{height:var(--pin-h-mobile)} }
-.st-cartoon.is-active .st-cartoon-pin{position:sticky;top:0;height:100dvh;height:100svh;
+/* ---------- closing photo: scroll-driven zoom-in / zoom-out ----------
+   Built in the same style as the cover's own scroll-driven pull-back (coverScene(), near
+   the bottom of this script): a pinned sticky stage, transform-only animation (here just
+   scale, around a fixed focal point — no translate, so unlike the cover it needs no edge-
+   clamping: an object-fit:cover image that already fills its frame at scale 1 can only ever
+   cover MORE of the frame as it scales up around an interior origin, never less).
+   Baseline (no JS, reduced motion, or IntersectionObserver unsupported): .st-zoom and its
+   children are plain, static, in-flow elements — the figure behaves exactly like a normal
+   .st-fig photo, at rest, scale 1. JS adds the "is-active" class only once it has confirmed
+   motion is wanted; these rules are the enhancement and never the only way to see the
+   photograph. --pin-h / --pin-h-mobile are named, tunable constants: how tall the pinned
+   scroll distance is. */
+.st-zoom{--pin-h:280dvh;--pin-h-mobile:230dvh}
+.st-zoom.is-active{position:relative;height:var(--pin-h)}
+@media (max-width:700px){ .st-zoom.is-active{height:var(--pin-h-mobile)} }
+.st-zoom.is-active .st-zoom-pin{position:sticky;top:0;height:100dvh;height:100svh;
   display:flex;align-items:center;justify-content:center;padding:3vh 0}
-.st-cartoon.is-active .st-cartoon-frame{position:relative;width:100%;
-  aspect-ratio:var(--cartoon-ar,4/3);max-height:calc(100dvh - 3rem);max-height:calc(100svh - 3rem);
+.st-zoom.is-active .st-zoom-frame{position:relative;width:100%;
+  aspect-ratio:var(--zoom-ar,3/2);max-height:calc(100dvh - 3rem);max-height:calc(100svh - 3rem);
   border-radius:3px;overflow:hidden;background:var(--paper);box-shadow:0 0 0 1px var(--line-soft)}
-.st-cartoon.is-active .st-cartoon-frame img,
-.st-cartoon.is-active .st-cartoon-frame .cart-canvas{position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;display:block}
-.st-cartoon.is-active .st-cartoon-frame .photo{opacity:0}
+.st-zoom.is-active .st-zoom-frame picture{position:absolute;inset:0;width:100%;height:100%;display:block}
+.st-zoom.is-active .st-zoom-frame picture img{width:100%;height:100%;object-fit:cover;display:block}
 @media (prefers-reduced-motion:reduce){
-  .st-cartoon.is-active{height:auto}
-  .st-cartoon.is-active .st-cartoon-pin{position:static;height:auto;padding:0}
-  .st-cartoon.is-active .st-cartoon-frame{max-height:none}
-  .st-cartoon.is-active .st-cartoon-frame .photo{opacity:1}
-  .st-cartoon.is-active .st-cartoon-frame .cart-canvas{display:none}
+  .st-zoom.is-active{height:auto}
+  .st-zoom.is-active .st-zoom-pin{position:static;height:auto;padding:0}
+  .st-zoom.is-active .st-zoom-frame{max-height:none}
+  .st-zoom.is-active .st-zoom-frame picture{transform:none !important}
 }
 .st-poster-fig{max-width:24rem;margin:0 auto}
 .story-link{margin-top:2rem}
@@ -2000,8 +2002,8 @@ const DOGS_STORY = {
   },
   closing: {
     text:"Explore the other inhabitants", href:"#/inhabitants",
-    photo: {type:"photo", src:"media/dogs/24.jpg", thumb:"media/dogs/thumb/24.jpg", w:1600, h:1200,
-      alt:"In the same bare-earth yard as the opening photograph, three puppies — pale, tan and black-and-white — cross the litter-strewn ground near the tree and its small wooden shelter.", caption:null, credit:null}
+    photo: {type:"photo", base:"media/dogs/dogs-last-photo", widths:[1200,2400,3200], w:3200, h:2133,
+      alt:"A long, cracked concrete prefab wall recedes diagonally into the distance under grey light; a small dog walks near its base, with a gate and a tree visible beyond.", caption:null, credit:null}
   }
 };
 
@@ -2039,135 +2041,98 @@ function stImg(m, sizes, eager){
   return img;
 }
 
-/* ---------- closing photo: cartoon-to-photo scroll reveal ----------
-   Ink lines -> flat painted colour -> the real photograph, as the reader scrolls past a
-   long (340vh desktop / 300vh mobile) sticky-pinned section. Spec and look: media/dogs/
-   Last Image/cartoon-reveal-sample.html (open it and scroll slowly); layers made by
-   tools/make_cartoon.py. Baseline (no JS / reduced motion / a layer failing to load) is
-   always just the plain real photograph in normal flow — see the CSS above .st-cartoon.
-   All constants below are named so they're easy to tune. */
-const CARTOON_BASE = "media/dogs/dogs-final-cartoon";
-const CARTOON_FOCUS_X = .5, CARTOON_FOCUS_Y = .62;          // the reveal grows outward from here
-const CARTOON_LINES_FROM = 0,   CARTOON_LINES_TO = .42;     // ink lines drawn outward from the puppies
-const CARTOON_COLOR_FROM = .22, CARTOON_COLOR_TO = .68;     // flat painted colours follow
-const CARTOON_PHOTO_FROM = .62, CARTOON_PHOTO_TO = 1;       // the real photograph dissolves in
-const CARTOON_LINES_OUT_FROM = .78;                         // lines fade away at the end
-const CARTOON_BOIL_MS = 110;      // line "boil": a new line frame every 110 ms
-const CARTOON_TAU = .7;           // exponential smoothing time constant, seconds
-const CARTOON_LAZY_MARGIN = "150% 0px";   // start loading / animating ~1.5 screens out
+/* ---------- closing photo: scroll-driven zoom-in / zoom-out ----------
+   As the reader scrolls past a pinned section, the photograph zooms in toward a focal
+   point, then zooms back out to its full self — see the CSS above .st-zoom for the pinned
+   stage, and coverScene() further down for the cover's own, related pull-back effect this
+   one is modelled on. Unlike coverScene() (which must smooth over time with an exponential
+   constant, because its scroll source is a separate, independently-scrolling container),
+   this effect reads an ordinary document scroll position, which browsers already deliver
+   smoothly — so each frame maps the current scroll position straight through the easing
+   curve below, with no added lag; that also means a fast or reversed scroll is reflected
+   immediately, with nothing to catch up. All constants are named so they're easy to tune. */
+const LASTDOG_FOCUS_X = .84, LASTDOG_FOCUS_Y = .66;   // transform-origin: near the dog, lower right
+const LASTDOG_ZOOM_MAX = 1.3;                          // peak scale, reached at LASTDOG_IN_TO
+const LASTDOG_IN_TO = .42;         // zoom-in is the first 42% of the pinned scroll; the rest zooms back out
+const LASTDOG_LAZY_MARGIN = "150% 0px";   // start animating ~1.5 screens before it's on screen
 
-function stCartoonSS(a,b,x){ x=Math.max(0,Math.min(1,(x-a)/(b-a))); return x*x*(3-2*x); }
+function stZoomSS(a,b,x){ x=Math.max(0,Math.min(1,(x-a)/(b-a))); return x*x*(3-2*x); }
 
-function stCartoonFigure(m){
-  const fig = el("figure","st-fig st-cartoon-fig");
-  const cartoon = el("div","st-cartoon");
-  const pin = el("div","st-cartoon-pin");
-  const frameEl = el("div","st-cartoon-frame");
-  frameEl.style.setProperty("--cartoon-ar", m.w + "/" + m.h);
-  const photo = stImg(m, "(min-width:769px) 36rem, 100vw");
+/* A dedicated WebP+JPEG <picture> builder, used only by stZoomFigure below — the rest of the
+   Dogs page's photos go through stImg()'s plain thumb+src JPEG srcset instead, which this
+   leaves untouched. m.base is the shared filename stem (e.g. "media/dogs/dogs-last-photo");
+   m.widths lists the generated sizes, widest last, matching the files tools/make_lastdog_photo.py
+   writes as "<base>-<width>.jpg" / "<base>-<width>.webp". */
+function stZoomImg(m, sizes){
+  const pic = document.createElement("picture");
+  const srcset = ext => m.widths.map(w => m.base + "-" + w + "." + ext + " " + w + "w").join(", ");
+  const src = document.createElement("source");
+  src.type = "image/webp"; src.srcset = srcset("webp"); src.sizes = sizes;
+  pic.appendChild(src);
+  const img = document.createElement("img");
+  const widest = m.widths[m.widths.length-1];
+  img.src = m.base + "-" + widest + ".jpg";
+  img.srcset = srcset("jpg");
+  img.sizes = sizes;
+  img.width = m.w; img.height = m.h;
+  img.alt = m.alt || "";
+  img.decoding = "async";
+  img.loading = "lazy";
+  img.addEventListener("error", ()=>{ if(pic.isConnected) pic.replaceWith(stPending("photo", m.alt)); }, {once:true});
+  pic.appendChild(img);
+  return pic;
+}
+
+function stZoomFigure(m){
+  const fig = el("figure","st-fig st-zoom-fig");
+  const zoom = el("div","st-zoom");
+  const pin = el("div","st-zoom-pin");
+  const frameEl = el("div","st-zoom-frame");
+  frameEl.style.setProperty("--zoom-ar", m.w + "/" + m.h);
+  const photo = stZoomImg(m, "100vw");
   photo.classList.add("photo");
+  photo.style.transformOrigin = (LASTDOG_FOCUS_X*100).toFixed(1) + "% " + (LASTDOG_FOCUS_Y*100).toFixed(1) + "%";
   frameEl.appendChild(photo);
   pin.appendChild(frameEl);
-  cartoon.appendChild(pin);
-  fig.appendChild(cartoon);
+  zoom.appendChild(pin);
+  fig.appendChild(zoom);
   const cc = stCaption(m); if(cc) fig.appendChild(cc);
 
   if(stReduced()) return fig;   /* baseline only: the real photo, no pinning, no animation */
 
-  let disposed = false, armed = false, raf = null, cur = 0, primed = false, last = 0;
-
-  function probe(src){
-    return new Promise(res=>{
-      const img = new Image();
-      img.onload = ()=>{ (img.decode ? img.decode() : Promise.resolve()).catch(()=>{}).then(()=>res(img)); };
-      img.onerror = ()=>res(null);
-      img.src = src;
-    });
-  }
-
-  /* The colour and line layers are composited into a single <canvas>, drawn fresh each frame with a
-     soft radial clip (via destination-in + a radial gradient) — not as separate CSS mask-image
-     elements. Writing an animated mask-image on two or more sibling <img> elements at once (or even
-     at different times across a session) reliably stops one of them painting in some engines; canvas
-     2D compositing is a different pipeline and isn't affected the same way. */
-  let canvas = null, ctx = null, dpr = 1, colorImg = null, lineImgs = [];
-
-  async function arm(){
-    if(armed) return; armed = true;
-    /* pick the 700 or 1100px layer set once, by the frame's own rendered pixel width (matching the
-       srcset widths the real photo and tools/make_cartoon.py's two outputs were built for) */
-    const w = Math.round(frameEl.clientWidth * Math.min(2, window.devicePixelRatio||1));
-    const size = w <= 700 ? 700 : 1100;
-    const [ci, l1, l2, l3] = await Promise.all([
-      probe(`${CARTOON_BASE}-color-${size}.jpg`),
-      probe(`${CARTOON_BASE}-lines-01-${size}.webp`),
-      probe(`${CARTOON_BASE}-lines-02-${size}.webp`),
-      probe(`${CARTOON_BASE}-lines-03-${size}.webp`)
-    ]);
-    if(disposed || !ci || !l1 || !l2 || !l3) return;   /* a layer failed to load: stay on the plain photo */
-    colorImg = ci; lineImgs = [l1, l2, l3];
-
-    canvas = document.createElement("canvas");
-    canvas.className = "cart-canvas";
-    canvas.setAttribute("aria-hidden","true");
-    frameEl.insertBefore(canvas, photo);
-    ctx = canvas.getContext("2d");
-
-    await new Promise(res => requestAnimationFrame(()=>requestAnimationFrame(res)));
-    if(disposed) return;
-    cartoon.classList.add("is-active");
-    raf = requestAnimationFrame(tick);
-  }
+  let disposed = false, raf = null;
 
   function target(){
-    const r = cartoon.getBoundingClientRect(), vh = innerHeight;
+    const r = zoom.getBoundingClientRect(), vh = innerHeight;
     const total = r.height - vh;
-    if(total <= 0) return 1;
+    if(total <= 0) return 0;
     return Math.max(0, Math.min(1, -r.top / total));
   }
-  function drawLayer(img, r, cx, cy, alpha){
-    if(r<=0 || alpha<=0) return;
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = "destination-in";
-    const grad = ctx.createRadialGradient(cx, cy, Math.max(0, r*.72), cx, cy, r);
-    grad.addColorStop(0, "rgba(0,0,0,1)"); grad.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.restore();
+  function scaleFor(p){
+    /* in: 1 -> LASTDOG_ZOOM_MAX over [0, LASTDOG_IN_TO]; out: back down to 1 over the rest —
+       the image can only ever grow from here, never shrink below 1, so (given object-fit:cover
+       already fills the frame at scale 1) it can never reveal an empty edge. */
+    if(p <= LASTDOG_IN_TO) return 1 + (LASTDOG_ZOOM_MAX-1) * stZoomSS(0, LASTDOG_IN_TO, p);
+    return LASTDOG_ZOOM_MAX + (1-LASTDOG_ZOOM_MAX) * stZoomSS(LASTDOG_IN_TO, 1, p);
   }
-  function tick(t){
-    const dt = Math.min(.1, (t-last)/1000); last = t;
-    const tg = target(), k = 1 - Math.exp(-dt/CARTOON_TAU);
-    cur = primed ? cur + (tg-cur)*k : tg; primed = true;
-    if(Math.abs(tg-cur) < .001) cur = tg;
-    const fw = frameEl.clientWidth, fh = frameEl.clientHeight;
-    if(canvas.width !== Math.round(fw*dpr) || canvas.height !== Math.round(fh*dpr)){
-      dpr = Math.min(2, window.devicePixelRatio||1);
-      canvas.width = Math.round(fw*dpr); canvas.height = Math.round(fh*dpr);
-    }
-    const maxR = Math.hypot(fw, fh) * .8 * dpr;
-    const cx = fw*CARTOON_FOCUS_X*dpr, cy = fh*CARTOON_FOCUS_Y*dpr;
-    const lr = stCartoonSS(CARTOON_LINES_FROM, CARTOON_LINES_TO, cur) * maxR;
-    const cr = stCartoonSS(CARTOON_COLOR_FROM, CARTOON_COLOR_TO, cur) * maxR;
-    const lop = 1 - stCartoonSS(CARTOON_LINES_OUT_FROM, 1, cur);
-    const activeLine = Math.floor(t / CARTOON_BOIL_MS) % lineImgs.length;
-    photo.style.opacity = stCartoonSS(CARTOON_PHOTO_FROM, CARTOON_PHOTO_TO, cur).toFixed(3);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawLayer(colorImg, cr, cx, cy, 1);
-    if(cur>0.005) drawLayer(lineImgs[activeLine], lr, cx, cy, lop);
+  function tick(){
+    photo.style.transform = "scale(" + scaleFor(target()).toFixed(4) + ")";
     raf = disposed ? null : requestAnimationFrame(tick);
   }
 
   const io = new IntersectionObserver(es=>{
     es.forEach(e=>{
-      if(e.isIntersecting){ arm(); if(cartoon.classList.contains("is-active") && !raf){ last = performance.now(); raf = requestAnimationFrame(tick); } }
-      else if(raf){ cancelAnimationFrame(raf); raf = null; }
+      if(e.isIntersecting){
+        zoom.classList.add("is-active");
+        photo.style.willChange = "transform";
+        if(!raf) raf = requestAnimationFrame(tick);
+      } else {
+        if(raf){ cancelAnimationFrame(raf); raf = null; }
+        photo.style.willChange = "";
+      }
     });
-  }, {rootMargin: CARTOON_LAZY_MARGIN});
-  io.observe(cartoon);
+  }, {rootMargin: LASTDOG_LAZY_MARGIN});
+  io.observe(zoom);
   dogsStory.cleanup.push(()=>{ disposed = true; io.disconnect(); if(raf) cancelAnimationFrame(raf); });
 
   return fig;
@@ -3131,11 +3096,10 @@ function openDogsStory(){
   /* ink accents: drawn dividers, a section ruler, one photograph that develops */
   stInk(v);
 
-  /* 8 — closing: the last photograph, drawn as a cartoon that resolves into itself while
-     the reader scrolls (stCartoonFigure) */
+  /* 8 — closing: the last photograph, with a scroll-driven zoom-in/zoom-out (stZoomFigure) */
   if(D.closing.photo){
     const cw = el("div","st-wrap st-close-photo-wrap");
-    cw.appendChild(stCartoonFigure(D.closing.photo));
+    cw.appendChild(stZoomFigure(D.closing.photo));
     v.appendChild(cw);
   }
   const cl = el("div","st-wrap st-close-line"), a = el("a",null,D.closing.text);

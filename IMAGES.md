@@ -97,3 +97,26 @@ and output name:
 python3 tools/make_vineyards_photo.py media/vineyards/4.jpeg media/vineyards vineyards-8-garages-vine-03
 python3 tools/make_vineyards_photo.py media/vineyards/5.jpg media/vineyards vineyards-8-garages-vine-04
 ```
+
+# Dogs story page: closing photograph (stZoomFigure)
+
+- `dogs-last-photo-{1200,2400,3200}.jpg` / `.webp` — the Dogs page's closing photograph (a
+  scroll-driven zoom-in/zoom-out, `stZoomFigure` in `index.html`), built from
+  `media/dogs/Lastdog.JPG`. That source photo is kept on disk only and never committed (see
+  `.gitignore`). sRGB (colour-managed from the source's own profile), EXIF orientation
+  applied then all metadata stripped, width-resized (1200/2400/3200px, never upscaled beyond
+  the original's 3360px), JPEG quality 72 alongside a WebP sibling at each width, loaded via
+  a dedicated `<picture>` built by `stZoomImg()` (the rest of the Dogs page's photos keep
+  using the simpler thumb+src `stImg()` srcset, left untouched).
+- This replaces the former "cartoon-to-photo" closing element (`stCartoonFigure`, its
+  `.st-cartoon` CSS and its 10 generated `dogs-final-cartoon-*` layer files, all removed).
+  `tools/make_cartoon.py`, the script that generated those layers, is no longer used by
+  anything but is kept in `tools/` in case it's wanted again. `media/dogs/24.jpg` and
+  `media/dogs/thumb/24.jpg` (the plain photograph the cartoon used to resolve into) are
+  originals, not generated files, and are likewise kept in place though now unused.
+
+Regenerate with:
+
+```
+python3 tools/make_lastdog_photo.py media/dogs/Lastdog.JPG media/dogs dogs-last-photo
+```

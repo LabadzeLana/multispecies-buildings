@@ -12,6 +12,11 @@
 # sample/script, kept on disk only, never committed (generated files live in media/dogs/)
 /media/dogs/Last Image/
 
+# source photo for the Dogs page's closing photograph: kept on disk only, never committed
+# (generated web copies are the tracked dogs-last-photo-{1200,2400,3200}.{jpg,webp} files
+# alongside it)
+/media/dogs/Lastdog.JPG
+
 # source photo for the Grapevines panel photograph: kept on disk only, never committed
 # (generated web copies live flat in media/, e.g. panel-grapevines-*; the rest of
 # media/building/ holds unrelated, already-tracked Compare-mode photos)
