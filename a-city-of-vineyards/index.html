@@ -172,8 +172,6 @@ figure{margin:0}
   .arrive .a2{grid-column:7 / span 4;margin-top:5rem}
   .arrive .a3{grid-column:2 / span 6}
   .arrive .a4{grid-column:8 / span 5;margin-top:2rem}
-  .arrive .a5{grid-column:1 / span 6}
-  .arrive .a6{grid-column:7 / span 6;margin-top:3rem}
 }
 @media (max-width:699px){ .arrive .a2,.arrive .a4{width:78%;margin-left:auto} }
 
@@ -250,8 +248,18 @@ figure{margin:0}
    down the page; same SVG, same IntersectionObserver scroll-reveal as before */
 .lab{margin:0 0 1.6rem;height:100px;display:flex;justify-content:center;overflow:hidden}
 .lab .draw{width:auto;height:100%}
+/* .pair: flow-based 2-column grid (7fr first photo, 5fr second); .big forces a figure into
+   column 1 so it takes the same track width as the first photo — row auto-sizing means this
+   never overlaps the row above, it just needs its own row (second photo can no longer sit
+   beside a same-width neighbour). .n1/.n2 place the two added photos in their own row below,
+   mirroring the original 7fr/5fr pair. */
 .pair{display:grid;grid-template-columns:1fr;gap:2.4rem}
-@media (min-width:700px){ .pair{grid-template-columns:7fr 5fr;gap:2rem;align-items:end} }
+@media (min-width:700px){
+  .pair{grid-template-columns:7fr 5fr;gap:3rem 2rem;align-items:end}
+  .pair .big{grid-row:2;grid-column:1}
+  .pair .n1{grid-row:3;grid-column:1}
+  .pair .n2{grid-row:3;grid-column:2}
+}
 .root{width:min(220px,60%);margin:2.4rem 0 1rem}
 .rescue{display:grid;grid-template-columns:1fr 1fr;gap:clamp(.8rem,2.5vw,1.8rem);margin-top:1rem}
 .rescue > *{transition:opacity 1.4s ease,transform 1.4s cubic-bezier(.2,.7,.3,1)}
@@ -457,10 +465,6 @@ figure{margin:0}
           <figcaption><b>Image 3.</b> Nargiza Arjevanidze archive. Tbilisi, Gldani, 2023. Courtesy of the author.</figcaption></figure>
         <figure class="a4"><button class="zoom" type="button" data-group="g4" data-full="../media/vineyards/vineyards-4-leaf-alley-04.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-4-leaf-alley-04-1200.jpg" srcset="../media/vineyards/vineyards-4-leaf-alley-04-1200.jpg 1200w, ../media/vineyards/vineyards-4-leaf-alley-04.jpg 1536w" sizes="(min-width: 700px) 24rem, 72vw" width="1536" height="2048" alt="A lane between blocks under an arch of vines, the ground covered in fallen leaves" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
           <figcaption><b>Image 4</b>. Ana Margvelashvili archive. Tbilisi, Vake, 2023. Courtesy of the author.</figcaption></figure>
-        <!-- caption to be added -->
-        <figure class="a5"><button class="zoom" type="button" data-group="g4" data-full="../media/vineyards/vineyards-4-garage-trellis-05.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-4-garage-trellis-05-1200.jpg" srcset="../media/vineyards/vineyards-4-garage-trellis-05-1200.jpg 1200w, ../media/vineyards/vineyards-4-garage-trellis-05.jpg 2400w" sizes="(min-width: 700px) 28rem, 90vw" width="2400" height="1350" alt="A bare grapevine trained on a trellis over a garage roof, an apartment block and parked cars behind" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button></figure>
-        <!-- caption to be added -->
-        <figure class="a6"><button class="zoom" type="button" data-group="g4" data-full="../media/vineyards/vineyards-4-tower-vine-06.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-4-tower-vine-06-1200.jpg" srcset="../media/vineyards/vineyards-4-tower-vine-06-1200.jpg 1200w, ../media/vineyards/vineyards-4-tower-vine-06.jpg 2400w" sizes="(min-width: 700px) 28rem, 90vw" width="2400" height="1350" alt="A tall apartment tower seen from below, with a bare grapevine trellis over garages in the foreground" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button></figure>
       </div>
       <p class="long">Grapevines followed rural migrants into the city amid Soviet industrialization, finding new ground among the city’s concrete.</p>
     </div>
@@ -547,8 +551,12 @@ figure{margin:0}
       <div class="pair">
         <figure><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-01.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-01-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-01-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-01.jpg 2400w" sizes="(min-width: 700px) 34rem, 90vw" width="2400" height="1350" alt="Autumn vines over garage roofs, apartment blocks behind" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
           <figcaption>Tamta Khalvashi’s archives; Tbilisi, Vazha-Pshavela Blocks, 2025).</figcaption></figure>
-        <figure><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-02-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-02-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-02.jpg 2400w" sizes="(min-width: 700px) 24rem, 90vw" width="2400" height="1600" alt="A lane of garages under a metal pergola overgrown with vines" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        <figure class="big"><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-02-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-02-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-02.jpg 2400w" sizes="(min-width: 700px) 34rem, 90vw" width="2400" height="1600" alt="A lane of garages under a metal pergola overgrown with vines" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
           <figcaption>Irakli Kochlashvili archives. Tbilisi, Gldani, 2023. Courtesy of the author.</figcaption></figure>
+        <!-- caption to be added -->
+        <figure class="n1"><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-03.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-03-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-03-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-03.jpg 2400w" sizes="(min-width: 700px) 34rem, 90vw" width="2400" height="1350" alt="A bare grapevine trained on a trellis over a garage roof, an apartment block and parked cars behind" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button></figure>
+        <!-- caption to be added -->
+        <figure class="n2"><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-04.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-04-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-04-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-04.jpg 2400w" sizes="(min-width: 700px) 24rem, 90vw" width="2400" height="1350" alt="A tall apartment tower seen from below, with a bare grapevine trellis over garages in the foreground" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button></figure>
       </div>
       <p class="txt">Yet the same garages that enclose the commons can also protect them. Draped in sprawling grapevines, they form tangled labyrinths of concrete and greenery, inadvertently resisting the advance of large-scale urban development into the courtyards of Soviet housing.</p>
     </div>

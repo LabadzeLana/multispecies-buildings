@@ -311,50 +311,6 @@
    "description": "Vine canopy spanning a lane, with parked cars."
   },
   {
-   "chapter": 4,
-   "type": "photo",
-   "original": "4.jpeg",
-   "original_px": "4032x2268",
-   "original_bytes": 2609329,
-   "files": [
-    {
-     "file": "vineyards-4-garage-trellis-05.jpg",
-     "px": "2400x1350",
-     "bytes": 570176
-    },
-    {
-     "file": "vineyards-4-garage-trellis-05-1200.jpg",
-     "px": "1200x675",
-     "bytes": 171792
-    }
-   ],
-   "credit": "",
-   "alt": "A bare grapevine trained on a trellis over a garage roof, an apartment block and parked cars behind",
-   "description": "Winter grapevine on a garage-roof trellis, caption to be added."
-  },
-  {
-   "chapter": 4,
-   "type": "photo",
-   "original": "5.jpg",
-   "original_px": "4032x2268",
-   "original_bytes": 9553486,
-   "files": [
-    {
-     "file": "vineyards-4-tower-vine-06.jpg",
-     "px": "2400x1350",
-     "bytes": 594776
-    },
-    {
-     "file": "vineyards-4-tower-vine-06-1200.jpg",
-     "px": "1200x675",
-     "bytes": 182329
-    }
-   ],
-   "credit": "",
-   "alt": "A tall apartment tower seen from below, with a bare grapevine trellis over garages in the foreground",
-   "description": "Apartment tower behind a garage-roof vine trellis, caption to be added."
-  },
-  {
    "chapter": 5,
    "type": "photo",
    "original": "5. ვაზის მცოცავი აგენტობა/1.heic",
@@ -793,6 +749,50 @@
    "credit": "Irakli Kochlashvili archives. Tbilisi, Gldani, 2023. Courtesy of the author.",
    "alt": "A lane of garages under a metal pergola overgrown with vines",
    "description": "Garage alley under a vine pergola."
+  },
+  {
+   "chapter": 8,
+   "type": "photo",
+   "original": "4.jpeg",
+   "original_px": "4032x2268",
+   "original_bytes": 2609329,
+   "files": [
+    {
+     "file": "vineyards-8-garages-vine-03.jpg",
+     "px": "2400x1350",
+     "bytes": 570176
+    },
+    {
+     "file": "vineyards-8-garages-vine-03-1200.jpg",
+     "px": "1200x675",
+     "bytes": 171792
+    }
+   ],
+   "credit": "",
+   "alt": "A bare grapevine trained on a trellis over a garage roof, an apartment block and parked cars behind",
+   "description": "Winter grapevine on a garage-roof trellis, caption to be added."
+  },
+  {
+   "chapter": 8,
+   "type": "photo",
+   "original": "5.jpg",
+   "original_px": "4032x2268",
+   "original_bytes": 9553486,
+   "files": [
+    {
+     "file": "vineyards-8-garages-vine-04.jpg",
+     "px": "2400x1350",
+     "bytes": 594776
+    },
+    {
+     "file": "vineyards-8-garages-vine-04-1200.jpg",
+     "px": "1200x675",
+     "bytes": 182329
+    }
+   ],
+   "credit": "",
+   "alt": "A tall apartment tower seen from below, with a bare grapevine trellis over garages in the foreground",
+   "description": "Apartment tower behind a garage-roof vine trellis, caption to be added."
   },
   {
    "chapter": 9,
