@@ -34,3 +34,10 @@
 # vineyards-8-garages-vine-03 / vineyards-8-garages-vine-04 files alongside them)
 /media/vineyards/4.jpeg
 /media/vineyards/5.jpg
+
+# source photos for the two added frames at the end of the Dogs page's first (street)
+# gallery: kept on disk only, never committed (generated web copies are the tracked
+# dogs-gallery-1-111 / dogs-gallery-1-222 files alongside them). Note the literal double
+# dot in "111..jpg" — that is the file's real name, not a typo here.
+/media/dogs/111..jpg
+/media/dogs/222.jpg

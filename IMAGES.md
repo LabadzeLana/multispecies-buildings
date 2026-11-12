@@ -149,3 +149,26 @@ im = im.resize((1400, round(h * 1400 / w)), Image.LANCZOS)
 im.save('media/vineyards/vineyards-11-leaf-collage-01-1400.jpg', 'JPEG', quality=72, optimize=True, progressive=True)
 "
 ```
+
+# Dogs story page: two added frames at the end of the first (street) gallery
+
+- `dogs-gallery-1-111.jpg` / `-111-1200.jpg` and `dogs-gallery-1-222.jpg` / `-222-1200.jpg`
+  — two new frames appended to the end of the Dogs page's first gallery (`streetCarousel`,
+  the filmstrip right after the intro text, shared/filmstrip-carousel.js). Built from
+  `media/dogs/111..jpg` (note the literal double dot in that filename) and
+  `media/dogs/222.jpg`. Both source photos are kept on disk only and never committed (see
+  `.gitignore`). sRGB, all metadata stripped, full size capped at the source's own
+  resolution (2048px long edge, never upscaled) plus a 1200px-long-edge sibling — the same
+  two-tier convention (no 480/800 tier, no WebP) the gallery's other six frames already use;
+  `shared/filmstrip-carousel.js` only ever requests those same two URLs per photo, so adding
+  a third size or a WebP source would need a change to that shared component, which this
+  task didn't call for.
+- No manifest.json exists for `media/dogs/` (only `media/vineyards/` has one); this section
+  of IMAGES.md is the only record of these two files, same as the closing photograph above.
+
+Regenerate with:
+
+```
+python3 tools/make_dogs_gallery_photo.py "media/dogs/111..jpg" media/dogs dogs-gallery-1-111
+python3 tools/make_dogs_gallery_photo.py media/dogs/222.jpg media/dogs dogs-gallery-1-222
+```
