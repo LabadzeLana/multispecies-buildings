@@ -2200,7 +2200,7 @@ function stDeepZoom(H, head, opts){
 
   const W = H.width, Hh = H.height, T = H.tileSize, maxL = H.levels - 1;
   const ctx = cv.getContext("2d");
-  let vw = 0, vh = 0, dpr = 1, s = 0, ox = 0, oy = 0, minS = 0, maxS = 0, alive = true;
+  let vw = 0, vh = 0, dpr = 1, s = 0, ox = 0, oy = 0, minS = 0, fitS = 0, maxS = 0, alive = true;
   const locked = ()=> document.documentElement.classList.contains("st-locked");
 
   /* ---- images ---- */
@@ -2220,11 +2220,15 @@ function stDeepZoom(H, head, opts){
 
   /* ---- geometry ---- */
   const zoomed = ()=> s > minS * 1.002;
-  const clampS = x => Math.min(maxS, Math.max(minS, x));
+  const clampS = x => Math.min(maxS, Math.max(fitS, x));
+  /* pan is clamped edge-to-edge as usual while the image fills the viewport on an axis; once
+     zoomed out past cover on that axis there is no edge to clamp to, so it is centred instead
+     (the two formulas agree exactly where they meet, so the image recentres with no jump). */
   function clamp(){
     s = clampS(s);
-    ox = Math.min(W - vw/s, Math.max(0, ox));
-    oy = Math.min(Hh - vh/s, Math.max(0, oy));
+    const ivw = vw/s, ivh = vh/s;
+    ox = ivw >= W ? (W - ivw)/2 : Math.min(W - ivw, Math.max(0, ox));
+    oy = ivh >= Hh ? (Hh - ivh)/2 : Math.min(Hh - ivh, Math.max(0, oy));
   }
   const center = ()=>({x:ox + vw/2/s, y:oy + vh/2/s});
   function setCenter(x, y){ ox = x - vw/2/s; oy = y - vh/2/s; }
@@ -2236,6 +2240,7 @@ function stDeepZoom(H, head, opts){
     vw = r.width; vh = r.height; dpr = Math.min(3, window.devicePixelRatio || 1);
     cv.width = Math.round(vw*dpr); cv.height = Math.round(vh*dpr);
     minS = Math.max(vw/W, vh/Hh);                 /* cover: never any empty space */
+    fitS = Math.min(vw/W, vh/Hh);                 /* contain: the whole photograph, letterboxed */
     maxS = Math.max(minS, H.maxDevicePx / dpr);   /* no more than ~1.5 device px per image px */
     s = clampS(minS * rel); setCenter(c.x, c.y); clamp(); sync(); render();
   }
@@ -2323,7 +2328,7 @@ function stDeepZoom(H, head, opts){
     }});
   }
   const focusScale = f => f.zoom * vw / W;
-  const reset = ()=> glide(minS, W/2, Hh/2, 700);
+  const reset = ()=> glide(fitS, W/2, Hh/2, 700);
 
   /* ---- intro: whole photograph, then glide to the eyes ---- */
   let introTimer = 0, introOn = false, hintTimer = 0, touched = false;
