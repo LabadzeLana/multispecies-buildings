@@ -181,18 +181,25 @@ figure{margin:0}
 .arrow:disabled{opacity:.35;cursor:default;border-color:var(--line)}
 
 /* ch 6: collage. c3's desktop margin-top must stay >=0: a negative value here previously
-   pulled it up into c1's row, the same overlap bug fixed in ch 4's .arrive above. */
+   pulled it up into c1's row, the same overlap bug fixed in ch 4's .arrive above.
+   c3 is enlarged at desktop to span columns 1-5: its left edge lines up with c1's (both
+   start at column 1) and its right edge sits in the same column gap (2rem, same as the
+   row-1 gap) just before c4 (unmoved, still columns 6-11), without changing c4's size or
+   position. At mobile, c3 becomes full width on its own row like c1, rather than sharing a
+   row with c2 as before — so c2 also becomes full width on mobile (its own desktop size and
+   position are unchanged), otherwise it would be left alone at half width with an empty gap
+   beside it where c3 used to sit. */
 .collage{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem}
 .collage .c1{grid-column:1 / -1}
-.collage .c2{grid-column:1 / span 3}
-.collage .c3{grid-column:4 / span 3;margin-top:2.5rem}
+.collage .c2{grid-column:1 / -1}
+.collage .c3{grid-column:1 / -1}
 .collage .c4{grid-column:1 / span 4}
 .collage .c5{grid-column:3 / -1}
 @media (min-width:700px){
   .collage{grid-template-columns:repeat(12,1fr);gap:2rem}
   .collage .c1{grid-column:1 / span 7}
   .collage .c2{grid-column:8 / span 5;margin-top:6rem}
-  .collage .c3{grid-column:2 / span 4}
+  .collage .c3{grid-column:1 / span 5;margin-top:2.5rem}
   .collage .c4{grid-column:6 / span 6;margin-top:1rem}
   .collage .c5{grid-column:4 / span 6}
 }
@@ -484,7 +491,7 @@ figure{margin:0}
       <div class="collage">
         <button class="zoom c1" type="button" data-group="g6" data-cap="cap-6" data-full="../media/vineyards/vineyards-6-pergola-commons-01.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-6-pergola-commons-01-1200.jpg" srcset="../media/vineyards/vineyards-6-pergola-commons-01-1200.jpg 1200w, ../media/vineyards/vineyards-6-pergola-commons-01.jpg 2400w" sizes="(min-width: 700px) 34rem, 90vw" width="2400" height="1800" alt="A courtyard under a vine pergola with a bench and makeshift seats" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
         <button class="zoom c2" type="button" data-group="g6" data-cap="cap-6" data-full="../media/vineyards/vineyards-6-pergola-commons-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-6-pergola-commons-02-1200.jpg" srcset="../media/vineyards/vineyards-6-pergola-commons-02-1200.jpg 1200w, ../media/vineyards/vineyards-6-pergola-commons-02.jpg 2400w" sizes="(min-width: 700px) 24rem, 45vw" width="2400" height="1800" alt="A pavement along a block, shaded by vines, with a person walking away" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
-        <button class="zoom c3" type="button" data-group="g6" data-cap="cap-6" data-full="../media/vineyards/vineyards-6-pergola-commons-03.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-6-pergola-commons-03-1200.jpg" srcset="../media/vineyards/vineyards-6-pergola-commons-03-1200.jpg 1200w, ../media/vineyards/vineyards-6-pergola-commons-03.jpg 2400w" sizes="(min-width: 700px) 20rem, 45vw" width="2400" height="1350" alt="A vine framing a ground-floor shop front; people on the steps in the evening light" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        <button class="zoom c3" type="button" data-group="g6" data-cap="cap-6" data-full="../media/vineyards/vineyards-6-pergola-commons-03.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-6-pergola-commons-03-1200.jpg" srcset="../media/vineyards/vineyards-6-pergola-commons-03-1200.jpg 1200w, ../media/vineyards/vineyards-6-pergola-commons-03.jpg 2400w" sizes="(min-width: 700px) 22rem, 90vw" width="2400" height="1350" alt="A vine framing a ground-floor shop front; people on the steps in the evening light" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
         <button class="zoom c4" type="button" data-group="g6" data-cap="cap-6" data-full="../media/vineyards/vineyards-6-pergola-commons-04.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-6-pergola-commons-04-1200.jpg" srcset="../media/vineyards/vineyards-6-pergola-commons-04-1200.jpg 1200w, ../media/vineyards/vineyards-6-pergola-commons-04.jpg 2400w" sizes="(min-width: 700px) 29rem, 60vw" width="2400" height="1800" alt="A clipped hedge and a vine pergola in front of a block; someone sitting on a bench" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
         <button class="zoom c5" type="button" data-group="g6" data-cap="cap-6" data-full="../media/vineyards/vineyards-6-pergola-commons-05.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-6-pergola-commons-05-1200.jpg" srcset="../media/vineyards/vineyards-6-pergola-commons-05-1200.jpg 1200w, ../media/vineyards/vineyards-6-pergola-commons-05.jpg 2400w" sizes="(min-width: 700px) 29rem, 60vw" width="2400" height="1350" alt="A vine pergola over the path to a building entrance" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
       </div>
