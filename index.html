@@ -972,7 +972,22 @@ const T = {
       bka:["შენობის მეორე მხარეს, ეზოს ხის საპირისპიროდ, ვაზის ჩარდახი იმავე საქმეს აკეთებს — ჩრდილს აძლევს მანქანებს, სკამებს და მოსაუბრეებს. ზოგჯერ ვინმეს ის მანქანაზე მტვერს აყრის, ზოგჯერ კი — მთელი უბნის ერთადერთი საერთო სახურავია.","ასეთი ჩარდახები ქალაქის ბევრ ეზოშია — დარგული, მოჭრილი და ისევ აღდგენილი. თითოეული მათგანი თავისი ისტორიაა, მაგრამ ყველა ერთ კანონს იმეორებს: ვაზი, რომელსაც მზრუნველობა სჭირდება, ბოლოს ისევ იზრდება."],
       ben:["On the building's other side, opposite the courtyard tree, a vine pergola does the same work — shading cars, benches and conversations. To one neighbour it drops dust on a windshield; to the block, it is the only shared roof outdoors.","Pergolas like this one are everywhere in the city's courtyards — planted, cut down, and grown back again. Each has its own story, but they all repeat the same rule: a vine that is cared for eventually grows back."],
       inh:["grapevine","dog"], sen:["smell","light"],
-      media:[{t:"photo",base:"panel-grapevines-overhead-vine-01",w:1200,h:645,alt:{ka:"ვაზი, რომელიც ორ საცხოვრებელ კორპუსს შორის მავთულებზე გადაჭიმულა, შორეულ ხეებს მიღმა მაღალი შენობა ჩანს",en:"A grapevine growing across wires between two apartment buildings, with a taller building visible beyond the trees"},credit:"Tamta Khalvashi archive. Tbilisi, Vake, 2026"}] }
+      media:[{t:"photo",base:"panel-grapevines-overhead-vine-01",w:1200,h:645,alt:{ka:"ვაზი, რომელიც ორ საცხოვრებელ კორპუსს შორის მავთულებზე გადაჭიმულა, შორეულ ხეებს მიღმა მაღალი შენობა ჩანს",en:"A grapevine growing across wires between two apartment buildings, with a taller building visible beyond the trees"},credit:"Tamta Khalvashi archive. Tbilisi, Vake, 2026"}] },
+
+    /* ka fields below duplicate the English text rather than assert an unverified Georgian
+       translation — the language switcher is pinned to "en" (see setLang), so ka is never
+       actually displayed; see CLAUDE.md: "Georgian text in source files is a direction, not
+       content." subka/suben reuse T.inhabitants.dog's existing description (not invented). */
+    { id:"dogs",
+      ka:"Dogs", en:"Dogs",
+      subka:"A population that moves between courtyard and stairwell, following the building's open and closed states across the seasons.",
+      suben:"A population that moves between courtyard and stairwell, following the building's open and closed states across the seasons.",
+      lede:"Tbilisi's streets are home to countless dogs, locally known as ubnis dzaghlebi (neighborhood dogs). Born and raised in the city, they are companion neighbors rather than strays, sharing everyday urban life with their human neighbors.",
+      inh:["grapevine","dog"], sen:["smell","light"],
+      media:[{t:"photo",base:"panel-dogs-street-dog-01",w:1200,h:645,
+        alt:{ka:"A tan street dog stands on a paved yard, looking aside, beside a plastered wall marked with chalk writing and black spray-painted graffiti, with a coin-operated parking kiosk to the right.",
+             en:"A tan street dog stands on a paved yard, looking aside, beside a plastered wall marked with chalk writing and black spray-painted graffiti, with a coin-operated parking kiosk to the right."}
+        /* caption to be added */ }] }
   ],
 
   inhabitants:{
@@ -1177,7 +1192,11 @@ const BUILDING_ZONES = [
   {id:"vineyard",  x:905, y:250, w:92,  h:560, hx:952, hy:700, photo:"building-grapevines-01.jpg",  pos:"48% 50%",
    credit:"Nargiza Arjevanidze archive. Tbilisi, Gldani, 2023. Courtesy of the author."},    /* the right-hand strip: the vine-covered pergola posts */
   {id:"basement",  x:50,  y:790, w:390, h:66,  hx:130, hy:824, photo:"basement.jpg",  pos:"50% 88%"},
-  {id:"pipes",     x:440, y:790, w:465, h:66,  hx:560, hy:822, photo:"pipes.jpg",     pos:"30% 92%"}
+  {id:"pipes",     x:440, y:790, w:465, h:66,  hx:560, hy:822, photo:"pipes.jpg",     pos:"30% 92%"},
+  /* no "photo" (compare: drawing|reality) image for this one — it stays a drawing always;
+     positioned beside the small dog figure drawn in the life layer (buildElevation()),
+     clear of the courtyard tree's own marker, the left entrance door and the ground line */
+  {id:"dogs",      x:295, y:705, w:130, h:80,  hx:415, hy:740}
 ];
 
 const buildingView = (function(){
@@ -1473,6 +1492,7 @@ const buildingView = (function(){
     preloadStarted = true;
     let left = ZONES.length;
     ZONES.forEach(z=>{
+      if(!z.photo){ settle(); return; }   /* no comparison photograph for this zone: stays a drawing */
       const im = new Image(); im.decoding = "async";
       im.onload = ()=>{ z.el.style.backgroundImage = 'url("' + im.src + '")'; z.ready = true; settle(); };
       im.onerror = settle;   /* a missing photograph: this zone simply stays a drawing */
@@ -1560,16 +1580,18 @@ function openSpace(id){
   close.onclick = ()=> location.hash = "#/";
   head.appendChild(close);
   p.appendChild(head);
-  /* Grapevines panel: subtitle intentionally omitted here (the #cap zoom-caption preview,
-     shown before this panel opens, still carries it — see showCap()). */
-  if(id!=="vineyard") p.appendChild(elDogs("div","sub", s.suben));
+  /* Grapevines and Dogs panels: subtitle intentionally omitted here (the #cap zoom-caption
+     preview, shown before this panel opens, still carries it — see showCap()). */
+  if(id!=="vineyard" && id!=="dogs") p.appendChild(elDogs("div","sub", s.suben));
   p.appendChild(elDogs("p","lede-text", s.lede));
 
-  if(id==="vineyard"){
+  if(id==="vineyard" || id==="dogs"){
     p.appendChild(el("div","eyebrow", L()==="ka"?"სრული ისტორია":"Full story"));
     const storyLinks = el("div","links");
-    const storyLink = el("a",null, L()==="ka"?"ვენახების ქალაქი — სრული ისტორია →":"A City of Vineyards — the full story →");
-    storyLink.href = "a-city-of-vineyards/index.html";
+    const storyLink = el("a",null, id==="dogs"
+      ? (L()==="ka"?"Dogs — the full story →":"Dogs — the full story →")
+      : (L()==="ka"?"ვენახების ქალაქი — სრული ისტორია →":"A City of Vineyards — the full story →"));
+    storyLink.href = id==="dogs" ? DOGS_HREF : "a-city-of-vineyards/index.html";
     storyLinks.appendChild(storyLink);
     p.appendChild(storyLinks);
     p.appendChild(el("hr","rule"));

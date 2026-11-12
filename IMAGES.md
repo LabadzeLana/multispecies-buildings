@@ -32,11 +32,17 @@ under `media/`, not a subfolder, matching the panel frame's own ~1.86:1 aspect r
   a source photo kept on disk only and never committed (see `.gitignore`). sRGB, all
   EXIF/GPS metadata stripped, each size under budget (480 ≈ 36 KB, 800 ≈ 90 KB,
   1200 ≈ 183 KB).
+- `panel-dogs-street-dog-01-{480,800,1200}.{webp,jpg}` — the Dogs panel's photograph,
+  cropped (full width, trimmed from the top only so the dog's feet stay at the frame's
+  edge) from `media/dogs/12.jpg` (kept in the repo; not a hidden/original-only source).
+  Colour-managed from the source's embedded Display P3 profile to sRGB, all EXIF/GPS
+  metadata stripped, each size under budget (480 ≈ 14 KB, 800 ≈ 37 KB, 1200 ≈ 80 KB).
 
 Regenerate with:
 
 ```
-python3 tools/make_panel_photo.py
+python3 tools/make_panel_photo.py                 # all jobs
+python3 tools/make_panel_photo.py --only panel-dogs-street-dog-01   # just this one
 ```
 
 # Grapevines story page: Creeping Agency strip photographs
