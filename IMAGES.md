@@ -172,3 +172,27 @@ Regenerate with:
 python3 tools/make_dogs_gallery_photo.py "media/dogs/111..jpg" media/dogs dogs-gallery-1-111
 python3 tools/make_dogs_gallery_photo.py media/dogs/222.jpg media/dogs dogs-gallery-1-222
 ```
+
+# Dogs story page: "Dog Gardens" section, two added photographs, one removed
+
+- `dogs-garden-333.jpg` and `dogs-garden-444.jpg` (plus `thumb/dogs-garden-333.jpg` and
+  `thumb/dogs-garden-444.jpg`) — two new photographs appended to the end of the "Dog
+  Gardens" section (`storyOfPuppies` in `index.html`), in the section's own plain src+thumb
+  convention (1600px long edge / 600px long edge, no WebP, matching sibling entries like
+  `17.jpg`/`thumb/17.jpg`). Built from `media/dogs/333.jpeg` and `media/dogs/444.jpeg`. Both
+  source photos are kept on disk only and never committed (see `.gitignore`). sRGB, all
+  metadata stripped, never upscaled.
+- `16.jpg` was removed from this section (replaced by the two new photographs). Its
+  generated thumbnail, `media/dogs/thumb/16.jpg`, has been deleted (it was used nowhere
+  else on the page). The original, `media/dogs/16.jpg`, is untouched and still in the repo,
+  just no longer referenced from any page.
+- No manifest.json exists for `media/dogs/` (only `media/vineyards/` has one); this section
+  of IMAGES.md is the only record of these files, same as the other Dogs-page additions
+  above.
+
+Regenerate with:
+
+```
+python3 tools/make_dogs_photo.py media/dogs/333.jpeg media/dogs dogs-garden-333
+python3 tools/make_dogs_photo.py media/dogs/444.jpeg media/dogs dogs-garden-444
+```

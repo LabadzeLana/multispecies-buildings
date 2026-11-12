@@ -41,3 +41,9 @@
 # dot in "111..jpg" — that is the file's real name, not a typo here.
 /media/dogs/111..jpg
 /media/dogs/222.jpg
+
+# source photos for the two added photographs in the Dogs page's "Dog Gardens" section:
+# kept on disk only, never committed (generated web copies are the tracked
+# dogs-garden-333 / dogs-garden-444 files, flat in media/dogs/ and media/dogs/thumb/)
+/media/dogs/333.jpeg
+/media/dogs/444.jpeg
