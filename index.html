@@ -609,7 +609,7 @@ body.story-page{overflow:visible}
    motion is wanted; these rules are the enhancement and never the only way to see the
    photograph. --pin-h / --pin-h-mobile are named, tunable constants: how tall the pinned
    scroll distance is. */
-.st-zoom{--pin-h:340dvh;--pin-h-mobile:280dvh}
+.st-zoom{--pin-h:280dvh;--pin-h-mobile:230dvh}
 .st-zoom.is-active{position:relative;height:var(--pin-h)}
 @media (max-width:700px){ .st-zoom.is-active{height:var(--pin-h-mobile)} }
 .st-zoom.is-active .st-zoom-pin{position:sticky;top:0;width:100%;height:100dvh;height:100svh}
@@ -2022,7 +2022,7 @@ function stImg(m, sizes, eager){
    curve below, with no added lag; that also means a fast or reversed scroll is reflected
    immediately, with nothing to catch up. All constants are named so they're easy to tune. */
 const LASTDOG_FOCUS_X = .84, LASTDOG_FOCUS_Y = .66;   // transform-origin: near the dog, lower right
-const LASTDOG_ZOOM_MAX = 1.8;                          // peak scale, reached at LASTDOG_IN_TO (was 1.3)
+const LASTDOG_ZOOM_MAX = 1.3;                          // peak scale, reached at LASTDOG_IN_TO
 const LASTDOG_IN_TO = .42;         // zoom-in is the first 42% of the pinned scroll; the rest zooms back out
 const LASTDOG_LAZY_MARGIN = "150% 0px";   // start animating ~1.5 screens before it's on screen
 
@@ -2060,6 +2060,7 @@ function stZoomFigure(m){
   const frameEl = el("div","st-zoom-frame");
   const photo = stZoomImg(m, "100vw");
   photo.classList.add("photo");
+  photo.style.transformOrigin = (LASTDOG_FOCUS_X*100).toFixed(1) + "% " + (LASTDOG_FOCUS_Y*100).toFixed(1) + "%";
   frameEl.appendChild(photo);
   pin.appendChild(frameEl);
   zoom.appendChild(pin);
@@ -2076,41 +2077,15 @@ function stZoomFigure(m){
     if(total <= 0) return 0;
     return Math.max(0, Math.min(1, -r.top / total));
   }
-  /* the frame's own object-fit:cover already renders the photo at "cover" size (scale 1 here
-     fills the frame, cropping whichever dimension overhangs); the ratio below is how much
-     smaller "contain" (the whole photo, letterboxed) is than that — 1 when the frame and the
-     photo share the same aspect ratio (no letterboxing needed), less than 1 otherwise. Measured
-     live (not cached) so a resize or address-bar show/hide never leaves it stale. */
-  function containRatio(){
-    const r = frameEl.getBoundingClientRect();
-    if(!r.width || !r.height || !m.w || !m.h) return 1;
-    const a = r.width / m.w, b = r.height / m.h;
-    return Math.min(a,b) / Math.max(a,b);
-  }
   function scaleFor(p){
-    /* in: 1 -> LASTDOG_ZOOM_MAX over [0, LASTDOG_IN_TO] (the image only ever grows here, so
-       object-fit:cover's already-filled frame never shows an empty edge); out: back down from
-       LASTDOG_ZOOM_MAX to containRatio() over the rest — past scale 1 and on down to the exact
-       size that fits the whole photo inside the frame, letterboxed on the frame's own paper
-       background, as one continuous curve with no jump where it crosses scale 1. */
+    /* in: 1 -> LASTDOG_ZOOM_MAX over [0, LASTDOG_IN_TO]; out: back down to 1 over the rest —
+       the image can only ever grow from here, never shrink below 1, so (given object-fit:cover
+       already fills the frame at scale 1) it can never reveal an empty edge. */
     if(p <= LASTDOG_IN_TO) return 1 + (LASTDOG_ZOOM_MAX-1) * stZoomSS(0, LASTDOG_IN_TO, p);
-    return LASTDOG_ZOOM_MAX + (containRatio()-LASTDOG_ZOOM_MAX) * stZoomSS(LASTDOG_IN_TO, 1, p);
-  }
-  /* the focal point only matters while scale > 1 — scaling a cover-filled image up around it is
-     what keeps the dog in frame. Once the zoom-out drops below scale 1 and the photo has to
-     shrink to fit inside the frame, scaling around that same off-centre point would leave the
-     letterboxing lopsided (more paper on one side than the other); blending the origin back to
-     dead centre over the same stretch the scale is already easing out over keeps the one curve
-     (scale + origin) continuous and lands exactly centred, like a normal letterboxed photo. */
-  function originFor(p){
-    if(p <= LASTDOG_IN_TO) return {x:LASTDOG_FOCUS_X, y:LASTDOG_FOCUS_Y};
-    const t = stZoomSS(LASTDOG_IN_TO, 1, p);
-    return {x: LASTDOG_FOCUS_X + (.5-LASTDOG_FOCUS_X)*t, y: LASTDOG_FOCUS_Y + (.5-LASTDOG_FOCUS_Y)*t};
+    return LASTDOG_ZOOM_MAX + (1-LASTDOG_ZOOM_MAX) * stZoomSS(LASTDOG_IN_TO, 1, p);
   }
   function tick(){
-    const p = target(), o = originFor(p);
-    photo.style.transformOrigin = (o.x*100).toFixed(2) + "% " + (o.y*100).toFixed(2) + "%";
-    photo.style.transform = "scale(" + scaleFor(p).toFixed(4) + ")";
+    photo.style.transform = "scale(" + scaleFor(target()).toFixed(4) + ")";
     raf = disposed ? null : requestAnimationFrame(tick);
   }
 
@@ -2227,7 +2202,7 @@ function stDeepZoom(H, head, opts){
 
   const W = H.width, Hh = H.height, T = H.tileSize, maxL = H.levels - 1;
   const ctx = cv.getContext("2d");
-  let vw = 0, vh = 0, dpr = 1, s = 0, ox = 0, oy = 0, minS = 0, fitS = 0, maxS = 0, alive = true;
+  let vw = 0, vh = 0, dpr = 1, s = 0, ox = 0, oy = 0, minS = 0, maxS = 0, alive = true;
   const locked = ()=> document.documentElement.classList.contains("st-locked");
 
   /* ---- images ---- */
@@ -2247,15 +2222,11 @@ function stDeepZoom(H, head, opts){
 
   /* ---- geometry ---- */
   const zoomed = ()=> s > minS * 1.002;
-  const clampS = x => Math.min(maxS, Math.max(fitS, x));
-  /* pan is clamped edge-to-edge as usual while the image fills the viewport on an axis; once
-     zoomed out past cover on that axis there is no edge to clamp to, so it is centred instead
-     (the two formulas agree exactly where they meet, so the image recentres with no jump). */
+  const clampS = x => Math.min(maxS, Math.max(minS, x));
   function clamp(){
     s = clampS(s);
-    const ivw = vw/s, ivh = vh/s;
-    ox = ivw >= W ? (W - ivw)/2 : Math.min(W - ivw, Math.max(0, ox));
-    oy = ivh >= Hh ? (Hh - ivh)/2 : Math.min(Hh - ivh, Math.max(0, oy));
+    ox = Math.min(W - vw/s, Math.max(0, ox));
+    oy = Math.min(Hh - vh/s, Math.max(0, oy));
   }
   const center = ()=>({x:ox + vw/2/s, y:oy + vh/2/s});
   function setCenter(x, y){ ox = x - vw/2/s; oy = y - vh/2/s; }
@@ -2267,7 +2238,6 @@ function stDeepZoom(H, head, opts){
     vw = r.width; vh = r.height; dpr = Math.min(3, window.devicePixelRatio || 1);
     cv.width = Math.round(vw*dpr); cv.height = Math.round(vh*dpr);
     minS = Math.max(vw/W, vh/Hh);                 /* cover: never any empty space */
-    fitS = Math.min(vw/W, vh/Hh);                 /* contain: the whole photograph, letterboxed */
     maxS = Math.max(minS, H.maxDevicePx / dpr);   /* no more than ~1.5 device px per image px */
     s = clampS(minS * rel); setCenter(c.x, c.y); clamp(); sync(); render();
   }
@@ -2355,7 +2325,7 @@ function stDeepZoom(H, head, opts){
     }});
   }
   const focusScale = f => f.zoom * vw / W;
-  const reset = ()=> glide(fitS, W/2, Hh/2, 700);
+  const reset = ()=> glide(minS, W/2, Hh/2, 700);
 
   /* ---- intro: whole photograph, then glide to the eyes ---- */
   let introTimer = 0, introOn = false, hintTimer = 0, touched = false;
