@@ -94,3 +94,15 @@ because several photos are inlined as base64 data URIs. Key structure, in order:
 - `Dogs and Buildings/`, and loose top-level photos/`.WAV` files — media assets referenced by relative path
   from `index.html`'s `IMG`/`media` entries (e.g. `PULLBACK_SRC`, `hero-container` background images,
   `ZOOM0254_LR.WAV`). Renaming or moving these breaks the site unless references are updated too.
+
+# Standing rules for this project (Multispecies Buildings)
+
+- English only on the site. Georgian text in source files is a direction, not content. Never invent facts, captions, credits, dates or authors; if something is missing, leave it empty and tell me.
+- Make small, additive, minimal changes. Do not change text, routes, ids or other pages unless the task says so.
+- Before starting, check that everything is committed (tell me if not). Git is the backup: do not create backup copies of files.
+- Commit with the exact message given in the task. Do NOT push; I push myself.
+- Photographs: originals are never modified, renamed, deleted or committed (their folders stay in .gitignore). Create outputs in media/ with descriptive lowercase ASCII hyphenated names: WebP + JPEG fallback, sRGB, ALL metadata (EXIF/GPS) stripped, never upscale, srcset/sizes, width/height attributes, lazy loading, files under 25 MB. Update the manifests and IMAGES.md. File name case matters on GitHub Pages.
+- Privacy: when you add or change a photograph, tell me if faces, house numbers or car number plates are clearly visible. Do not blur anything yourself.
+- If a request is ambiguous or you cannot identify what I mean, do not guess: report what you found and ask.
+- Test in a real browser at 1440, 768 and 390 px; no console errors, no horizontal scrolling. For scroll animations also check prefers-reduced-motion. For image work also check the Network tab for 404s.
+- Final report: short, at most 6 lines: what changed, what could not be tested, anything I must do.
