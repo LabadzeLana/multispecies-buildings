@@ -581,10 +581,14 @@ html.st-locked .dz-view,html.st-locked .dz-strip{touch-action:none !important}
 .st-close-line{padding:5rem 0 7rem}
 .st-close-line a{display:inline-flex;align-items:center;min-height:44px;font-size:1.1rem;text-decoration:none;border-bottom:1px solid var(--oil);color:var(--ink)}
 .st-close-line a:hover{color:var(--oil)}
+/* marks where the last photograph's own text begins, clearly apart from the section above it */
+.st-close-lede{margin-top:4.5rem}
+.st-close-lede .rule{margin:0 0 .8rem}
+.st-close-label{font-family:var(--sans);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--oil);margin:0 0 .6rem}
 /* Full-screen section: breaks out of #view's centered max-width/padding (and of .st-wrap,
    which this element deliberately isn't) to span the full viewport width, so the pinned
    photo beneath it can fill the whole screen rather than sit in a boxed-in card. */
-.st-close-photo-wrap{margin-top:4rem;width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw}
+.st-close-photo-wrap{margin-top:1.75rem;width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw}
 
 /* The site-wide html,body{overflow-x:hidden} rule above forces the unspecified overflow-y to
    compute as "auto" (the CSS rule that only one axis may be "visible" at a time), which turns
@@ -1944,6 +1948,7 @@ const DOGS_STORY = {
   },
   closing: {
     text:"Explore the other inhabitants", href:"#/inhabitants",
+    label:"Last photograph",
     lede:"Taken in the early 2000s, amid the ruins of TbilZNIIEP, a Soviet-era architectural research and design institute. In a place once devoted to designing human habitats, dogs found their own ways of inhabiting the ruins of Soviet modernity.",
     photo: {type:"photo", base:"media/dogs/dogs-last-photo", widths:[1200,2400,3200], w:3200, h:2133,
       alt:"A long, cracked concrete prefab wall recedes diagonally into the distance under grey light; a small dog walks near its base, with a gate and a tree visible beyond.", caption:null, credit:null}
@@ -2719,7 +2724,9 @@ function openDogsStory(){
 
   /* 8 — closing: the last photograph, with a scroll-driven zoom-in/zoom-out (stZoomFigure) */
   if(D.closing.lede){
-    const lw = el("div","st-wrap");
+    const lw = el("div","st-wrap st-close-lede");
+    lw.appendChild(el("hr","rule"));
+    if(D.closing.label) lw.appendChild(el("div","st-close-label",D.closing.label));
     lw.appendChild(el("p","st-lede",D.closing.lede));
     v.appendChild(lw);
   }
