@@ -1252,17 +1252,11 @@ const buildingView = (function(){
     zonesEl.appendChild(d);
     z.el = d; z.p = 0; z.ox = z.w/2; z.oy = z.h/2; z.ready = false;
   });
-  /* markers (real buttons) in reading order, so Tab goes top to bottom, left to right.
-     Exception: the Grapevines marker is a real <a> straight to the Grapevines story page
-     (mouse, touch, keyboard Enter, new-tab and Back all work natively), not a button that
-     opens this page's own panel. */
+  /* markers (real buttons) in reading order, so Tab goes top to bottom, left to right */
   ZONES.slice().sort((a,b)=>Math.round(a.hy/50)-Math.round(b.hy/50) || a.hx-b.hx).forEach(z=>{
-    const isVineLink = z.id==="vineyard";
-    const b = el(isVineLink ? "a" : "button","mk");
-    if(isVineLink) b.href = VINE_HREF; else b.type = "button";
+    const b = el("button","mk"); b.type = "button";
     b.appendChild(el("span","dot")); z.lab = el("span","lab"); b.appendChild(z.lab);
-    if(isVineLink) b.addEventListener("click", e=>e.stopPropagation());
-    else b.addEventListener("click", e=>{ e.stopPropagation(); interacted(); open(z.id); });
+    b.addEventListener("click", e=>{ e.stopPropagation(); interacted(); open(z.id); });
     b.addEventListener("pointerdown", e=>e.stopPropagation());
     markersEl.appendChild(b); z.mk = b;
   });
@@ -1471,7 +1465,7 @@ const buildingView = (function(){
       viewer.classList.remove("drag");
       if(e.type==="pointerup" && was && was.moved<=5 && performance.now()-was.t<600){
         interacted(); const p = vpt(e); const wx = s2wx(p.x), wy = s2wy(p.y), z = hit(wx,wy);
-        if(z && !compare){ if(z.id==="vineyard") location.href = VINE_HREF; else open(z.id, {x:wx, y:wy}); }
+        if(z && !compare) open(z.id, {x:wx, y:wy});
       }
       drag = null;
     }
@@ -1498,7 +1492,7 @@ const buildingView = (function(){
   $("#zin").onclick = ()=>{ userMove(); zoomAt(VW/2,VHe/2,1.5); };
   $("#zout").onclick = ()=>{ userMove(); zoomAt(VW/2,VHe/2,1/1.5); };
   $("#zhome").onclick = ()=>{ interacted(); if(location.hash.indexOf("#/space/")===0) location.hash = "#/"; else home(); };
-  capEl.querySelector(".back").onclick = ()=>{ if(!capId) return; if(capId==="vineyard") location.href = VINE_HREF; else open(capId); };
+  capEl.querySelector(".back").onclick = ()=>{ if(capId) open(capId); };
 
   /* ---------- compare: drawing | reality ---------- */
   function setCompare(on){
@@ -1580,7 +1574,7 @@ const buildingView = (function(){
     ZONES.forEach(z=>{
       const n = nameOf(z);
       z.lab.textContent = n;
-      z.mk.setAttribute("aria-label", z.id==="vineyard" ? n + ": open the story A City of Vineyards" : "Open the space: " + n);
+      z.mk.setAttribute("aria-label", "Open the space: " + n);
       z.mk.classList.toggle("visited", visited.has(z.id));
       z.mk.classList.toggle("current", z.id===activeId);
     });
