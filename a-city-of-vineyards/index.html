@@ -270,10 +270,15 @@ figure{margin:0}
 .restore-4{margin-top:2.4rem}
 @media (min-width:700px){ .restore-4{width:72%;margin-left:auto} }
 
-/* ch 11: one still photograph */
+/* ch 11: one still photograph. The outer .still box (max-width/padding, including the
+   left-clearance for the decorative vine line below 1100px) is unchanged — only the image
+   itself is now capped to match the "Grapevines as Trees of Life" photographs' own rendered
+   width (.ch2-photos, min(680px, calc(100vw - 40px))), instead of filling the whole
+   72rem-wide .still box, which was far too large. */
 .still{max-width:72rem;margin:0 auto;padding:0 var(--gut)}
 .story .still{padding-left:max(34px,var(--gut))}
 @media (min-width:1100px){ .story .still{padding-left:var(--gut)} }
+.still img{width:min(680px,100%);margin:0 auto;display:block}
 .still figcaption{max-width:40rem;font-family:var(--serif);font-size:clamp(1rem,2.3vw,1.12rem);color:var(--ink-soft);margin-top:1rem}
 
 /* video players: no browser chrome, play on request */
@@ -583,7 +588,7 @@ figure{margin:0}
 
   <!-- 11 -->
   <section class="ch" id="ch-11" aria-label="Chapter 11">
-    <figure class="still"><img class="ph" src="../media/vineyards/vineyards-11-leaf-collage-01-1200.jpg" srcset="../media/vineyards/vineyards-11-leaf-collage-01-1200.jpg 1200w, ../media/vineyards/vineyards-11-leaf-collage-01.jpg 2400w" sizes="(min-width: 1200px) 72rem, 100vw" width="2400" height="1800" alt="A pressed vine leaf on an open gardening book, a collage of leaves and tendrils on a card, and a bag of dried cuttings" loading="lazy" decoding="async">
+    <figure class="still"><img class="ph" src="../media/vineyards/vineyards-11-leaf-collage-01-1400.jpg" srcset="../media/vineyards/vineyards-11-leaf-collage-01-1200.jpg 1200w, ../media/vineyards/vineyards-11-leaf-collage-01-1400.jpg 1400w, ../media/vineyards/vineyards-11-leaf-collage-01.jpg 2400w" sizes="(min-width: 720px) 680px, calc(100vw - 40px)" width="2400" height="1800" alt="A pressed vine leaf on an open gardening book, a collage of leaves and tendrils on a card, and a bag of dried cuttings" loading="lazy" decoding="async">
       <figcaption>While some of the vine’s cuttings took root in my garden, its leaves traveled across borders as a gesture of enduring solidarity. I made them into a collage and gifted it to Darya Tsymbalyuk, author of The Ecocide of Ukraine (2025). Connecting Georgia and Ukraine, two lands scarred by Russia’s imperial wars, the grapevine became my small gesture of shared survival, nurturing fragile possibilities of care and life together amid the ruins of empire.</figcaption></figure>
   </section>
 

@@ -120,3 +120,32 @@ Regenerate with:
 ```
 python3 tools/make_lastdog_photo.py media/dogs/Lastdog.JPG media/dogs dogs-last-photo
 ```
+
+# Grapevines story page: chapter 11 still photograph, resized
+
+- `vineyards-11-leaf-collage-01-1400.jpg` — added so the chapter 11 photograph (the pressed
+  vine leaf and leaf collage above the "While some of the vine's cuttings..." paragraph) is
+  sharp at its new, much smaller rendered width (matching the "Grapevines as Trees of Life"
+  photographs' own width, up to 680px, instead of filling the whole page column at up to
+  1152px). Built from the already-committed `vineyards-11-leaf-collage-01.jpg` (2400x1800,
+  the best available source — no separate uncommitted original exists for this one), sRGB,
+  all metadata stripped, long edge 1400px (covers 680px at 2x pixel density), JPEG quality
+  72, never upscaled. The existing `-1200.jpg` and un-suffixed 2400px files are unchanged
+  and still in the `srcset`.
+
+Regenerate with:
+
+```
+python3 -c "
+import io
+from PIL import Image, ImageCms, ImageOps
+SRGB = ImageCms.createProfile('sRGB')
+im = Image.open('media/vineyards/vineyards-11-leaf-collage-01.jpg')
+im.load(); im = ImageOps.exif_transpose(im)
+icc = im.info.get('icc_profile')
+im = ImageCms.profileToProfile(im, ImageCms.ImageCmsProfile(io.BytesIO(icc)), SRGB, outputMode='RGB') if icc else im.convert('RGB')
+w, h = im.size
+im = im.resize((1400, round(h * 1400 / w)), Image.LANCZOS)
+im.save('media/vineyards/vineyards-11-leaf-collage-01-1400.jpg', 'JPEG', quality=72, optimize=True, progressive=True)
+"
+```
