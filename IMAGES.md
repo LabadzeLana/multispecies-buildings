@@ -215,3 +215,31 @@ Regenerate with:
 ```
 python3 tools/make_dogs_photo.py media/dogs/666.jpg media/dogs dogs-entrance-notices
 ```
+
+# Dogs story page: "Homes" section, one added photograph, two removed, new layout
+
+- `dogs-home-doghouse-lot.jpg` (plus `thumb/dogs-home-doghouse-lot.jpg`) — one new photograph
+  appended to the end of the "Homes" section (`homes` in `index.html`), in the section's own
+  plain src+thumb convention (1600px long edge / 600px long edge, no WebP, matching sibling
+  entries like `3.jpg`/`19.jpg`). Built from `media/dogs/555.jpeg`, kept on disk only and
+  never committed (see `.gitignore`). sRGB, all metadata stripped, never upscaled.
+- `8.jpg` and `9.jpg` were removed from this section. Their generated thumbnails,
+  `media/dogs/thumb/8.jpg` and `media/dogs/thumb/9.jpg`, have been deleted (used nowhere
+  else on the page). The originals, `media/dogs/8.jpg` and `media/dogs/9.jpg`, are untouched
+  and still in the repo, just no longer referenced from any page.
+- The "Homes" gallery's layout was also replaced: the decorative "building drawing" system
+  (`INK`, `stRuler`, `stInk`, `stInkBleed` and all `.ink*` CSS — small line fragments cloned
+  from the Building page's elevation drawing, used as section dividers, a left-margin section
+  ruler, and a hover/scroll "develop" effect specifically over the Homes photographs) has been
+  removed from the Dogs page entirely, per request. In its place, "Homes" now uses its own
+  `.st-homes` grid — a 4-role cycle of column spans (7/5/5/7, alternating which side is wider
+  each row, with a small vertical stagger) instead of the generic `.st-gallery` pattern the
+  other sections use.
+- No manifest.json exists for `media/dogs/`; this section of IMAGES.md is the only record of
+  this file, same as the other Dogs-page additions above.
+
+Regenerate with:
+
+```
+python3 tools/make_dogs_photo.py media/dogs/555.jpeg media/dogs dogs-home-doghouse-lot
+```

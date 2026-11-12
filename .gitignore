@@ -53,3 +53,8 @@
 # alongside it). This original also carried embedded GPS coordinates, stripped from the
 # generated output.
 /media/dogs/666.jpg
+
+# source photo for the added photograph in the Dogs page's "Homes" section: kept on disk
+# only, never committed (generated web copy is the tracked dogs-home-doghouse-lot file
+# alongside it)
+/media/dogs/555.jpeg
