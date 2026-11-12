@@ -196,3 +196,22 @@ Regenerate with:
 python3 tools/make_dogs_photo.py media/dogs/333.jpeg media/dogs dogs-garden-333
 python3 tools/make_dogs_photo.py media/dogs/444.jpeg media/dogs dogs-garden-444
 ```
+
+# Dogs story page: "notAllowed" section, one added photograph
+
+- `dogs-entrance-notices.jpg` (plus `thumb/dogs-entrance-notices.jpg`) — one new photograph
+  added to the end of the section whose heading begins "Bonds of care and affection for
+  dogs..." (`notAllowed` in `index.html`), in the section's own plain src+thumb convention
+  (1600px long edge / 600px long edge, no WebP, matching sibling entries `5.jpg`/`13.jpg`).
+  Built from `media/dogs/666.jpg`, kept on disk only and never committed (see `.gitignore`).
+  sRGB, EXIF orientation applied (the source was stored landscape with a rotate-to-portrait
+  EXIF tag), all metadata stripped — notably including embedded GPS coordinates the source
+  carried — never upscaled.
+- No manifest.json exists for `media/dogs/`; this section of IMAGES.md is the only record of
+  this file, same as the other Dogs-page additions above.
+
+Regenerate with:
+
+```
+python3 tools/make_dogs_photo.py media/dogs/666.jpg media/dogs dogs-entrance-notices
+```

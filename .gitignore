@@ -47,3 +47,9 @@
 # dogs-garden-333 / dogs-garden-444 files, flat in media/dogs/ and media/dogs/thumb/)
 /media/dogs/333.jpeg
 /media/dogs/444.jpeg
+
+# source photo for the added photograph in the Dogs page's "notAllowed" section: kept on
+# disk only, never committed (generated web copy is the tracked dogs-entrance-notices file
+# alongside it). This original also carried embedded GPS coordinates, stripped from the
+# generated output.
+/media/dogs/666.jpg
