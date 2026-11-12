@@ -118,34 +118,15 @@ figure{margin:0}
 .zoom:hover .badge{background:var(--paper)}
 .zoom:focus-visible{outline-offset:4px}
 
-/* ---------- ch 2: photographs in the column, revealed from an embossed relief ----------
-   Matches a-city-of-vineyards/emboss-reveal-sample.html (a reference kept only on disk, see
-   .gitignore) class for class: .ch2-fig = .fig (its ::before is the neumorphic plate shadow),
-   .ch2-photo = .photo, .ch2-relief = .rel. Both source photographs share the same 1150x862 frame (see
-   media/vineyards/manifest.json), so the aspect-ratio below covers both and reserves their full
-   height up front: no layout shift while the real photograph is still lazy-loading. */
+/* ---------- ch 2: two plain photographs, same .zoom/.ph pattern as the rest of the page ----------
+   Was previously revealed from an embossed relief overlay (blur-to-sharp + plate shadow on
+   scroll); removed in favour of plain, static photographs. .ch2-photos keeps the same
+   max-width column and centring; the figure spacing below keeps the same title-to-photo gap
+   and inter-figure rhythm the relief version had (first figure flush under the title, 12vh
+   below each). */
 .ch2-photos{width:min(680px,calc(100vw - 40px));margin:0 auto}
-.ch2-fig{position:relative;margin:7vh auto 12vh;border-radius:4px;background:var(--paper);aspect-ratio:1150/862}
-/* title-to-photo gap only: the component's own internal rhythm (between the two figures,
-   and below the last) is untouched */
-.ch2-photos .ch2-fig:first-child{margin-top:0}
-.ch2-fig::before{content:"";position:absolute;inset:0;border-radius:4px;opacity:var(--plate,1);pointer-events:none;
-  box-shadow:-9px -9px 20px rgba(255,255,255,.95),9px 9px 22px rgba(112,118,110,.34)}
-.ch2-zoom{position:absolute;inset:0;display:block;width:100%;height:100%;padding:0;cursor:zoom-in;border-radius:4px;overflow:hidden}
-.ch2-zoom .badge{z-index:3}
-.ch2-relief,.ch2-photo{position:absolute;inset:0;width:100%;height:100%;display:block;border-radius:4px;object-fit:cover}
-.ch2-photo{z-index:1;opacity:0;filter:blur(9px)}
-.ch2-relief{z-index:2;opacity:1;pointer-events:none}
-@media (prefers-reduced-motion: reduce){
-  .ch2-photo{opacity:1!important;filter:none!important}
-  .ch2-relief{display:none}
-  .ch2-plate{opacity:.15}
-}
-/* if the relief image itself fails to load/decode, show the real photograph plainly rather than
-   an empty box (set by JS on the relief's error event) */
-.ch2-fig.ch2-fallback .ch2-relief{display:none}
-.ch2-fig.ch2-fallback .ch2-photo{opacity:1;filter:none}
-.ch2-fig.ch2-fallback{--plate:.15}
+.ch2-photos figure{margin:7vh auto 12vh}
+.ch2-photos figure:first-child{margin-top:0}
 
 /* book page (ch 3) */
 .book{position:relative;background:#EFEEE8;padding:clamp(1rem,3.5vw,2.6rem);
@@ -405,25 +386,22 @@ figure{margin:0}
   <section class="ch" id="ch-2" aria-labelledby="h-2">
     <div class="wrap">
       <h2 id="h-2">Grapevines as Trees of Life</h2>
-      <noscript><style>.ch2-relief{display:none}.ch2-photo{opacity:1!important;filter:none!important}</style></noscript>
       <div class="ch2-photos">
-        <figure class="ch2-fig">
-          <button class="zoom ch2-zoom" type="button" data-group="g2" data-cap="cap-2" data-full="../media/vineyards/vineyards-02-photo-01.jpg" aria-label="Open larger view">
+        <figure>
+          <button class="zoom" type="button" data-group="g2" data-cap="cap-2" data-full="../media/vineyards/vineyards-02-photo-01.jpg" aria-label="Open larger view">
             <picture>
               <source srcset="../media/vineyards/vineyards-02-photo-01.webp" type="image/webp">
-              <img class="ch2-photo" src="../media/vineyards/vineyards-02-photo-01.jpg" width="1150" height="862" alt="Metal relief: a figure holding a bunch of grapes among vine leaves" loading="lazy" decoding="async">
+              <img class="ph" src="../media/vineyards/vineyards-02-photo-01.jpg" width="1150" height="862" alt="Metal relief: a figure holding a bunch of grapes among vine leaves" loading="lazy" decoding="async">
             </picture>
-            <img class="ch2-relief" src="../media/vineyards/vineyards-02-relief-01-700.webp" srcset="../media/vineyards/vineyards-02-relief-01-700.webp 700w, ../media/vineyards/vineyards-02-relief-01-1000.webp 1000w" sizes="min(680px, calc(100vw - 40px))" width="1150" height="862" alt="" aria-hidden="true" decoding="async">
             <span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span>
           </button>
         </figure>
-        <figure class="ch2-fig">
-          <button class="zoom ch2-zoom" type="button" data-group="g2" data-cap="cap-2" data-full="../media/vineyards/vineyards-02-photo-02.jpg" aria-label="Open larger view">
+        <figure>
+          <button class="zoom" type="button" data-group="g2" data-cap="cap-2" data-full="../media/vineyards/vineyards-02-photo-02.jpg" aria-label="Open larger view">
             <picture>
               <source srcset="../media/vineyards/vineyards-02-photo-02.webp" type="image/webp">
-              <img class="ch2-photo" src="../media/vineyards/vineyards-02-photo-02.jpg" width="1150" height="862" alt="Copper relief: a kneeling figure tending a young vine with grape clusters" loading="lazy" decoding="async">
+              <img class="ph" src="../media/vineyards/vineyards-02-photo-02.jpg" width="1150" height="862" alt="Copper relief: a kneeling figure tending a young vine with grape clusters" loading="lazy" decoding="async">
             </picture>
-            <img class="ch2-relief" src="../media/vineyards/vineyards-02-relief-02-700.webp" srcset="../media/vineyards/vineyards-02-relief-02-700.webp 700w, ../media/vineyards/vineyards-02-relief-02-1000.webp 1000w" sizes="min(680px, calc(100vw - 40px))" width="1150" height="862" alt="" aria-hidden="true" decoding="async">
             <span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span>
           </button>
         </figure>
@@ -850,89 +828,6 @@ $$(".zoom[data-group]").forEach(b => {
     const list = groups[b.dataset.group]; openViewer(list, list.indexOf(it), b);
   });
 });
-
-/* ---------- ch 2: embossed-relief reveal for the two photographs ----------
-   Ported from a-city-of-vineyards/emboss-reveal-sample.html's own script (a reference kept only
-   on disk, see .gitignore) — same smoothstep curves, same exponential-smoothing constants, same
-   per-frame math, so the behaviour matches exactly. Two differences from the sample: an
-   IntersectionObserver only keeps the rAF loop (and its one getBoundingClientRect call per
-   figure) running while a figure is actually near the viewport, and there's a fallback for a
-   relief image that fails to load/decode. The real photograph is a plain <picture>/<img
-   loading="lazy">, so it loads itself with no JS involved; if this script never runs at all, the
-   <noscript> rule above hides the relief and shows the plain photograph, and the
-   prefers-reduced-motion rule does the same. */
-(function(){
-  // reveal starts when the photograph's top edge is at START*viewport height (measured from the
-  // top), is complete when its centre reaches CENTRE*viewport height; p is smoothed toward that
-  // target with time constant TAU seconds, so it never jumps even on a fast or reversed scroll
-  const START = 0.96, CENTRE = 0.5, TAU = 0.55;
-  const BLUR_MAX = 9;   // px of blur at progress 0 (must match the CSS starting filter)
-
-  const figs = $$(".ch2-fig");
-  if(!figs.length) return;
-
-  function smoothstep(a, b, x){ x = Math.max(0, Math.min(1, (x - a) / (b - a))); return x * x * (3 - 2 * x); }
-
-  const state = figs.map(fig => ({
-    fig, photo: $(".ch2-photo", fig), relief: $(".ch2-relief", fig), cur: 0, watching: false
-  }));
-  state.forEach(s => {
-    s.relief.addEventListener("error", () => { s.fig.classList.add("ch2-fallback"); }, {once:true});
-  });
-
-  function target(fig){
-    const r = fig.getBoundingClientRect();
-    const vh = innerHeight || document.documentElement.clientHeight;
-    const topEnd = vh * CENTRE - r.height / 2, topStart = vh * START;
-    return Math.max(0, Math.min(1, (topStart - r.top) / (topStart - topEnd)));
-  }
-  function apply(s, p){
-    s.photo.style.opacity = smoothstep(0.08, 0.92, p);
-    s.photo.style.filter = "blur(" + ((1 - smoothstep(0, 1, p)) * BLUR_MAX).toFixed(2) + "px)";
-    s.relief.style.opacity = 1 - smoothstep(0.45, 1, p);
-    s.fig.style.setProperty("--plate", (1 - 0.85 * smoothstep(0.3, 1, p)).toFixed(3));
-  }
-  function applyStatic(s){
-    s.photo.style.opacity = 1; s.photo.style.filter = "none";
-    s.relief.style.opacity = 0; s.fig.style.setProperty("--plate", "0.15");
-  }
-
-  let raf = 0, last = 0;
-  function frame(t){
-    const dt = Math.min(0.1, last ? (t - last) / 1000 : 0); last = t;
-    const k = 1 - Math.exp(-dt / TAU);
-    let any = false;
-    state.forEach(s => {
-      if(!s.watching) return;
-      any = true;
-      const tg = target(s.fig);
-      s.cur = reduced ? tg : s.cur + (tg - s.cur) * k;
-      if(Math.abs(tg - s.cur) < 0.001) s.cur = tg;
-      apply(s, s.cur);
-    });
-    raf = any ? requestAnimationFrame(frame) : 0;   // idle (no watched figure): stop, don't poll
-  }
-
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      const s = state.find(x => x.fig === e.target);
-      if(!s) return;
-      s.watching = e.isIntersecting;
-      if(s.watching && !raf) { last = 0; raf = requestAnimationFrame(frame); }
-    });
-  }, {rootMargin: "60% 0px 60% 0px"});   // so a figure already in view on load is caught before first paint
-
-  function stop(){ if(raf){ cancelAnimationFrame(raf); raf = 0; } }
-
-  function goStatic(){ io.disconnect(); stop(); state.forEach(applyStatic); }
-  function goAnimated(){
-    state.forEach(s => { s.cur = target(s.fig); io.observe(s.fig); });   // match on load, no flash
-    state.forEach(s => apply(s, s.cur));
-  }
-
-  if(reduced) goStatic(); else goAnimated();
-  RM.addEventListener("change", e => (e.matches ? goStatic : goAnimated)());
-})();
 
 /* ---------- ch 5: filmstrip moved slowly by the page scroll ---------- */
 const strip = $(".strip"), track = $(".strip-track", strip), sp = $(".s-prev", strip), sn = $(".s-next", strip), prog = $(".strip-prog i", strip);
