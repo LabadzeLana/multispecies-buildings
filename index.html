@@ -1152,8 +1152,8 @@ function buildElevation(){
     .forEach(([x,y],i)=>{ V+=`<circle class="leaf" cx="${x}" cy="${y}" r="${5+(i%3)}"/>`; });
   V+=`<line class="trunk" x1="952" y1="${gy}" x2="952" y2="732"/><circle class="leaf canopy" cx="952" cy="690" r="42"/>`;
   V+=`<line class="trunk" x1="326" y1="${gy}" x2="326" y2="732"/><circle class="leaf canopy" cx="326" cy="690" r="42"/>`;
-  V+=`<ellipse class="creature" cx="318" cy="${gy-8}" rx="16" ry="6.5"/><circle class="creature" cx="299" cy="${gy-14}" r="5.5"/>`;
-  V+=`<path class="e2" d="M334 ${gy-10} q8 -6 10 -12"/>`;
+  V+=`<ellipse class="creature" cx="442" cy="${gy-8}" rx="16" ry="6.5"/><circle class="creature" cx="423" cy="${gy-14}" r="5.5"/>`;
+  V+=`<path class="e2" d="M458 ${gy-10} q8 -6 10 -12"/>`;
   V+=`<ellipse class="e2" cx="925" cy="${gy-5}" rx="14" ry="5"/><ellipse class="e2" cx="925" cy="${gy-5}" rx="7" ry="2.5"/>`;
   [[300,41],[322,41],[700,86]].forEach(([x,y])=>{ V+=`<circle class="creature" cx="${fx(x)}" cy="${fy(y)-3}" r="3.2"/>`; });
   [[245,44,455],[830,44,1035],[62,87,252],[442,91,835],[1028,93,1220]].forEach(([a,y,b2])=>{
@@ -1196,7 +1196,7 @@ const BUILDING_ZONES = [
   /* no "photo" (compare: drawing|reality) image for this one — it stays a drawing always;
      positioned beside the small dog figure drawn in the life layer (buildElevation()),
      clear of the courtyard tree's own marker, the left entrance door and the ground line */
-  {id:"dogs",      x:295, y:705, w:130, h:80,  hx:415, hy:740}
+  {id:"dogs",      x:295, y:705, w:130, h:80,  hx:438, hy:690}
 ];
 
 const buildingView = (function(){
