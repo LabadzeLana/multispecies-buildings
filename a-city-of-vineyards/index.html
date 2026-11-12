@@ -229,17 +229,20 @@ figure{margin:0}
    down the page; same SVG, same IntersectionObserver scroll-reveal as before */
 .lab{margin:0 0 1.6rem;height:100px;display:flex;justify-content:center;overflow:hidden}
 .lab .draw{width:auto;height:100%}
-/* .pair: flow-based 2-column grid (7fr first photo, 5fr second); .big forces a figure into
-   column 1 so it takes the same track width as the first photo — row auto-sizing means this
-   never overlaps the row above, it just needs its own row (second photo can no longer sit
-   beside a same-width neighbour). .n1/.n2 place the two added photos in their own row below,
-   mirroring the original 7fr/5fr pair. */
-.pair{display:grid;grid-template-columns:1fr;gap:2.4rem}
-@media (min-width:700px){
-  .pair{grid-template-columns:7fr 5fr;gap:3rem 2rem;align-items:end}
-  .pair .big{grid-row:2;grid-column:1}
-  .pair .n1{grid-row:3;grid-column:1}
-  .pair .n2{grid-row:3;grid-column:2}
+/* .pair: flow-based 2x2 grid of equal-size photographs (two equal columns, automatic row
+   heights — no absolute positioning). Mobile (<=768px): a single column, full width, same
+   order. Each photo is cropped to a shared 16:9 box with object-fit:cover so all four
+   render at the same size: three of the four source photographs are already exactly 16:9
+   (shown uncropped); the fourth (3:2) loses ~16% off its height, split evenly top/bottom by
+   the default center object-position, which keeps its whole subject in frame. align-items:
+   start keeps each row's figures top-aligned, so a longer caption on one side never
+   overlaps the row below (the row-gap is the minimum space between them). */
+.pair{display:grid;grid-template-columns:1fr;row-gap:2.4rem}
+.pair figure{margin:0}
+.pair .zoom{aspect-ratio:16/9;overflow:hidden}
+.pair .zoom img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+@media (min-width:769px){
+  .pair{grid-template-columns:1fr 1fr;row-gap:3rem;column-gap:2rem;align-items:start}
 }
 .root{width:min(220px,60%);margin:2.4rem 0 1rem}
 .rescue{display:grid;grid-template-columns:1fr 1fr;gap:clamp(.8rem,2.5vw,1.8rem);margin-top:1rem}
@@ -527,14 +530,14 @@ figure{margin:0}
       <h2 id="h-8">Labyrinths of Unintended Resistance</h2>
       <div class="lab" aria-hidden="true"></div>
       <div class="pair">
-        <figure><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-01.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-01-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-01-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-01.jpg 2400w" sizes="(min-width: 700px) 34rem, 90vw" width="2400" height="1350" alt="Autumn vines over garage roofs, apartment blocks behind" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        <figure><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-01.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-01-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-01-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-01.jpg 2400w" sizes="(min-width: 769px) 27rem, 90vw" width="2400" height="1350" alt="Autumn vines over garage roofs, apartment blocks behind" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
           <figcaption>Tamta Khalvashi’s archives; Tbilisi, Vazha-Pshavela Blocks, 2025).</figcaption></figure>
-        <figure class="big"><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-02-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-02-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-02.jpg 2400w" sizes="(min-width: 700px) 34rem, 90vw" width="2400" height="1600" alt="A lane of garages under a metal pergola overgrown with vines" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
+        <figure><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-02.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-02-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-02-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-02.jpg 2400w" sizes="(min-width: 769px) 27rem, 90vw" width="2400" height="1600" alt="A lane of garages under a metal pergola overgrown with vines" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button>
           <figcaption>Irakli Kochlashvili archives. Tbilisi, Gldani, 2023. Courtesy of the author.</figcaption></figure>
         <!-- caption to be added -->
-        <figure class="n1"><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-03.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-03-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-03-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-03.jpg 2400w" sizes="(min-width: 700px) 34rem, 90vw" width="2400" height="1350" alt="A bare grapevine trained on a trellis over a garage roof, an apartment block and parked cars behind" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button></figure>
+        <figure><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-03.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-03-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-03-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-03.jpg 2400w" sizes="(min-width: 769px) 27rem, 90vw" width="2400" height="1350" alt="A bare grapevine trained on a trellis over a garage roof, an apartment block and parked cars behind" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button></figure>
         <!-- caption to be added -->
-        <figure class="n2"><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-04.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-04-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-04-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-04.jpg 2400w" sizes="(min-width: 700px) 24rem, 90vw" width="2400" height="1350" alt="A tall apartment tower seen from below, with a bare grapevine trellis over garages in the foreground" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button></figure>
+        <figure><button class="zoom" type="button" data-group="g8" data-full="../media/vineyards/vineyards-8-garages-vine-04.jpg" aria-label="Open larger view"><img class="ph" src="../media/vineyards/vineyards-8-garages-vine-04-1200.jpg" srcset="../media/vineyards/vineyards-8-garages-vine-04-1200.jpg 1200w, ../media/vineyards/vineyards-8-garages-vine-04.jpg 2400w" sizes="(min-width: 769px) 27rem, 90vw" width="2400" height="1350" alt="A tall apartment tower seen from below, with a bare grapevine trellis over garages in the foreground" loading="lazy" decoding="async"><span class="badge" aria-hidden="true"><svg width="14" height="14"><use href="#i-zoom"/></svg></span></button></figure>
       </div>
       <p class="txt">Yet the same garages that enclose the commons can also protect them. Draped in sprawling grapevines, they form tangled labyrinths of concrete and greenery, inadvertently resisting the advance of large-scale urban development into the courtyards of Soviet housing.</p>
     </div>
