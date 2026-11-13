@@ -58,3 +58,8 @@
 # only, never committed (generated web copy is the tracked dogs-home-doghouse-lot file
 # alongside it)
 /media/dogs/555.jpeg
+
+# source photo for the Building page's reassigned hotspot zoom photographs (Stairwell,
+# Elevator, Courtyard, Grapevines, Pipes): kept on disk only, never committed (generated
+# web copy is the tracked building-facade-main.jpg file alongside it)
+/media/building/main.jpg

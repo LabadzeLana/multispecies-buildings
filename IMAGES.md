@@ -45,6 +45,43 @@ python3 tools/make_panel_photo.py                 # all jobs
 python3 tools/make_panel_photo.py --only panel-dogs-street-dog-01   # just this one
 ```
 
+# Building page: hotspot zoom-in photographs (compare: drawing | reality)
+
+Each entry in `BUILDING_ZONES` (`index.html`) carries its own `photo` + CSS `pos`
+(background-position); clicking a hotspot zooms the camera into that zone, revealing the
+photo as a plain `background-size:cover` image — one flat JPEG per zone, no WebP and no
+base/detail tier (unlike the panel photographs above). These predate the project's media/
+conventions (they came from the original interactive prototype) and are plain filenames
+directly in `media/building/`, not the panel photos' naming scheme.
+
+Several zones' photos didn't match their own title (Elevator showed a street scene with no
+elevator, Stairwell showed an unrelated building, etc.) and were reassigned to a single
+shared photograph of the building's own facade:
+
+- `building-facade-main.jpg` — the building's own facade, upward angle, dominated by the
+  central climbing vine. Colour-managed from the source's embedded Display P3 profile to
+  sRGB, metadata stripped, 1600x1200 (native size, not upscaled), 439 KB. Cropped by
+  `pos` alone (no separate file per zone) for: **Stairwell** (`50% 35%`), **Elevator**
+  (`35% 55%`), **Courtyard** (`30% 75%`), **Grapevines** (`58% 45%`, centred on the vine
+  itself), **Pipes** (`50% 72%`).
+  Source: `media/building/main.jpg`, kept on disk only and never committed (see
+  `.gitignore`).
+- Roof, Façade, Loggia, Apartment and Basement keep their own original photographs
+  (`roof.jpg`, `facade.jpg`, `loggia.jpg`, `apartment.jpg`, `basement.jpg`) — each already
+  matched its title.
+- Removed (now unreferenced, not originals): `stairwell.jpg`, `elevator.jpg`,
+  `courtyard.jpg`, `pipes.jpg`, `building-grapevines-01.jpg` (replaced by the facade crops
+  above), plus three files that were already unused before this change:
+  `building-grapevines-01.webp`, `building-grapevines-01-detail.{jpg,webp}` (an
+  unreferenced, same-resolution variant), and `vineyard.jpg` (an unrelated street photo,
+  never wired into any zone).
+
+Regenerate with:
+
+```
+python3 tools/make_building_facade_photo.py
+```
+
 # Grapevines story page: Creeping Agency strip photographs
 
 `media/vineyards/` holds the web copies for `a-city-of-vineyards/index.html`; the batch
