@@ -195,25 +195,46 @@ im.save('media/vineyards/vineyards-11-leaf-collage-01-1400.jpg', 'JPEG', quality
 
 # Dogs story page: two added frames at the end of the first (street) gallery
 
-- `dogs-gallery-1-111.jpg` / `-111-1200.jpg` and `dogs-gallery-1-222.jpg` / `-222-1200.jpg`
-  — two new frames appended to the end of the Dogs page's first gallery (`streetCarousel`,
-  the filmstrip right after the intro text, shared/filmstrip-carousel.js). Built from
-  `media/dogs/111..jpg` (note the literal double dot in that filename) and
-  `media/dogs/222.jpg`. Both source photos are kept on disk only and never committed (see
-  `.gitignore`). sRGB, all metadata stripped, full size capped at the source's own
-  resolution (2048px long edge, never upscaled) plus a 1200px-long-edge sibling — the same
-  two-tier convention (no 480/800 tier, no WebP) the gallery's other six frames already use;
-  `shared/filmstrip-carousel.js` only ever requests those same two URLs per photo, so adding
-  a third size or a WebP source would need a change to that shared component, which this
-  task didn't call for.
+- `dogs-gallery-1-111.jpg` / `-111-1200.jpg` — a frame appended to the end of the Dogs
+  page's first gallery (`streetCarousel`, the filmstrip right after the intro text,
+  shared/filmstrip-carousel.js). Built from `media/dogs/111..jpg` (note the literal double
+  dot in that filename), kept on disk only and never committed (see `.gitignore`). sRGB,
+  all metadata stripped, full size capped at the source's own resolution (2048px long
+  edge, never upscaled) plus a 1200px-long-edge sibling — the same two-tier convention (no
+  480/800 tier, no WebP) the gallery's other frames already use; `shared/filmstrip-carousel.js`
+  only ever requests those same two URLs per photo, so adding a third size or a WebP source
+  would need a change to that shared component, which this task didn't call for.
+- `dogs-gallery-1-222.jpg` / `-222-1200.jpg` (built from `media/dogs/222.jpg`) was added
+  alongside it at the same time, as the carousel's 8th and last frame, but was later removed
+  — see "replace 5th photograph and remove the last" below. `media/dogs/222.jpg` itself
+  stays listed in `.gitignore` in case it is still on disk, but no longer has a generated
+  output.
 - No manifest.json exists for `media/dogs/` (only `media/vineyards/` has one); this section
-  of IMAGES.md is the only record of these two files, same as the closing photograph above.
+  of IMAGES.md is the only record of these files, same as the closing photograph above.
 
 Regenerate with:
 
 ```
 python3 tools/make_dogs_gallery_photo.py "media/dogs/111..jpg" media/dogs dogs-gallery-1-111
-python3 tools/make_dogs_gallery_photo.py media/dogs/222.jpg media/dogs dogs-gallery-1-222
+```
+
+# Dogs story page: first (street) gallery, replace 5th photograph and remove the last
+
+- `dogs-gallery-1-pine-yard.jpg` / `-pine-yard-1200.jpg` — replaces the 5th frame of the
+  same `streetCarousel` filmstrip (previously `media/dogs/carousel/2.jpg` /
+  `2-1200.jpg`, now removed as unused). Built from `"დალაგებული მასალა (ძაღლები)/In
+  between 2.jpeg"` with the same tool and two-tier convention as the entry above (full size
+  capped at the source's own resolution, 4032px long edge, never upscaled, plus a
+  1200px-long-edge sibling; no WebP, matching this carousel's other frames).
+- The carousel's 8th and last frame (`dogs-gallery-1-222.jpg` / `-222-1200.jpg`, see above)
+  was removed outright; the carousel now has 7 frames.
+- Source photo is kept on disk only; see the note above about its folder's git-tracking
+  status.
+
+Regenerate with:
+
+```
+python3 tools/make_dogs_gallery_photo.py "დალაგებული მასალა (ძაღლები)/In between 2.jpeg" media/dogs dogs-gallery-1-pine-yard
 ```
 
 # Dogs story page: "Dog Gardens" section, two added photographs, one removed

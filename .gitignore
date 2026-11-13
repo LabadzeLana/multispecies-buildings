@@ -35,10 +35,12 @@
 /media/vineyards/4.jpeg
 /media/vineyards/5.jpg
 
-# source photos for the two added frames at the end of the Dogs page's first (street)
-# gallery: kept on disk only, never committed (generated web copies are the tracked
-# dogs-gallery-1-111 / dogs-gallery-1-222 files alongside them). Note the literal double
-# dot in "111..jpg" — that is the file's real name, not a typo here.
+# source photos for frames added to (and later removed from) the Dogs page's first
+# (street) gallery: kept on disk only, never committed. 111..jpg's generated web copy is
+# the tracked dogs-gallery-1-111 files alongside it (note the literal double dot in
+# "111..jpg" — that is the file's real name, not a typo here). 222.jpg's generated
+# dogs-gallery-1-222 files were removed when that frame was dropped from the carousel;
+# the original stays listed here so it is never committed if left on disk.
 /media/dogs/111..jpg
 /media/dogs/222.jpg
 
